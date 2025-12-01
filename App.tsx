@@ -1,0 +1,694 @@
+
+
+
+
+
+
+import React, { useState, useEffect, useMemo } from 'react';
+import { HashRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import Sidebar from './components/Sidebar';
+import Login from './pages/Login';
+import MatchList from './pages/MatchList';
+import MatchDetail from './pages/MatchDetail';
+import DataInput from './pages/DataInput';
+import Dashboard from './pages/Dashboard';
+import AIAnalysis from './pages/AIAnalysis';
+import OpponentManager from './pages/OpponentManager';
+import SeasonManager from './pages/SeasonManager';
+import VenueManager from './pages/VenueManager';
+import PlayerManager from './pages/PlayerManager';
+import UserManager from './pages/UserManager';
+import TeamSelect from './pages/TeamSelect';
+import TeamManager from './pages/TeamManager';
+import SettingsPage from './pages/Settings';
+import { AppRoute, DataItem, User, STORAGE_KEYS, ThemeColor, ThemeConfig, MatchRecord, PlayerProfile, Team, OpponentTeam, TeamAsset } from './types';
+import { authService } from './services/auth';
+import { defaultDb } from './data/db';
+import { storageService } from './services/storage';
+
+// Theme Configuration
+const THEMES: Record<ThemeColor, ThemeConfig> = {
+  emerald: { primary: '#059669', primaryHover: '#047857', primaryLight: '#ecfdf5', text: '#064e3b' },
+  blue: { primary: '#2563eb', primaryHover: '#1d4ed8', primaryLight: '#eff6ff', text: '#1e3a8a' },
+  rose: { primary: '#e11d48', primaryHover: '#be123c', primaryLight: '#fff1f2', text: '#881337' },
+  violet: { primary: '#7c3aed', primaryHover: '#6d28d9', primaryLight: '#f5f3ff', text: '#4c1d95' },
+  orange: { primary: '#ea580c', primaryHover: '#c2410c', primaryLight: '#fff7ed', text: '#7c2d12' },
+  slate: { primary: '#475569', primaryHover: '#334155', primaryLight: '#f8fafc', text: '#0f172a' },
+  cyan: { primary: '#0891b2', primaryHover: '#0e7490', primaryLight: '#ecfeff', text: '#164e63' },
+  sky: { primary: '#0284c7', primaryHover: '#0369a1', primaryLight: '#f0f9ff', text: '#0c4a6e' },
+  indigo: { primary: '#4f46e5', primaryHover: '#4338ca', primaryLight: '#eef2ff', text: '#312e81' },
+  
+  // New Colors
+  red: { primary: '#ef4444', primaryHover: '#dc2626', primaryLight: '#fef2f2', text: '#991b1b' },
+  amber: { primary: '#f59e0b', primaryHover: '#d97706', primaryLight: '#fffbeb', text: '#92400e' },
+  lime: { primary: '#84cc16', primaryHover: '#65a30d', primaryLight: '#f7fee7', text: '#3f6212' },
+  green: { primary: '#22c55e', primaryHover: '#16a34a', primaryLight: '#f0fdf4', text: '#14532d' },
+  teal: { primary: '#14b8a6', primaryHover: '#0d9488', primaryLight: '#f0fdfa', text: '#134e4a' },
+  purple: { primary: '#a855f7', primaryHover: '#9333ea', primaryLight: '#faf5ff', text: '#6b21a8' },
+  fuchsia: { primary: '#d946ef', primaryHover: '#c026d3', primaryLight: '#fdf4ff', text: '#86198f' },
+  pink: { primary: '#ec4899', primaryHover: '#db2777', primaryLight: '#fdf2f8', text: '#9d174d' },
+};
+
+const AppContent: React.FC = () => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [authState, setAuthState] = useState<{ user: User | null; isAuthenticated: boolean }>({
+    user: null,
+    isAuthenticated: false,
+  });
+  
+  // Multi-tenancy State
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [currentTeam, setCurrentTeam] = useState<Team | null>(null);
+
+  // Global Data State (Raw)
+  const [rawData, setRawData] = useState<MatchRecord[]>([]);
+  const [allOpponents, setAllOpponents] = useState<OpponentTeam[]>([]);
+  const [allSeasons, setAllSeasons] = useState<TeamAsset[]>([]);
+  const [allVenues, setAllVenues] = useState<TeamAsset[]>([]);
+  const [allPlayers, setAllPlayers] = useState<PlayerProfile[]>([]);
+
+  // Theme State
+  const [theme, setTheme] = useState<ThemeColor>('emerald');
+
+  // Edit / View State
+  const [editingMatch, setEditingMatch] = useState<MatchRecord | undefined>(undefined);
+  const [viewingMatch, setViewingMatch] = useState<MatchRecord | undefined>(undefined);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Initialize DB and Load Data
+  useEffect(() => {
+    storageService.initialize();
+    
+    // Load Theme
+    const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) as ThemeColor;
+    if (savedTheme && THEMES[savedTheme]) {
+      setTheme(savedTheme);
+    }
+
+    // Load Teams
+    const teamsStr = localStorage.getItem(STORAGE_KEYS.TEAMS);
+    const loadedTeams: Team[] = teamsStr ? JSON.parse(teamsStr) : defaultDb.teams;
+    setTeams(loadedTeams);
+
+    // Load Session
+    const user = authService.getCurrentUser();
+    if (user) {
+      setAuthState({ user, isAuthenticated: true });
+      
+      // Auto-select first available team on load
+      if (user.teamIds && user.teamIds.length > 0) {
+        const validTeams = loadedTeams.filter(t => user.teamIds.includes(t.id));
+        if (validTeams.length > 0) {
+           setCurrentTeam(validTeams[0]);
+        }
+      }
+    }
+
+    // Load Data Entities
+    const storedData = localStorage.getItem(STORAGE_KEYS.DATA);
+    if (storedData) {
+      const parsedMatches: MatchRecord[] = JSON.parse(storedData);
+      
+      let changed = false;
+      const defaultTeamId = loadedTeams[0]?.id || 'team-default-001';
+
+      const migratedMatches = parsedMatches.map(m => {
+         let newItem = { ...m };
+         
+         // Migration 1: Add ID if missing
+         if (!newItem.id) {
+           changed = true;
+           newItem.id = `match-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+         }
+
+         // Migration 2: Add teamId if missing (Assign to default team)
+         if (!newItem.teamId) {
+            changed = true;
+            newItem.teamId = defaultTeamId;
+         }
+
+         // Migration 3: Add countForStats if missing
+         if (newItem.countForStats === undefined) {
+             changed = true;
+             // Default logic: internal matches don't count unless specified
+             newItem.countForStats = newItem.matchType !== '队内赛';
+         }
+
+         return newItem;
+      });
+
+      if (changed) {
+         localStorage.setItem(STORAGE_KEYS.DATA, JSON.stringify(migratedMatches));
+         setRawData(migratedMatches);
+      } else {
+         setRawData(parsedMatches);
+      }
+    } else {
+      setRawData([]);
+    }
+
+    // Load Opponents (Migrate string -> object if needed)
+    const storedOpponents = localStorage.getItem(STORAGE_KEYS.OPPONENTS);
+    if (storedOpponents) {
+      const parsed = JSON.parse(storedOpponents);
+      // Simple check if it's string array
+      if (parsed.length > 0 && typeof parsed[0] === 'string') {
+         const defaultTeamId = loadedTeams[0]?.id || 'team-default-001';
+         const migrated: OpponentTeam[] = parsed.map((name: string) => ({
+            id: `opp-${Date.now()}-${Math.random()}`,
+            name,
+            teamId: defaultTeamId
+         }));
+         setAllOpponents(migrated);
+         localStorage.setItem(STORAGE_KEYS.OPPONENTS, JSON.stringify(migrated));
+      } else {
+         setAllOpponents(parsed);
+      }
+    }
+
+    // Load Seasons (Migrate string -> object)
+    const storedSeasons = localStorage.getItem(STORAGE_KEYS.SEASONS);
+    if (storedSeasons) {
+       const parsed = JSON.parse(storedSeasons);
+       if (parsed.length > 0 && typeof parsed[0] === 'string') {
+         const defaultTeamId = loadedTeams[0]?.id || 'team-default-001';
+         const migrated: TeamAsset[] = parsed.map((name: string, index: number) => ({
+            id: `sea-${Math.random()}`,
+            name,
+            teamId: defaultTeamId,
+            sortOrder: index // Add default sort order based on index
+         }));
+         setAllSeasons(migrated);
+         localStorage.setItem(STORAGE_KEYS.SEASONS, JSON.stringify(migrated));
+       } else {
+         setAllSeasons(parsed);
+       }
+    }
+
+    // Load Venues (Migrate string -> object)
+    const storedVenues = localStorage.getItem(STORAGE_KEYS.VENUES);
+    if (storedVenues) {
+       const parsed = JSON.parse(storedVenues);
+       if (parsed.length > 0 && typeof parsed[0] === 'string') {
+         const defaultTeamId = loadedTeams[0]?.id || 'team-default-001';
+         const migrated: TeamAsset[] = parsed.map((name: string, index: number) => ({
+            id: `ven-${Math.random()}`,
+            name,
+            teamId: defaultTeamId,
+            sortOrder: index // Add default sort order based on index
+         }));
+         setAllVenues(migrated);
+         localStorage.setItem(STORAGE_KEYS.VENUES, JSON.stringify(migrated));
+       } else {
+         setAllVenues(parsed);
+       }
+    }
+
+    // Load Players
+    const storedPlayers = localStorage.getItem(STORAGE_KEYS.PLAYERS);
+    if (storedPlayers) {
+      const parsed = JSON.parse(storedPlayers);
+      if (parsed.length > 0 && typeof parsed[0] === 'string') {
+         const defaultTeamId = loadedTeams[0]?.id || 'team-default-001';
+         const migrated: PlayerProfile[] = parsed.map((name: string) => ({ name, teamId: defaultTeamId }));
+         setAllPlayers(migrated);
+         localStorage.setItem(STORAGE_KEYS.PLAYERS, JSON.stringify(migrated));
+      } else {
+         setAllPlayers(parsed);
+      }
+    }
+
+    setLoading(false);
+  }, []);
+
+  // Apply Theme
+  useEffect(() => {
+    const config = THEMES[theme] || THEMES.emerald;
+    const root = document.documentElement;
+    root.style.setProperty('--primary', config.primary);
+    root.style.setProperty('--primary-hover', config.primaryHover);
+    root.style.setProperty('--primary-light', config.primaryLight);
+    root.style.setProperty('--primary-text', config.text);
+    localStorage.setItem(STORAGE_KEYS.THEME, theme);
+  }, [theme]);
+
+  // Derived State: Filter Data by Current Team
+  const filteredMatches = useMemo(() => 
+    currentTeam ? rawData.filter(m => m.teamId === currentTeam.id) : [], 
+  [rawData, currentTeam]);
+
+  const filteredOpponents = useMemo(() => 
+    currentTeam ? allOpponents.filter(o => o.teamId === currentTeam.id) : [], 
+  [allOpponents, currentTeam]);
+  
+  const filteredSeasons = useMemo(() => 
+    currentTeam 
+      ? allSeasons
+          .filter(s => s.teamId === currentTeam.id)
+          .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)) 
+      : [],
+  [allSeasons, currentTeam]);
+
+  const filteredVenues = useMemo(() => 
+    currentTeam 
+      ? allVenues
+          .filter(v => v.teamId === currentTeam.id)
+          .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+      : [],
+  [allVenues, currentTeam]);
+
+  const filteredPlayers = useMemo(() => 
+    currentTeam ? allPlayers.filter(p => p.teamId === currentTeam.id) : [],
+  [allPlayers, currentTeam]);
+
+  const handleLogin = () => {
+    const user = authService.getCurrentUser();
+    if (user) {
+      setAuthState({ user, isAuthenticated: true });
+      
+      const userTeams = teams.filter(t => user.teamIds.includes(t.id));
+      
+      // Auto-select first team regardless of count
+      if (userTeams.length > 0) {
+        setCurrentTeam(userTeams[0]);
+        navigate(AppRoute.DASHBOARD);
+      } else {
+        alert("该账号未分配任何球队，请联系管理员。");
+      }
+    }
+  };
+
+  const handleLogout = () => {
+    authService.logout();
+    setAuthState({ user: null, isAuthenticated: false });
+    setCurrentTeam(null);
+    navigate(AppRoute.LOGIN);
+  };
+
+  const handleTeamSelect = (teamId: string) => {
+    const team = teams.find(t => t.id === teamId);
+    if (team) {
+      setCurrentTeam(team);
+      // Navigate to dashboard if not already there, to give a sense of "Home"
+      navigate(AppRoute.DASHBOARD);
+    }
+  };
+
+  // --- CRUD Handlers (Team Aware) ---
+
+  const handleDataLoaded = (newItems: DataItem[], isAppend: boolean = false) => {
+    if (!currentTeam) return;
+
+    let updatedData: MatchRecord[];
+    const records = newItems as MatchRecord[];
+
+    // Ensure teamId is set
+    const recordsWithTeam = records.map(r => ({ ...r, teamId: currentTeam.id }));
+
+    if (isAppend) {
+      // Check if we are updating existing records (by ID) or adding new ones
+      updatedData = [...rawData];
+      recordsWithTeam.forEach(newRecord => {
+         if (newRecord.id) {
+           const index = updatedData.findIndex(r => r.id === newRecord.id);
+           if (index !== -1) {
+             updatedData[index] = newRecord; // Update
+           } else {
+             updatedData.push(newRecord); // Add
+           }
+         } else {
+           // Generate ID and Add
+           const recordWithId = { ...newRecord, id: `match-${Date.now()}` };
+           updatedData.push(recordWithId);
+         }
+      });
+    } else {
+      // JSON Import Mode
+      const otherTeamData = rawData.filter(m => m.teamId !== currentTeam.id);
+      updatedData = [...otherTeamData, ...recordsWithTeam];
+    }
+    
+    setRawData(updatedData);
+    localStorage.setItem(STORAGE_KEYS.DATA, JSON.stringify(updatedData));
+    setEditingMatch(undefined); // Clear edit mode
+  };
+
+  const handleAddOpponent = (team: OpponentTeam) => {
+    if (!currentTeam) return;
+    const newOp = { ...team, teamId: currentTeam.id };
+    const newOpponents = [...allOpponents, newOp];
+    setAllOpponents(newOpponents);
+    localStorage.setItem(STORAGE_KEYS.OPPONENTS, JSON.stringify(newOpponents));
+  };
+
+  const handleRemoveOpponent = (id: string) => {
+    const newOpponents = allOpponents.filter(o => o.id !== id);
+    setAllOpponents(newOpponents);
+    localStorage.setItem(STORAGE_KEYS.OPPONENTS, JSON.stringify(newOpponents));
+  };
+
+  const handleEditOpponent = (id: string, name: string, logo?: string) => {
+    const newOpponents = allOpponents.map(o => o.id === id ? { ...o, name, logo } : o);
+    setAllOpponents(newOpponents);
+    localStorage.setItem(STORAGE_KEYS.OPPONENTS, JSON.stringify(newOpponents));
+  };
+
+  // Season Handlers
+  const handleAddSeason = (name: string, sortOrder: number = 0) => {
+    if (!currentTeam) return;
+    const newSeason: TeamAsset = { 
+      id: `sea-${Date.now()}`, 
+      name, 
+      teamId: currentTeam.id,
+      sortOrder 
+    };
+    const updated = [...allSeasons, newSeason];
+    setAllSeasons(updated);
+    localStorage.setItem(STORAGE_KEYS.SEASONS, JSON.stringify(updated));
+  };
+  
+  const handleRemoveSeason = (id: string) => {
+    const updated = allSeasons.filter(s => s.id !== id);
+    setAllSeasons(updated);
+    localStorage.setItem(STORAGE_KEYS.SEASONS, JSON.stringify(updated));
+  };
+
+  const handleEditSeason = (id: string, name: string, sortOrder: number = 0) => {
+    const updated = allSeasons.map(s => s.id === id ? { ...s, name, sortOrder } : s);
+    setAllSeasons(updated);
+    localStorage.setItem(STORAGE_KEYS.SEASONS, JSON.stringify(updated));
+  };
+
+  // Venue Handlers
+  const handleAddVenue = (name: string, sortOrder: number = 0) => {
+    if (!currentTeam) return;
+    const newVenue: TeamAsset = { 
+      id: `ven-${Date.now()}`, 
+      name, 
+      teamId: currentTeam.id,
+      sortOrder 
+    };
+    const updated = [...allVenues, newVenue];
+    setAllVenues(updated);
+    localStorage.setItem(STORAGE_KEYS.VENUES, JSON.stringify(updated));
+  };
+
+  const handleRemoveVenue = (id: string) => {
+    const updated = allVenues.filter(v => v.id !== id);
+    setAllVenues(updated);
+    localStorage.setItem(STORAGE_KEYS.VENUES, JSON.stringify(updated));
+  };
+
+  const handleEditVenue = (id: string, name: string, sortOrder: number = 0) => {
+    const updated = allVenues.map(v => v.id === id ? { ...v, name, sortOrder } : v);
+    setAllVenues(updated);
+    localStorage.setItem(STORAGE_KEYS.VENUES, JSON.stringify(updated));
+  };
+
+  // Player Handlers
+  const handleAddPlayer = (player: PlayerProfile) => {
+    if (!currentTeam) return;
+    const newPlayer = { ...player, teamId: currentTeam.id };
+    const newPlayers = [...allPlayers, newPlayer];
+    setAllPlayers(newPlayers);
+    localStorage.setItem(STORAGE_KEYS.PLAYERS, JSON.stringify(newPlayers));
+  };
+
+  const handleRemovePlayer = (name: string) => {
+    if (!currentTeam) return;
+    // Remove by name AND teamId
+    const newPlayers = allPlayers.filter(p => !(p.name === name && p.teamId === currentTeam.id));
+    setAllPlayers(newPlayers);
+    localStorage.setItem(STORAGE_KEYS.PLAYERS, JSON.stringify(newPlayers));
+  };
+
+  const handleEditPlayer = (oldName: string, newProfile: PlayerProfile) => {
+    if (!currentTeam) return;
+    const newPlayers = allPlayers.map(p => 
+      (p.name === oldName && p.teamId === currentTeam.id) ? { ...newProfile, teamId: currentTeam.id } : p
+    );
+    setAllPlayers(newPlayers);
+    localStorage.setItem(STORAGE_KEYS.PLAYERS, JSON.stringify(newPlayers));
+  };
+
+  // Team Management Handlers (Admin)
+  const handleAddTeam = (name: string, logo?: string) => {
+    const newTeam: Team = {
+      id: `team-${Date.now()}`,
+      name,
+      logo,
+      createdAt: new Date().toISOString()
+    };
+    const updated = [...teams, newTeam];
+    setTeams(updated);
+    localStorage.setItem(STORAGE_KEYS.TEAMS, JSON.stringify(updated));
+  };
+
+  const handleEditTeam = (id: string, name: string, logo?: string) => {
+    const updated = teams.map(t => t.id === id ? { ...t, name, logo } : t);
+    setTeams(updated);
+    localStorage.setItem(STORAGE_KEYS.TEAMS, JSON.stringify(updated));
+  };
+
+  // Match List Edit / View Handlers
+  const handleEditMatch = (match: MatchRecord) => {
+    setEditingMatch(match);
+    navigate(AppRoute.DATA_ENTRY);
+  };
+
+  const handleViewMatch = (match: MatchRecord) => {
+    setViewingMatch(match);
+    navigate(AppRoute.MATCH_DETAIL);
+  };
+
+  // Navigation Guard
+  const handleNavigate = (route: AppRoute) => {
+    // Guards
+    if (!authState.isAuthenticated && route !== AppRoute.LOGIN) {
+       navigate(AppRoute.LOGIN);
+       return;
+    }
+    
+    // Team Check
+    if (authState.isAuthenticated && !currentTeam && route !== AppRoute.TEAM_SELECT && route !== AppRoute.LOGIN) {
+       // If no team, try to select first one again or alert
+       const userTeams = teams.filter(t => authState.user?.teamIds.includes(t.id));
+       if (userTeams.length > 0) {
+         setCurrentTeam(userTeams[0]);
+       } else {
+         navigate(AppRoute.LOGIN); // fallback
+         return;
+       }
+    }
+
+    // Role Guard
+    const role = authState.user?.role || 'player';
+    
+    // Admin only
+    if ([AppRoute.USERS_MANAGEMENT, AppRoute.TEAMS_MANAGEMENT, AppRoute.SETTINGS].includes(route)) {
+       if (role !== 'admin') {
+         alert("无权访问");
+         return;
+       }
+    }
+    
+    // Admin & Captain only
+    if ([AppRoute.SEASONS, AppRoute.VENUES, AppRoute.OPPONENTS].includes(route)) {
+      if (role === 'player') {
+        alert("仅队长和管理员可访问");
+        return;
+      }
+    }
+
+    // Clear edit/view state if leaving specific pages
+    if (route !== AppRoute.DATA_ENTRY) {
+      setEditingMatch(undefined);
+    }
+    
+    // NOTE: Removed setViewingMatch(undefined) to prevent race condition with Router <Navigate>
+    // when returning from MatchDetail. viewingMatch will be overwritten when selecting a new match.
+
+    navigate(route);
+  };
+
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-400">Loading...</div>;
+
+  // If not authenticated, only show Login
+  if (!authState.isAuthenticated) {
+     return <Login onLoginSuccess={handleLogin} />;
+  }
+
+  // Ensure currentTeam is set before rendering main app
+  if (authState.isAuthenticated && !currentTeam) {
+     const userTeams = teams.filter(t => authState.user?.teamIds.includes(t.id));
+     if (userTeams.length > 0) {
+        setCurrentTeam(userTeams[0]);
+     } else {
+       return <div className="min-h-screen flex items-center justify-center text-slate-500">该账号未分配球队</div>;
+     }
+  }
+
+  const userTeams = authState.user ? teams.filter(t => authState.user!.teamIds.includes(t.id)) : [];
+
+  return (
+    <div className="flex min-h-screen bg-slate-50 text-slate-900 font-sans">
+      <Routes>
+        <Route path={AppRoute.TEAM_SELECT} element={
+           authState.user ? (
+             <TeamSelect 
+               user={authState.user} 
+               availableTeams={userTeams} 
+               onSelectTeam={handleTeamSelect} 
+             />
+           ) : <Navigate to={AppRoute.LOGIN} />
+        } />
+        
+        <Route path="*" element={
+          <>
+            <Sidebar 
+              currentRoute={location.pathname.replace('/', '') as AppRoute} 
+              onNavigate={handleNavigate} 
+              mobileOpen={mobileOpen}
+              setMobileOpen={setMobileOpen}
+              currentUser={authState.user}
+              currentTeam={currentTeam}
+              userTeams={userTeams}
+              onLogout={handleLogout}
+              onSwitchTeam={() => navigate(AppRoute.TEAM_SELECT)} 
+              onSelectTeam={handleTeamSelect} 
+            />
+            
+            <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+              {/* Mobile Header */}
+              <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-slate-200 shrink-0">
+                <h1 className="text-lg font-bold text-slate-800">PitchStats 球队助手</h1>
+                <button 
+                  onClick={() => setMobileOpen(true)}
+                  className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+                </button>
+              </div>
+
+              <main className="flex-1 overflow-auto p-4 md:p-8 scroll-smooth">
+                <Routes>
+                  <Route path={AppRoute.DASHBOARD} element={
+                    <Dashboard 
+                      data={filteredMatches} 
+                      seasons={filteredSeasons.map(s => s.name)} 
+                    />
+                  } />
+                  <Route path={AppRoute.MATCH_LIST} element={
+                    <MatchList 
+                      matches={filteredMatches} 
+                      onNavigate={handleNavigate} 
+                      currentUserRole={authState.user?.role} 
+                      seasons={filteredSeasons.map(s => s.name)}
+                      onEditMatch={handleEditMatch}
+                      onViewMatch={handleViewMatch}
+                      currentTeamName={currentTeam?.name}
+                    />
+                  } />
+                  <Route path={AppRoute.MATCH_DETAIL} element={
+                    viewingMatch ? (
+                      <MatchDetail 
+                        match={viewingMatch} 
+                        onBack={() => navigate(AppRoute.MATCH_LIST)}
+                        currentTeamName={currentTeam?.name}
+                        opponentList={filteredOpponents}
+                        playerList={filteredPlayers}
+                      />
+                    ) : <Navigate to={AppRoute.MATCH_LIST} />
+                  } />
+                  <Route path={AppRoute.DATA_ENTRY} element={
+                    <DataInput 
+                      onDataLoaded={handleDataLoaded} 
+                      opponentList={filteredOpponents}
+                      seasonList={filteredSeasons.map(s => s.name)}
+                      venueList={filteredVenues.map(v => v.name)}
+                      playerList={filteredPlayers}
+                      onBack={() => handleNavigate(AppRoute.MATCH_LIST)}
+                      initialData={editingMatch}
+                      currentTeamName={currentTeam?.name} 
+                    />
+                  } />
+                  <Route path={AppRoute.AI_INSIGHTS} element={<AIAnalysis data={filteredMatches} />} />
+                  <Route path={AppRoute.OPPONENTS} element={
+                    <OpponentManager 
+                      opponents={filteredOpponents} 
+                      matches={filteredMatches}
+                      onAddOpponent={handleAddOpponent}
+                      onRemoveOpponent={handleRemoveOpponent}
+                      onEditOpponent={handleEditOpponent}
+                    />
+                  } />
+                  <Route path={AppRoute.SEASONS} element={
+                     <SeasonManager
+                       seasons={filteredSeasons}
+                       onAddSeason={handleAddSeason}
+                       onRemoveSeason={handleRemoveSeason}
+                       onEditSeason={handleEditSeason}
+                     />
+                  } />
+                  <Route path={AppRoute.VENUES} element={
+                     <VenueManager
+                       venues={filteredVenues}
+                       onAddVenue={handleAddVenue}
+                       onRemoveVenue={handleRemoveVenue}
+                       onEditVenue={handleEditVenue}
+                     />
+                  } />
+                  <Route path={AppRoute.PLAYERS} element={
+                     <PlayerManager 
+                       players={filteredPlayers}
+                       matches={filteredMatches}
+                       seasons={filteredSeasons.map(s => s.name)}
+                       onAddPlayer={handleAddPlayer}
+                       onRemovePlayer={handleRemovePlayer}
+                       onEditPlayer={handleEditPlayer}
+                       currentUserRole={authState.user?.role}
+                     />
+                  } />
+                  <Route path={AppRoute.USERS_MANAGEMENT} element={
+                     <UserManager 
+                       currentUser={authState.user!} 
+                       teams={teams} 
+                       players={allPlayers}
+                     />
+                  } />
+                  <Route path={AppRoute.TEAMS_MANAGEMENT} element={
+                     <TeamManager 
+                       teams={teams}
+                       onAddTeam={handleAddTeam}
+                       onEditTeam={handleEditTeam}
+                     />
+                  } />
+                  <Route path={AppRoute.SETTINGS} element={
+                     <SettingsPage 
+                       currentTheme={theme} 
+                       onThemeChange={setTheme} 
+                     />
+                  } />
+                  <Route path="/" element={<Navigate to={AppRoute.DASHBOARD} replace />} />
+                </Routes>
+              </main>
+            </div>
+          </>
+        } />
+      </Routes>
+    </div>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <HashRouter>
+      <AppContent />
+    </HashRouter>
+  );
+};
+
+export default App;

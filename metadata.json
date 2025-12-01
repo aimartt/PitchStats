@@ -1,0 +1,5 @@
+{
+  "name": "PitchStats - 球队助手",
+  "description": "业余足球队专用管理应用，用于追踪比赛结果、球员统计，并利用 AI 生成战术分析。",
+  "requestFramePermissions": []
+}
