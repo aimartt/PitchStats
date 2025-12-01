@@ -1,9 +1,3 @@
-
-
-
-
-
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { HashRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
@@ -623,6 +617,7 @@ const AppContent: React.FC = () => {
                       onAddOpponent={handleAddOpponent}
                       onRemoveOpponent={handleRemoveOpponent}
                       onEditOpponent={handleEditOpponent}
+                      currentTeamName={currentTeam?.name} 
                     />
                   } />
                   <Route path={AppRoute.SEASONS} element={

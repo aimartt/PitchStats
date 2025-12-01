@@ -1,10 +1,6 @@
-
-
-
-
 import React, { useState, useMemo, useRef } from 'react';
-import { Users, Plus, Trash2, Search, Shield, Pencil, X, Check, Swords, TrendingUp, History, Camera } from 'lucide-react';
-import { OpponentManagerProps, OpponentTeam } from '../types';
+import { Users, Plus, Trash2, Search, Shield, Pencil, X, Check, Swords, TrendingUp, History, Camera, Eye, Calendar, MapPin, Trophy, Crown, Handshake, Shirt } from 'lucide-react';
+import { OpponentManagerProps, OpponentTeam, MatchRecord } from '../types';
 
 interface OpponentStats {
   id: string;
@@ -19,7 +15,7 @@ interface OpponentStats {
   lastResult?: 'Win' | 'Draw' | 'Loss';
 }
 
-const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, onAddOpponent, onRemoveOpponent, onEditOpponent }) => {
+const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, onAddOpponent, onRemoveOpponent, onEditOpponent, currentTeamName }) => {
   const [newTeamName, setNewTeamName] = useState('');
   const [newTeamLogo, setNewTeamLogo] = useState<string | undefined>(undefined);
   const [searchTerm, setSearchTerm] = useState('');
@@ -30,6 +26,9 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
   const [editName, setEditName] = useState('');
   const [editLogo, setEditLogo] = useState<string | undefined>(undefined);
   const [editError, setEditError] = useState<string | null>(null);
+
+  // View Details State
+  const [viewingOpponent, setViewingOpponent] = useState<OpponentStats | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const editFileInputRef = useRef<HTMLInputElement>(null);
@@ -90,6 +89,14 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
 
     return Object.values(statsMap);
   }, [opponents, matches]);
+
+  // Derived Match History for Viewing
+  const viewingMatches = useMemo(() => {
+    if (!viewingOpponent) return [];
+    return matches
+      .filter(m => m.opponent === viewingOpponent.name && m.matchType !== '队内赛')
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, [viewingOpponent, matches]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, setLogo: (l: string) => void) => {
     const file = e.target.files?.[0];
@@ -192,6 +199,41 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
     if (editingId) {
       onEditOpponent(editingId, trimmed, editLogo);
       cancelEditing();
+    }
+  };
+
+  // --- Helper Functions for Match Styling ---
+  const getResultColorClass = (result?: string) => {
+    if (result === 'Win') return 'bg-emerald-500 text-white border-emerald-600';
+    if (result === 'Loss') return 'bg-red-500 text-white border-red-600';
+    if (result === 'Draw') return 'bg-amber-500 text-white border-amber-600';
+    return 'bg-slate-400 text-white border-slate-500';
+  };
+  
+  const getResultLabel = (result?: string) => {
+     if (result === 'Win') return '胜利';
+     if (result === 'Loss') return '失利';
+     if (result === 'Draw') return '平局';
+     return '完赛';
+  };
+
+  const getMatchBackgroundStyle = (matchType?: string) => {
+     switch(matchType) {
+        case '联赛': return 'bg-gradient-to-br from-white via-emerald-50/40 to-emerald-100/40 border-emerald-200';
+        case '杯赛': return 'bg-gradient-to-br from-white via-amber-50/40 to-amber-100/40 border-amber-200';
+        case '友谊赛': return 'bg-gradient-to-br from-white via-sky-50/40 to-sky-100/40 border-sky-200';
+        case '队内赛': return 'bg-slate-50 border-slate-200 border-dashed';
+        default: return 'bg-white border-slate-200';
+     }
+  };
+
+  const getWatermarkIcon = (matchType?: string) => {
+    switch(matchType) {
+       case '联赛': return <Trophy className="absolute right-[-10px] bottom-[-15px] w-24 h-24 text-emerald-500/10 -rotate-12 pointer-events-none" />;
+       case '杯赛': return <Crown className="absolute right-[-10px] bottom-[-15px] w-24 h-24 text-amber-500/10 -rotate-12 pointer-events-none" />;
+       case '友谊赛': return <Handshake className="absolute right-[-10px] bottom-[-15px] w-24 h-24 text-sky-500/10 -rotate-12 pointer-events-none" />;
+       case '队内赛': return <Shirt className="absolute right-[-10px] bottom-[-15px] w-24 h-24 text-slate-400/10 -rotate-12 pointer-events-none" />;
+       default: return null;
     }
   };
 
@@ -341,7 +383,7 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
           {filteredStats.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
               {filteredStats.map((team, idx) => (
-                <div key={idx} className="bg-white rounded-xl border border-slate-200 hover:shadow-md transition-all group overflow-hidden flex flex-col">
+                <div key={idx} className="bg-white rounded-xl border border-slate-200 hover:shadow-md transition-all group overflow-hidden flex flex-col relative">
                    <div className="p-5 flex-1">
                       <div className="flex justify-between items-start mb-4">
                          <div className="flex items-center gap-3">
@@ -350,7 +392,9 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
                                {team.logo ? <img src={team.logo} className="w-full h-full object-cover" /> : team.name.charAt(0)}
                             </div>
                             <div>
-                               <h4 className="font-bold text-slate-800 text-lg leading-tight">{team.name}</h4>
+                               <h4 className="font-bold text-slate-800 text-lg leading-tight cursor-pointer hover:text-blue-600" onClick={() => setViewingOpponent(team)}>
+                                  {team.name}
+                                </h4>
                                {team.lastResult && (
                                   <span className={`text-[10px] px-1.5 py-0.5 rounded border ${
                                     team.lastResult === 'Win' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 
@@ -363,13 +407,21 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
                             </div>
                          </div>
                          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            {/* Actions Grouped */}
+                            <button 
+                               onClick={() => setViewingOpponent(team)} 
+                               className="p-1.5 text-slate-400 hover:text-emerald-600 rounded"
+                               title="查看比赛详情"
+                            >
+                               <Eye className="w-3.5 h-3.5" />
+                            </button>
                             <button onClick={() => startEditing(team)} className="p-1.5 text-slate-400 hover:text-blue-500 rounded"><Pencil className="w-3.5 h-3.5" /></button>
                             <button onClick={() => team.id && onRemoveOpponent(team.id)} className="p-1.5 text-slate-400 hover:text-red-500 rounded"><Trash2 className="w-3.5 h-3.5" /></button>
                          </div>
                       </div>
 
                       {/* Mini Stats */}
-                      <div className="grid grid-cols-3 gap-2 mt-2">
+                      <div className="grid grid-cols-3 gap-2 mt-2 cursor-pointer" onClick={() => setViewingOpponent(team)}>
                          <div className="text-center bg-slate-50 rounded p-1.5">
                             <div className="text-[10px] text-slate-400 font-bold uppercase">场次</div>
                             <div className="font-bold text-slate-700">{team.matchesPlayed}</div>
@@ -410,6 +462,144 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
           )}
         </div>
       </div>
+
+      {/* Detail Modal (Match History) */}
+      {viewingOpponent && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 p-4 backdrop-blur-sm">
+           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-slide-up flex flex-col max-h-[85vh]">
+              {/* Modal Header */}
+              <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center shrink-0">
+                 <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-sm overflow-hidden border-2 border-white"
+                          style={{ backgroundColor: 'var(--primary)' }}>
+                        {viewingOpponent.logo ? <img src={viewingOpponent.logo} className="w-full h-full object-cover" /> : viewingOpponent.name.charAt(0)}
+                    </div>
+                    <div>
+                       <h3 className="font-bold text-lg text-slate-800">{viewingOpponent.name}</h3>
+                       <p className="text-xs text-slate-500">交战历史详情</p>
+                    </div>
+                 </div>
+                 <button onClick={() => setViewingOpponent(null)} className="p-2 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition-colors">
+                    <X className="w-5 h-5" />
+                 </button>
+              </div>
+
+              {/* Modal Content - Scrollable */}
+              <div className="overflow-y-auto p-6">
+                 {/* Summary Cards */}
+                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                    <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+                       <div className="text-xs text-slate-400 font-bold uppercase mb-1">交手次数</div>
+                       <div className="text-xl font-black text-slate-800">{viewingOpponent.matchesPlayed}</div>
+                    </div>
+                    <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+                       <div className="text-xs text-slate-400 font-bold uppercase mb-1">胜/平/负</div>
+                       <div className="text-xl font-black text-slate-800 flex items-center justify-center gap-1">
+                          <span className="text-emerald-600">{viewingOpponent.wins}</span>/
+                          <span className="text-amber-500">{viewingOpponent.draws}</span>/
+                          <span className="text-red-500">{viewingOpponent.losses}</span>
+                       </div>
+                    </div>
+                    <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+                       <div className="text-xs text-slate-400 font-bold uppercase mb-1">胜率</div>
+                       <div className="text-xl font-black text-slate-800">
+                          {viewingOpponent.matchesPlayed > 0 ? Math.round((viewingOpponent.wins / viewingOpponent.matchesPlayed) * 100) : 0}%
+                       </div>
+                    </div>
+                    <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+                       <div className="text-xs text-slate-400 font-bold uppercase mb-1">进/失球</div>
+                       <div className="text-xl font-black text-slate-800">
+                          {viewingOpponent.goalsFor} <span className="text-slate-300 mx-0.5">/</span> {viewingOpponent.goalsAgainst}
+                       </div>
+                    </div>
+                 </div>
+
+                 {/* Match List */}
+                 <div>
+                    <h4 className="text-sm font-bold text-slate-700 mb-3 flex items-center">
+                       <History className="w-4 h-4 mr-2" />
+                       比赛记录
+                    </h4>
+                    {viewingMatches.length > 0 ? (
+                       <div className="space-y-4">
+                          {viewingMatches.map(match => (
+                             <div key={match.id} className={`relative overflow-hidden rounded-xl border shadow-sm transition-all hover:shadow-md ${getMatchBackgroundStyle(match.matchType)}`}>
+                                {/* Watermark */}
+                                {getWatermarkIcon(match.matchType)}
+                                
+                                <div className="relative z-10 p-4">
+                                   {/* Header: Meta */}
+                                   <div className="flex items-center justify-between text-xs text-slate-500 mb-3 pb-2 border-b border-black/5">
+                                      <div className="flex items-center gap-2">
+                                         <span className="flex items-center bg-white/60 px-2 py-0.5 rounded backdrop-blur-sm">
+                                            <Calendar className="w-3 h-3 mr-1" /> {match.date}
+                                         </span>
+                                         <span className="flex items-center bg-white/60 px-2 py-0.5 rounded backdrop-blur-sm font-bold">
+                                            {match.matchType}
+                                         </span>
+                                         {match.round && (
+                                            <span className="flex items-center bg-white/60 px-2 py-0.5 rounded backdrop-blur-sm text-slate-600">
+                                               第{match.round}轮
+                                            </span>
+                                         )}
+                                      </div>
+                                      <span className="font-mono text-slate-400">{match.season}</span>
+                                   </div>
+
+                                   {/* Body: Scoreboard */}
+                                   <div className="flex items-center justify-between">
+                                      {/* Our Team */}
+                                      <div className="flex items-center gap-3">
+                                         <span className="text-sm font-bold text-slate-800" style={{ color: 'var(--primary-text)' }}>
+                                            {currentTeamName || '我方'}
+                                         </span>
+                                         <div className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-500 shadow-sm">
+                                            H
+                                         </div>
+                                      </div>
+
+                                      {/* Score */}
+                                      <div className={`mx-2 px-3 py-1 rounded-lg border flex flex-col items-center min-w-[80px] bg-white shadow-sm ${getResultColorClass(match.result)}`}>
+                                          <div className="text-xl font-black font-mono leading-none tracking-tight">
+                                              {match.ourScore} : {match.opponentScore}
+                                          </div>
+                                          <span className="text-[8px] font-bold uppercase mt-0.5 opacity-90 tracking-widest border-t border-white/20 pt-0.5 w-full text-center">
+                                              {getResultLabel(match.result)}
+                                          </span>
+                                      </div>
+
+                                      {/* Opponent */}
+                                      <div className="flex items-center gap-3">
+                                         <div className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-500 shadow-sm overflow-hidden">
+                                            {viewingOpponent.logo ? <img src={viewingOpponent.logo} className="w-full h-full object-cover" /> : viewingOpponent.name.charAt(0)}
+                                         </div>
+                                         <span className="text-sm font-bold text-slate-800 truncate max-w-[80px]">
+                                            {match.opponent}
+                                         </span>
+                                      </div>
+                                   </div>
+
+                                   {/* Footer: Venue */}
+                                   <div className="mt-3 pt-2 border-t border-black/5 flex justify-center">
+                                      <div className="flex items-center text-xs text-slate-500">
+                                         <MapPin className="w-3 h-3 mr-1 text-slate-400" />
+                                         {match.venue || (match.location === 'Home' ? '主场' : match.location === 'Away' ? '客场' : '中立场地')}
+                                      </div>
+                                   </div>
+                                </div>
+                             </div>
+                          ))}
+                       </div>
+                    ) : (
+                       <div className="text-center py-10 text-slate-400 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                          暂无正式比赛记录
+                       </div>
+                    )}
+                 </div>
+              </div>
+           </div>
+        </div>
+      )}
 
       {/* Edit Modal */}
       {editingId && (

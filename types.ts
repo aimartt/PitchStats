@@ -1,8 +1,3 @@
-
-
-
-
-
 export interface DataItem {
   [key: string]: string | number | boolean | null | undefined | any;
 }
@@ -193,6 +188,7 @@ export interface OpponentManagerProps {
   onAddOpponent: (team: OpponentTeam) => void;
   onRemoveOpponent: (id: string) => void;
   onEditOpponent: (id: string, name: string, logo?: string) => void;
+  currentTeamName?: string;
 }
 
 export interface TeamManagerProps {
