@@ -12,20 +12,52 @@ export const defaultDb: FullDatabase = {
       "id": "team-default-001",
       "name": "麒麟兄弟",
       "createdAt": "2025-11-25T07:53:41.970Z"
+    },
+    {
+      "id": "1764057295948",
+      "name": "未知名",
+      "createdAt": "2025-11-25T07:54:55.948Z"
     }
   ],
   "users": [
     {
       "id": "admin-init-001",
       "username": "tangtao",
-      "password": "admin123456",
+      "password": "admin123456,.",
       "name": "唐涛",
       "role": "admin",
+      "teamIds": [
+        "team-default-001",
+        "1764057295948"
+      ],
+      "linkedPlayerNames": {
+        "team-default-001": "唐涛"
+      }
+    },
+    {
+      "id": "1764058771967",
+      "username": "chechi",
+      "password": "chechi",
+      "name": "车驰",
+      "role": "player",
       "teamIds": [
         "team-default-001"
       ],
       "linkedPlayerNames": {
-        "team-default-001": "唐涛"
+        "team-default-001": "车驰"
+      }
+    },
+    {
+      "id": "1764059538761",
+      "username": "yangtao",
+      "password": "yangtao",
+      "name": "杨涛",
+      "role": "player",
+      "teamIds": [
+        "team-default-001"
+      ],
+      "linkedPlayerNames": {
+        "team-default-001": "杨涛"
       }
     }
   ],
@@ -200,7 +232,7 @@ export const defaultDb: FullDatabase = {
       "redCards": [],
       "penaltiesWon": [],
       "ownGoals": [],
-      "notes": "联赛对手弃权，3-0判胜",
+      "notes": "联赛对手弃权，3-0判胜\n外援2个",
       "countForStats": true,
       "teamId": "team-default-001"
     },
@@ -862,6 +894,684 @@ export const defaultDb: FullDatabase = {
       "notes": "",
       "countForStats": true,
       "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1764317721680",
+      "date": "2025-11-11",
+      "season": "华侨城2025年冬",
+      "matchType": "友谊赛",
+      "format": "十一人制",
+      "venue": "保时通体育文化创意园",
+      "opponent": "铁脑壳FC",
+      "ourScore": 5,
+      "opponentScore": 1,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "车驰",
+        "曹晓霖",
+        "陈启晅",
+        "何星谕",
+        "刘豪",
+        "钱星宇",
+        "孙张力",
+        "王薪炎",
+        "杨皓宇",
+        "杨涛",
+        "张善博",
+        "张龑瀚"
+      ],
+      "starters": [
+        "曹晓霖",
+        "车驰",
+        "何星谕",
+        "刘豪",
+        "钱星宇",
+        "孙张力",
+        "王薪炎",
+        "杨皓宇",
+        "杨涛",
+        "张善博",
+        "张龑瀚"
+      ],
+      "goalkeepers": [],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "外援4个",
+      "countForStats": false,
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1764317941469",
+      "date": "2025-11-20",
+      "season": "华侨城2025年冬",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "大田湾体育场",
+      "opponent": "铁脑壳FC",
+      "ourScore": 3,
+      "opponentScore": 2,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "曹晓霖",
+        "车驰",
+        "陈启晅",
+        "李扬",
+        "李单",
+        "刘豪",
+        "钱星宇",
+        "孙张力",
+        "唐涛",
+        "王薪炎",
+        "杨皓宇",
+        "杨涛",
+        "朱峰"
+      ],
+      "starters": [
+        "车驰",
+        "陈启晅",
+        "李单",
+        "李扬",
+        "刘豪",
+        "唐涛",
+        "杨涛",
+        "朱峰"
+      ],
+      "goalkeepers": [],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": false,
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1764318363089",
+      "date": "2025-11-25",
+      "season": "华侨城2025年冬",
+      "round": 1,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "华侨城足球公园",
+      "opponent": "重庆BHC",
+      "ourScore": 1,
+      "opponentScore": 5,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "车驰",
+        "曹晓霖",
+        "陈启晅",
+        "陈春",
+        "郭佳东",
+        "何星谕",
+        "胡勇",
+        "刘豪",
+        "钱星宇",
+        "孙张力",
+        "唐涛",
+        "胥德伟",
+        "杨皓宇",
+        "杨涛",
+        "张龑瀚",
+        "谭光华"
+      ],
+      "starters": [
+        "车驰",
+        "何星谕",
+        "胡勇",
+        "刘豪",
+        "唐涛",
+        "胥德伟",
+        "杨皓宇",
+        "杨涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "钱星宇",
+          "assist": "何星谕",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "对手违规，3-0判胜",
+      "countForStats": true,
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1764381640108",
+      "date": "2025-11-28",
+      "season": "华侨城2025年冬",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "寸滩体育中心足球场",
+      "opponent": "打通矿工",
+      "ourScore": 2,
+      "opponentScore": 3,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "车驰",
+        "何星谕",
+        "胡勇",
+        "钱星宇",
+        "秦坤",
+        "杨涛",
+        "张龑瀚"
+      ],
+      "starters": [
+        "车驰",
+        "秦坤",
+        "杨涛",
+        "张龑瀚"
+      ],
+      "goalkeepers": [],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "外援6个",
+      "countForStats": false,
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1764388413855",
+      "date": "2025-09-05",
+      "season": "2026平顶山健康杯",
+      "round": 1,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "竹园FC",
+      "ourScore": 5,
+      "opponentScore": 1,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "唐涛",
+        "守门员1"
+      ],
+      "starters": [
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛",
+        "守门员1"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 0
+        },
+        {
+          "player": "守门员1",
+          "conceded": 1
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1764388440985",
+      "date": "2025-09-12",
+      "season": "2026平顶山健康杯",
+      "round": 2,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "一直喝",
+      "ourScore": 2,
+      "opponentScore": 4,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "守门员1"
+      ],
+      "starters": [
+        "守门员1"
+      ],
+      "goalkeepers": [
+        "守门员1"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "守门员1",
+          "conceded": 4
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1764388465343",
+      "date": "2025-09-19",
+      "season": "2026平顶山健康杯",
+      "round": 3,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "双耳鱼洞FC",
+      "ourScore": 1,
+      "opponentScore": 1,
+      "location": "Home",
+      "result": "Draw",
+      "squad": [
+        "唐涛"
+      ],
+      "starters": [
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 1
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1764388498959",
+      "date": "2025-09-26",
+      "season": "2026平顶山健康杯",
+      "round": 4,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "双龙七",
+      "ourScore": 5,
+      "opponentScore": 2,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "王檬"
+      ],
+      "starters": [
+        "王檬"
+      ],
+      "goalkeepers": [
+        "王檬"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "王檬",
+          "conceded": 2
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1764388534263",
+      "date": "2025-09-30",
+      "season": "2026平顶山健康杯",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "渝谦FC",
+      "ourScore": 4,
+      "opponentScore": 5,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "唐涛"
+      ],
+      "starters": [
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 5
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1764388567591",
+      "date": "2025-10-10",
+      "season": "2026平顶山健康杯",
+      "round": 5,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "中源协和生物细胞",
+      "ourScore": 2,
+      "opponentScore": 7,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "唐涛"
+      ],
+      "starters": [
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 7
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1764388590497",
+      "date": "2025-10-17",
+      "season": "2026平顶山健康杯",
+      "round": 6,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "汽配联",
+      "ourScore": 4,
+      "opponentScore": 3,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "唐涛"
+      ],
+      "starters": [
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 3
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1764388610784",
+      "date": "2025-10-24",
+      "season": "2026平顶山健康杯",
+      "round": 7,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "老头乐",
+      "ourScore": 2,
+      "opponentScore": 6,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "唐涛"
+      ],
+      "starters": [
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 6
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1764388637504",
+      "date": "2025-10-31",
+      "season": "2026平顶山健康杯",
+      "round": 8,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "悦想荟",
+      "ourScore": 5,
+      "opponentScore": 4,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "张衡"
+      ],
+      "starters": [
+        "张衡"
+      ],
+      "goalkeepers": [
+        "张衡"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "张衡",
+          "conceded": 4
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1764388659119",
+      "date": "2025-11-07",
+      "season": "2026平顶山健康杯",
+      "round": 9,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "正南齐北",
+      "ourScore": 3,
+      "opponentScore": 5,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "唐涛"
+      ],
+      "starters": [
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 5
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1764388684896",
+      "date": "2025-11-14",
+      "season": "2026平顶山健康杯",
+      "round": 10,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "老司机FC",
+      "ourScore": 1,
+      "opponentScore": 1,
+      "location": "Home",
+      "result": "Draw",
+      "squad": [
+        "唐涛"
+      ],
+      "starters": [
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 1
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1764388706656",
+      "date": "2025-11-21",
+      "season": "2026平顶山健康杯",
+      "round": 11,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "聚友联",
+      "ourScore": 3,
+      "opponentScore": 5,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "唐涛"
+      ],
+      "starters": [
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 5
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1764388726935",
+      "date": "2025-11-28",
+      "season": "2026平顶山健康杯",
+      "round": 12,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "竹园FC",
+      "ourScore": 7,
+      "opponentScore": 2,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "唐涛"
+      ],
+      "starters": [
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 2
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "teamId": "1764057295948"
     }
   ],
   "opponents": [
@@ -959,40 +1669,128 @@ export const defaultDb: FullDatabase = {
       "id": "migufab1",
       "name": "猫头鹰",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "miil4s7b",
+      "name": "打通矿工",
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "miilfxn4",
+      "name": "蔡碚都",
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "mijo2slh",
+      "name": "竹园FC",
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "mijo31np",
+      "name": "一直喝",
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "mijo44xh",
+      "name": "双耳鱼洞FC",
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "mijo4b51",
+      "name": "双龙七",
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "mijo4g2d",
+      "name": "渝谦FC",
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "mijo4k71",
+      "name": "中源协和生物细胞",
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "mijo4ntx",
+      "name": "汽配联",
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "mijo4rbh",
+      "name": "老头乐",
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "mijo4v8l",
+      "name": "悦想荟",
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "mijo4yn1",
+      "name": "正南齐北",
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "mijo52fw",
+      "name": "老司机FC",
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "mijo55wl",
+      "name": "聚友联",
+      "teamId": "1764057295948"
     }
   ],
   "seasons": [
     {
       "id": "legacy-season-mieaz0frgypbajwh42m",
       "name": "华侨城2025年冬",
-      "teamId": "team-default-001"
+      "teamId": "team-default-001",
+      "sortOrder": 1
     },
     {
       "id": "legacy-season-mieaz0frf7pd4zt5vv",
       "name": "华侨城2025年夏",
-      "teamId": "team-default-001"
+      "teamId": "team-default-001",
+      "sortOrder": 2
+    },
+    {
+      "id": "sea-1764382546941",
+      "name": "2026平顶山健康杯",
+      "teamId": "1764057295948",
+      "sortOrder": 1
     }
   ],
   "venues": [
     {
       "id": "legacy-venue-mieaz0frjxp6jg3wc7e",
       "name": "华侨城足球公园",
-      "teamId": "team-default-001"
+      "teamId": "team-default-001",
+      "sortOrder": 1
     },
     {
       "id": "legacy-venue-mieaz0fro2ms4qjtena",
       "name": "保时通体育文化创意园",
-      "teamId": "team-default-001"
+      "teamId": "team-default-001",
+      "sortOrder": 2
     },
     {
       "id": "legacy-venue-mieaz0fro8xmp8d889",
       "name": "大田湾体育场",
-      "teamId": "team-default-001"
+      "teamId": "team-default-001",
+      "sortOrder": 3
     },
     {
       "id": "legacy-venue-mieaz0fr6xykscpl33g",
       "name": "寸滩体育中心足球场",
-      "teamId": "team-default-001"
+      "teamId": "team-default-001",
+      "sortOrder": 4
+    },
+    {
+      "id": "ven-1764382407997",
+      "name": "平顶山足球乐园",
+      "teamId": "1764057295948",
+      "sortOrder": 1
     }
   ],
   "players": [
@@ -1146,7 +1944,37 @@ export const defaultDb: FullDatabase = {
       "name": "外援1",
       "number": "",
       "teamId": "team-default-001"
+    },
+    {
+      "name": "朱峰",
+      "number": "",
+      "teamId": "team-default-001"
+    },
+    {
+      "name": "谭光华",
+      "number": "9",
+      "teamId": "team-default-001"
+    },
+    {
+      "name": "唐涛",
+      "number": "1",
+      "teamId": "1764057295948"
+    },
+    {
+      "name": "守门员1",
+      "number": "",
+      "teamId": "1764057295948"
+    },
+    {
+      "name": "王檬",
+      "number": "18",
+      "teamId": "1764057295948"
+    },
+    {
+      "name": "张衡",
+      "number": "71",
+      "teamId": "1764057295948"
     }
   ],
-  "theme": "blue"
+  "theme": "rose"
 };
