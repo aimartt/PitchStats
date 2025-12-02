@@ -4,40 +4,52 @@ import { defaultDb } from '../data/db';
 
 export const storageService = {
   /**
-   * Initialize LocalStorage with default data from db.ts if empty
+   * Initialize LocalStorage with default data from db.ts if empty or missing critical keys
    */
   initialize: () => {
-    // Check key critical data points. If users are missing, we assume init is needed.
-    if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
-      console.log('Initializing Database from db.ts...');
+    // Helper to check if a key exists
+    const hasKey = (key: string) => localStorage.getItem(key) !== null;
+
+    // Load critical data points if users are missing, we assume init is needed.
+    // Also, we ensure defaultDb is loaded if localStorage is empty to support the request "Get all data from db.json on startup"
+    // However, we must respect existing user data if it exists. 
+    // The requirement says "Start... get all data from db.json". 
+    // We will initialize missing keys from defaultDb.
+    
+    if (!hasKey(STORAGE_KEYS.USERS)) {
+      console.log('Initializing Users from db.ts...');
       localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(defaultDb.users));
     }
 
-    if (!localStorage.getItem(STORAGE_KEYS.TEAMS)) {
+    if (!hasKey(STORAGE_KEYS.TEAMS)) {
       localStorage.setItem(STORAGE_KEYS.TEAMS, JSON.stringify(defaultDb.teams));
     }
     
-    if (!localStorage.getItem(STORAGE_KEYS.DATA)) {
+    if (!hasKey(STORAGE_KEYS.DATA)) {
        localStorage.setItem(STORAGE_KEYS.DATA, JSON.stringify(defaultDb.matches));
     }
 
-    if (!localStorage.getItem(STORAGE_KEYS.OPPONENTS)) {
+    if (!hasKey(STORAGE_KEYS.OPPONENTS)) {
        localStorage.setItem(STORAGE_KEYS.OPPONENTS, JSON.stringify(defaultDb.opponents));
     }
 
-    if (!localStorage.getItem(STORAGE_KEYS.SEASONS)) {
+    if (!hasKey(STORAGE_KEYS.SEASONS)) {
        localStorage.setItem(STORAGE_KEYS.SEASONS, JSON.stringify(defaultDb.seasons));
     }
     
-    if (!localStorage.getItem(STORAGE_KEYS.VENUES)) {
+    if (!hasKey(STORAGE_KEYS.VENUES)) {
        localStorage.setItem(STORAGE_KEYS.VENUES, JSON.stringify(defaultDb.venues));
     }
 
-    if (!localStorage.getItem(STORAGE_KEYS.PLAYERS)) {
+    if (!hasKey(STORAGE_KEYS.PLAYERS)) {
        localStorage.setItem(STORAGE_KEYS.PLAYERS, JSON.stringify(defaultDb.players));
     }
     
-    // Theme is optional, defaults to emerald if missing
+    // Theme initialization (Requested: load from db.json on startup if needed)
+    if (!hasKey(STORAGE_KEYS.THEME)) {
+       const theme = defaultDb.theme || 'emerald';
+       localStorage.setItem(STORAGE_KEYS.THEME, theme);
+    }
   },
 
   /**

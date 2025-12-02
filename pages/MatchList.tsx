@@ -1,8 +1,7 @@
 
-
 import React, { useState } from 'react';
 import { MatchRecord, AppRoute, UserRole } from '../types';
-import { Plus, Calendar, MapPin, Search, Filter, Pencil, Trophy, Flag, Handshake, Shirt, ChevronRight, Crown } from 'lucide-react';
+import { Plus, Calendar, MapPin, Search, Filter, Pencil, Trophy, Flag, Handshake, Shirt, ChevronRight, Crown, Users } from 'lucide-react';
 
 interface MatchListProps {
   matches: MatchRecord[];
@@ -158,6 +157,13 @@ const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserR
                            <Flag className="w-3 h-3 mr-1.5 opacity-80" />
                            {match.matchType || '友谊赛'}
                         </span>
+
+                        {match.format && (
+                           <span className="flex items-center text-slate-600 bg-white/60 px-2 py-0.5 rounded-md backdrop-blur-sm">
+                              <Users className="w-3 h-3 mr-1.5 opacity-80" />
+                              {match.format}
+                           </span>
+                        )}
                      </div>
                      <div className="font-medium text-slate-400 bg-white/60 px-2 py-0.5 rounded-md">
                         {new Date(match.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}

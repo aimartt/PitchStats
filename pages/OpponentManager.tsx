@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useRef } from 'react';
 import { Users, Plus, Trash2, Search, Shield, Pencil, X, Check, Swords, TrendingUp, History, Camera, Eye, Calendar, MapPin, Trophy, Crown, Handshake, Shirt } from 'lucide-react';
 import { OpponentManagerProps, OpponentTeam, MatchRecord } from '../types';
@@ -15,7 +16,7 @@ interface OpponentStats {
   lastResult?: 'Win' | 'Draw' | 'Loss';
 }
 
-const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, onAddOpponent, onRemoveOpponent, onEditOpponent, currentTeamName }) => {
+const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, onAddOpponent, onRemoveOpponent, onEditOpponent, currentTeamName, currentUserRole }) => {
   const [newTeamName, setNewTeamName] = useState('');
   const [newTeamLogo, setNewTeamLogo] = useState<string | undefined>(undefined);
   const [searchTerm, setSearchTerm] = useState('');
@@ -32,6 +33,8 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const editFileInputRef = useRef<HTMLInputElement>(null);
+
+  const isReadOnly = currentUserRole === 'player';
 
   // Calculate Stats
   const opponentStats = useMemo(() => {
@@ -268,12 +271,14 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
               style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
             />
           </div>
-          <button 
-             onClick={() => document.getElementById('add-team-input')?.focus()}
-             className="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors hidden md:block"
-          >
-             添加球队
-          </button>
+          {!isReadOnly && (
+            <button 
+               onClick={() => document.getElementById('add-team-input')?.focus()}
+               className="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors hidden md:block"
+            >
+               添加球队
+            </button>
+          )}
         </div>
       </div>
 
@@ -315,73 +320,75 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         
         {/* Left: Add Form */}
-        <div className="lg:col-span-1">
-          <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 sticky top-4">
-            <h3 className="font-bold text-slate-800 mb-4 flex items-center">
-               <Plus className="w-4 h-4 mr-2" />
-               添加对手球队
-            </h3>
-            <div className="space-y-4">
-              <div className="flex justify-center">
-                 <div 
-                   onClick={() => fileInputRef.current?.click()}
-                   className="w-16 h-16 rounded-full bg-white border-2 border-dashed border-slate-300 flex items-center justify-center cursor-pointer hover:border-blue-500 overflow-hidden relative group"
-                 >
-                    {newTeamLogo ? (
-                      <img src={newTeamLogo} className="w-full h-full object-cover" />
-                    ) : (
-                      <Camera className="w-5 h-5 text-slate-400" />
-                    )}
-                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center">
-                       <Plus className="w-5 h-5 text-white opacity-0 group-hover:opacity-100" />
-                    </div>
-                 </div>
-                 <input 
-                   type="file" 
-                   ref={fileInputRef} 
-                   className="hidden" 
-                   accept="image/*"
-                   onChange={(e) => handleImageUpload(e, setNewTeamLogo)}
-                 />
-              </div>
+        {!isReadOnly && (
+          <div className="lg:col-span-1">
+            <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 sticky top-4">
+              <h3 className="font-bold text-slate-800 mb-4 flex items-center">
+                 <Plus className="w-4 h-4 mr-2" />
+                 添加对手球队
+              </h3>
+              <div className="space-y-4">
+                <div className="flex justify-center">
+                   <div 
+                     onClick={() => fileInputRef.current?.click()}
+                     className="w-16 h-16 rounded-full bg-white border-2 border-dashed border-slate-300 flex items-center justify-center cursor-pointer hover:border-blue-500 overflow-hidden relative group"
+                   >
+                      {newTeamLogo ? (
+                        <img src={newTeamLogo} className="w-full h-full object-cover" />
+                      ) : (
+                        <Camera className="w-5 h-5 text-slate-400" />
+                      )}
+                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center">
+                         <Plus className="w-5 h-5 text-white opacity-0 group-hover:opacity-100" />
+                      </div>
+                   </div>
+                   <input 
+                     type="file" 
+                     ref={fileInputRef} 
+                     className="hidden" 
+                     accept="image/*"
+                     onChange={(e) => handleImageUpload(e, setNewTeamLogo)}
+                   />
+                </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-500 mb-1 uppercase">球队名称</label>
-                <input 
-                  id="add-team-input"
-                  type="text" 
-                  value={newTeamName}
-                  onChange={(e) => setNewTeamName(e.target.value)}
-                  placeholder="例如：猛虎 FC"
-                  className="w-full p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 outline-none text-sm"
-                  style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
-                  onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
-                />
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 mb-1 uppercase">球队名称</label>
+                  <input 
+                    id="add-team-input"
+                    type="text" 
+                    value={newTeamName}
+                    onChange={(e) => setNewTeamName(e.target.value)}
+                    placeholder="例如：猛虎 FC"
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 outline-none text-sm"
+                    style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
+                    onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
+                  />
+                </div>
+                {error && (
+                  <p className="text-xs text-red-500 flex items-center"><X className="w-3 h-3 mr-1"/> {error}</p>
+                )}
+                <button 
+                  onClick={handleAdd}
+                  className="w-full text-white font-bold py-2.5 rounded-lg transition-colors flex items-center justify-center hover:brightness-110 text-sm shadow-sm"
+                  style={{ backgroundColor: 'var(--primary)' }}
+                >
+                  确认添加
+                </button>
               </div>
-              {error && (
-                <p className="text-xs text-red-500 flex items-center"><X className="w-3 h-3 mr-1"/> {error}</p>
-              )}
-              <button 
-                onClick={handleAdd}
-                className="w-full text-white font-bold py-2.5 rounded-lg transition-colors flex items-center justify-center hover:brightness-110 text-sm shadow-sm"
-                style={{ backgroundColor: 'var(--primary)' }}
-              >
-                确认添加
-              </button>
-            </div>
-            
-            <div className="mt-6 pt-6 border-t border-slate-200">
-               <p className="text-xs text-slate-400 leading-relaxed">
-                  提示：添加球队后，在录入比赛时即可通过下拉菜单快速选择。请尽量保持名称统一，避免重复创建。
-               </p>
+              
+              <div className="mt-6 pt-6 border-t border-slate-200">
+                 <p className="text-xs text-slate-400 leading-relaxed">
+                    提示：添加球队后，在录入比赛时即可通过下拉菜单快速选择。请尽量保持名称统一，避免重复创建。
+                 </p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Right: Team Grid */}
-        <div className="lg:col-span-3">
+        <div className={isReadOnly ? "lg:col-span-4" : "lg:col-span-3"}>
           {filteredStats.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+            <div className={`grid grid-cols-1 sm:grid-cols-2 ${isReadOnly ? "xl:grid-cols-4" : "xl:grid-cols-3"} gap-4`}>
               {filteredStats.map((team, idx) => (
                 <div key={idx} className="bg-white rounded-xl border border-slate-200 hover:shadow-md transition-all group overflow-hidden flex flex-col relative">
                    <div className="p-5 flex-1">
@@ -415,8 +422,12 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
                             >
                                <Eye className="w-3.5 h-3.5" />
                             </button>
-                            <button onClick={() => startEditing(team)} className="p-1.5 text-slate-400 hover:text-blue-500 rounded"><Pencil className="w-3.5 h-3.5" /></button>
-                            <button onClick={() => team.id && onRemoveOpponent(team.id)} className="p-1.5 text-slate-400 hover:text-red-500 rounded"><Trash2 className="w-3.5 h-3.5" /></button>
+                            {!isReadOnly && (
+                               <>
+                                 <button onClick={() => startEditing(team)} className="p-1.5 text-slate-400 hover:text-blue-500 rounded"><Pencil className="w-3.5 h-3.5" /></button>
+                                 <button onClick={() => team.id && onRemoveOpponent(team.id)} className="p-1.5 text-slate-400 hover:text-red-500 rounded"><Trash2 className="w-3.5 h-3.5" /></button>
+                               </>
+                            )}
                          </div>
                       </div>
 
@@ -465,8 +476,14 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
 
       {/* Detail Modal (Match History) */}
       {viewingOpponent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 p-4 backdrop-blur-sm">
-           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-slide-up flex flex-col max-h-[85vh]">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 p-4 backdrop-blur-sm"
+          onClick={() => setViewingOpponent(null)}
+        >
+           <div 
+             className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-slide-up flex flex-col max-h-[85vh]"
+             onClick={(e) => e.stopPropagation()}
+           >
               {/* Modal Header */}
               <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center shrink-0">
                  <div className="flex items-center gap-3">
@@ -542,6 +559,11 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
                                                第{match.round}轮
                                             </span>
                                          )}
+                                         {match.format && (
+                                            <span className="flex items-center bg-white/60 px-2 py-0.5 rounded backdrop-blur-sm text-slate-500">
+                                               {match.format}
+                                            </span>
+                                         )}
                                       </div>
                                       <span className="font-mono text-slate-400">{match.season}</span>
                                    </div>
@@ -602,7 +624,7 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
       )}
 
       {/* Edit Modal */}
-      {editingId && (
+      {editingId && !isReadOnly && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-sm overflow-hidden animate-fade-in">
             <div className="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">

@@ -1,10 +1,5 @@
 
-
-
-
 import { FullDatabase } from '../types';
-
-const DEFAULT_TEAM_ID = 'team-default-001';
 
 export const defaultDb: FullDatabase = {
   "teams": [
@@ -59,6 +54,17 @@ export const defaultDb: FullDatabase = {
       "linkedPlayerNames": {
         "team-default-001": "杨涛"
       }
+    },
+    {
+      "id": "1764646319431",
+      "username": "liuke",
+      "password": "liuke",
+      "name": "刘柯",
+      "role": "player",
+      "teamIds": [
+        "1764057295948"
+      ],
+      "linkedPlayerNames": {}
     }
   ],
   "matches": [
@@ -1797,26 +1803,31 @@ export const defaultDb: FullDatabase = {
     {
       "name": "曹晓霖",
       "number": "36",
+      "birthday": "1989-06-13",
       "teamId": "team-default-001"
     },
     {
       "name": "柴陆俊夫",
       "number": "10",
+      "birthday": "1992-01-06",
       "teamId": "team-default-001"
     },
     {
       "name": "车驰",
       "number": "6",
+      "birthday": "1981-06-25",
       "teamId": "team-default-001"
     },
     {
       "name": "陈春",
       "number": "24",
+      "birthday": "1987-02-04",
       "teamId": "team-default-001"
     },
     {
       "name": "陈启晅",
       "number": "23",
+      "birthday": "2002-09-03",
       "teamId": "team-default-001"
     },
     {
@@ -1827,21 +1838,25 @@ export const defaultDb: FullDatabase = {
     {
       "name": "郭佳东",
       "number": "15",
+      "birthday": "1993-12-26",
       "teamId": "team-default-001"
     },
     {
       "name": "何星谕",
       "number": "11",
+      "birthday": "2010-06-12",
       "teamId": "team-default-001"
     },
     {
       "name": "胡勇",
       "number": "98",
+      "birthday": "1987-03-08",
       "teamId": "team-default-001"
     },
     {
       "name": "康鑫",
       "number": "66",
+      "birthday": "1985-12-05",
       "teamId": "team-default-001"
     },
     {
@@ -1852,46 +1867,55 @@ export const defaultDb: FullDatabase = {
     {
       "name": "李单",
       "number": "16",
+      "birthday": "1986-10-16",
       "teamId": "team-default-001"
     },
     {
       "name": "李彦达",
       "number": "",
+      "birthday": "1981-01-27",
       "teamId": "team-default-001"
     },
     {
       "name": "李扬",
       "number": "3",
+      "birthday": "1999-12-19",
       "teamId": "team-default-001"
     },
     {
       "name": "林浩",
       "number": "22",
+      "birthday": "1995-02-20",
       "teamId": "team-default-001"
     },
     {
       "name": "刘豪",
       "number": "5",
+      "birthday": "1990-05-29",
       "teamId": "team-default-001"
     },
     {
       "name": "钱星宇",
       "number": "8",
+      "birthday": "1996-05-01",
       "teamId": "team-default-001"
     },
     {
       "name": "秦坤",
       "number": "17",
+      "birthday": "1989-08-17",
       "teamId": "team-default-001"
     },
     {
       "name": "孙张力",
       "number": "1",
+      "birthday": "2003-05-20",
       "teamId": "team-default-001"
     },
     {
       "name": "唐涛",
       "number": "",
+      "birthday": "1984-01-10",
       "teamId": "team-default-001"
     },
     {
@@ -1902,16 +1926,19 @@ export const defaultDb: FullDatabase = {
     {
       "name": "王薪炎",
       "number": "21",
+      "birthday": "1997-03-29",
       "teamId": "team-default-001"
     },
     {
       "name": "文云波",
       "number": "18",
+      "birthday": "1985-09-01",
       "teamId": "team-default-001"
     },
     {
       "name": "胥德伟",
       "number": "4",
+      "birthday": "1984-12-25",
       "teamId": "team-default-001"
     },
     {
@@ -1922,22 +1949,26 @@ export const defaultDb: FullDatabase = {
     {
       "name": "杨皓宇",
       "number": "14",
+      "birthday": "1991-10-24",
       "teamId": "team-default-001"
     },
     {
       "name": "杨涛",
       "number": "12",
       "avatar": "data:image/jpeg;base64,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",
+      "birthday": "2000-09-29",
       "teamId": "team-default-001"
     },
     {
       "name": "张善博",
       "number": "41",
+      "birthday": "1997-07-17",
       "teamId": "team-default-001"
     },
     {
       "name": "张龑瀚",
       "number": "28",
+      "birthday": "1997-05-19",
       "teamId": "team-default-001"
     },
     {
@@ -1948,16 +1979,19 @@ export const defaultDb: FullDatabase = {
     {
       "name": "朱峰",
       "number": "",
+      "birthday": "1971-01-10",
       "teamId": "team-default-001"
     },
     {
       "name": "谭光华",
       "number": "9",
+      "birthday": "1987-10-17",
       "teamId": "team-default-001"
     },
     {
       "name": "唐涛",
       "number": "1",
+      "birthday": "1984-01-10",
       "teamId": "1764057295948"
     },
     {
@@ -1976,5 +2010,5 @@ export const defaultDb: FullDatabase = {
       "teamId": "1764057295948"
     }
   ],
-  "theme": "rose"
+  "theme": "blue"
 };

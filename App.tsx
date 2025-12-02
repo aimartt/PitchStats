@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { HashRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
@@ -490,7 +491,7 @@ const AppContent: React.FC = () => {
     }
     
     // Admin & Captain only
-    if ([AppRoute.SEASONS, AppRoute.VENUES, AppRoute.OPPONENTS].includes(route)) {
+    if ([AppRoute.SEASONS, AppRoute.VENUES].includes(route)) {
       if (role === 'player') {
         alert("仅队长和管理员可访问");
         return;
@@ -618,6 +619,7 @@ const AppContent: React.FC = () => {
                       onRemoveOpponent={handleRemoveOpponent}
                       onEditOpponent={handleEditOpponent}
                       currentTeamName={currentTeam?.name} 
+                      currentUserRole={authState.user?.role}
                     />
                   } />
                   <Route path={AppRoute.SEASONS} element={

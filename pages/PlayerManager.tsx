@@ -1,17 +1,14 @@
 
-
-
-
-
-
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Shirt, Plus, Trash2, Search, Pencil, X, Check, User, Trophy, Zap, Camera, ArrowUpDown, ArrowUp, ArrowDown, Shield, Filter, HeartCrack } from 'lucide-react';
+import { Shirt, Plus, Trash2, Search, Pencil, X, Check, User, Trophy, Zap, Camera, ArrowUpDown, ArrowUp, ArrowDown, Shield, Filter, HeartCrack, Cake } from 'lucide-react';
 import { PlayerManagerProps, PlayerProfile } from '../types';
 
 interface PlayerStats {
   name: string;
   number?: string;
   avatar?: string;
+  birthday?: string;
+  age?: number;
   goals: number;
   penaltiesScored: number; // New: Goals that are penalties
   ownGoals: number; // New: Own Goals
@@ -46,9 +43,23 @@ const formatStat = (val: number, showZero = false) => {
    return val.toFixed(2);
 };
 
+// Helper to calculate age from birthday
+const calculateAge = (birthday?: string): number | undefined => {
+  if (!birthday) return undefined;
+  const birthDate = new Date(birthday);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+};
+
 const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons, onAddPlayer, onRemovePlayer, onEditPlayer, currentUserRole }) => {
   const [newPlayerName, setNewPlayerName] = useState('');
   const [newPlayerNumber, setNewPlayerNumber] = useState('');
+  const [newPlayerBirthday, setNewPlayerBirthday] = useState('');
   
   const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -57,6 +68,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
   const [editingPlayer, setEditingPlayer] = useState<string | null>(null); // Stores name of player being edited
   const [editName, setEditName] = useState('');
   const [editNumber, setEditNumber] = useState('');
+  const [editBirthday, setEditBirthday] = useState('');
   const [editAvatar, setEditAvatar] = useState<string | undefined>(undefined);
   const [editError, setEditError] = useState<string | null>(null);
 
@@ -98,6 +110,8 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
         name: p.name, 
         number: p.number,
         avatar: p.avatar,
+        birthday: p.birthday,
+        age: calculateAge(p.birthday),
         goals: 0,
         penaltiesScored: 0,
         ownGoals: 0,
@@ -299,6 +313,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
         // If clicking a new key, string defaults to asc, numbers to desc. 
         // But for simplicity, let's default numbers (stats) to desc. Name to asc.
         if (key === 'name') direction = 'asc';
+        if (key === 'age') direction = 'asc';
     }
     
     setSortConfig({ key, direction });
@@ -354,9 +369,10 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
       setError('该球员已存在');
       return;
     }
-    onAddPlayer({ name: trimmedName, number: newPlayerNumber.trim() });
+    onAddPlayer({ name: trimmedName, number: newPlayerNumber.trim(), birthday: newPlayerBirthday });
     setNewPlayerName('');
     setNewPlayerNumber('');
+    setNewPlayerBirthday('');
     setError(null);
   };
 
@@ -365,6 +381,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
     setEditingPlayer(player.name);
     setEditName(player.name);
     setEditNumber(player.number || '');
+    setEditBirthday(player.birthday || '');
     setEditAvatar(player.avatar); 
     setEditError(null);
   };
@@ -373,6 +390,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
     setEditingPlayer(null);
     setEditName('');
     setEditNumber('');
+    setEditBirthday('');
     setEditAvatar(undefined);
     setEditError(null);
   };
@@ -392,17 +410,18 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
       onEditPlayer(editingPlayer, { 
         name: trimmedName, 
         number: editNumber.trim(),
-        avatar: editAvatar 
+        avatar: editAvatar,
+        birthday: editBirthday
       });
       cancelEditing();
     }
   };
 
-  // Helper for Rate Bar
+  // Helper for RateBar
   const RateBar = ({ val, total, colorClass = "bg-slate-800" }: { val: number, total: number, colorClass?: string }) => {
      const rate = total > 0 ? Math.round((val / total) * 100) : 0;
      return (
-        <div className="flex flex-col gap-1 w-24">
+        <div className="flex flex-col gap-1 w-20">
            <div className="flex justify-between text-xs">
               <span className="font-bold text-slate-700">{val}</span>
               <span className="text-slate-400">{rate}%</span>
@@ -546,46 +565,49 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
       {/* Main Table View */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div className="overflow-x-auto">
-           <table className="w-full text-sm text-left whitespace-nowrap">
+           <table className="w-full text-sm text-left">
               <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
                  <tr>
-                    <th className="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors group sticky left-0 bg-slate-50 z-10" onClick={() => handleSort('name')}>
+                    <th className="px-4 py-3 cursor-pointer hover:bg-slate-100 transition-colors group sticky left-0 bg-slate-50 z-10 whitespace-nowrap" onClick={() => handleSort('name')}>
                        <div className="flex items-center">球员 <SortIcon colKey="name" /></div>
                     </th>
-                    <th className="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors" onClick={() => handleSort('matchesPlayed')}>
-                       <div className="flex items-center">总参与 (率) <SortIcon colKey="matchesPlayed" /></div>
+                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center" onClick={() => handleSort('age')}>
+                       <div className="flex items-center justify-center">年龄 <SortIcon colKey="age" /></div>
                     </th>
-                    <th className="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors" onClick={() => handleSort('leagueMatchesPlayed')}>
-                       <div className="flex items-center">正式比赛 (率) <SortIcon colKey="leagueMatchesPlayed" /></div>
+                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center" onClick={() => handleSort('matchesPlayed')}>
+                       <div className="flex items-center justify-center">总场次 <SortIcon colKey="matchesPlayed" /></div>
                     </th>
-                    <th className="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors" onClick={() => handleSort('starts')}>
-                       <div className="flex items-center">首发 (率) <SortIcon colKey="starts" /></div>
+                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center" onClick={() => handleSort('leagueMatchesPlayed')}>
+                       <div className="flex items-center justify-center">正式赛 <SortIcon colKey="leagueMatchesPlayed" /></div>
                     </th>
-                    <th className="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors text-center bg-slate-100/50" onClick={() => handleSort('goals')}>
-                       <div className="flex items-center justify-center">进球 (点球) <SortIcon colKey="goals" /></div>
+                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center" onClick={() => handleSort('starts')}>
+                       <div className="flex items-center justify-center">首发 <SortIcon colKey="starts" /></div>
                     </th>
-                    <th className="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors text-center bg-slate-100/50" onClick={() => handleSort('assists')}>
+                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center bg-slate-100/50" onClick={() => handleSort('goals')}>
+                       <div className="flex items-center justify-center">进球 <SortIcon colKey="goals" /></div>
+                    </th>
+                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center bg-slate-100/50" onClick={() => handleSort('assists')}>
                        <div className="flex items-center justify-center">助攻 <SortIcon colKey="assists" /></div>
                     </th>
-                    <th className="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors text-center" onClick={() => handleSort('ownGoals')}>
+                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center" onClick={() => handleSort('ownGoals')}>
                        <div className="flex items-center justify-center">乌龙 <SortIcon colKey="ownGoals" /></div>
                     </th>
-                    <th className="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors text-center" onClick={() => handleSort('disciplineScore')}>
+                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center" onClick={() => handleSort('disciplineScore')}>
                        <div className="flex items-center justify-center">红黄牌 <SortIcon colKey="disciplineScore" /></div>
                     </th>
-                    <th className="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors text-center" onClick={() => handleSort('conceded')}>
+                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center" onClick={() => handleSort('conceded')}>
                        <div className="flex items-center justify-center gap-1 text-slate-400 group-hover:text-slate-600" title="仅统计作为守门员时的失球">
                            <Shield className="w-3 h-3" />
-                           失球 (场均) <SortIcon colKey="conceded" />
+                           失球 <SortIcon colKey="conceded" />
                        </div>
                     </th>
-                    <th className="px-6 py-4 text-center">操作</th>
+                    <th className="px-4 py-3 text-center whitespace-nowrap">操作</th>
                  </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                  {filteredStats.map((player) => (
                     <tr key={player.name} className="hover:bg-slate-50 transition-colors group">
-                       <td className="px-6 py-3 sticky left-0 bg-white group-hover:bg-slate-50 z-10">
+                       <td className="px-4 py-3 sticky left-0 bg-white group-hover:bg-slate-50 z-10 whitespace-nowrap">
                           <div className="flex items-center gap-3">
                              <div className="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 font-bold text-slate-400">
                                 {player.avatar ? <img src={player.avatar} className="w-full h-full object-cover"/> : player.number || '#'}
@@ -596,13 +618,18 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                              </div>
                           </div>
                        </td>
-                       <td className="px-6 py-3">
+                       <td className="px-2 py-3 text-slate-600 text-center">
+                          {player.age ? player.age : '-'}
+                       </td>
+                       <td className="px-2 py-3 flex justify-center">
                           <RateBar val={player.matchesPlayed} total={totalMatches} colorClass="bg-emerald-500" />
                        </td>
-                       <td className="px-6 py-3">
-                          <RateBar val={player.leagueMatchesPlayed} total={totalLeagueMatches} colorClass="bg-blue-500" />
+                       <td className="px-2 py-3">
+                          <div className="flex justify-center">
+                              <RateBar val={player.leagueMatchesPlayed} total={totalLeagueMatches} colorClass="bg-blue-500" />
+                          </div>
                        </td>
-                       <td className="px-6 py-3">
+                       <td className="px-2 py-3 text-center">
                           {player.starts > 0 ? (
                               <div className="flex flex-col">
                                   <span className="font-bold text-slate-700">{player.starts}</span>
@@ -614,7 +641,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                               <span className="text-slate-300">-</span>
                           )}
                        </td>
-                       <td className="px-6 py-3 text-center bg-slate-50/30">
+                       <td className="px-2 py-3 text-center bg-slate-50/30">
                           <div className="flex flex-col">
                               <span className="font-bold text-slate-800">
                                  {player.goals} 
@@ -623,21 +650,21 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                               <span className="text-[10px] text-slate-400">{formatStat(player.goalsPerGame)} / 场</span>
                           </div>
                        </td>
-                       <td className="px-6 py-3 text-center bg-slate-50/30">
+                       <td className="px-2 py-3 text-center bg-slate-50/30">
                            <div className="flex flex-col">
                               <span className="font-bold text-slate-800">{player.assists}</span>
                               <span className="text-[10px] text-slate-400">{formatStat(player.assistsPerGame)} / 场</span>
                           </div>
                        </td>
-                       <td className="px-6 py-3 text-center">
+                       <td className="px-2 py-3 text-center">
                            {player.ownGoals > 0 ? (
                                <span className="font-bold text-slate-700">{player.ownGoals}</span>
                            ) : (
                                <span className="text-slate-300">-</span>
                            )}
                        </td>
-                       <td className="px-6 py-3 text-center">
-                           <div className="flex items-center justify-center gap-2">
+                       <td className="px-2 py-3 text-center">
+                           <div className="flex items-center justify-center gap-1">
                                {player.yellowCards > 0 && (
                                    <div className="flex items-center bg-yellow-100 text-yellow-800 px-1.5 py-0.5 rounded border border-yellow-200 text-xs font-bold" title="黄牌">
                                        <div className="w-2 h-3 bg-yellow-400 mr-1 rounded-[1px] border border-black/10"></div>
@@ -655,7 +682,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                                )}
                            </div>
                        </td>
-                       <td className="px-6 py-3 text-center">
+                       <td className="px-2 py-3 text-center">
                           {player.matchesAsGK > 0 ? (
                              <div className="flex flex-col">
                                 <span className="font-bold text-slate-600">{player.conceded}</span>
@@ -665,11 +692,11 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                              <span className="text-slate-200">-</span>
                           )}
                        </td>
-                       <td className="px-6 py-3 text-center">
+                       <td className="px-4 py-3 text-center whitespace-nowrap">
                           {!isReadOnly && (
-                              <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <div className="flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                  <button 
-                                    onClick={() => startEditing({ name: player.name, number: player.number, avatar: player.avatar })}
+                                    onClick={() => startEditing({ name: player.name, number: player.number, avatar: player.avatar, birthday: player.birthday })}
                                     className="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors"
                                     title="编辑"
                                  >
@@ -689,7 +716,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                  ))}
                  {filteredStats.length === 0 && (
                     <tr>
-                       <td colSpan={10} className="text-center py-12 text-slate-400">
+                       <td colSpan={11} className="text-center py-12 text-slate-400">
                           <User className="w-12 h-12 mx-auto mb-2 opacity-20" />
                           <p>暂无符合条件的球员</p>
                        </td>
@@ -702,14 +729,14 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
         {/* Quick Add Row (Footer) */}
         {!isReadOnly && (
            <div id="add-player-row" className="bg-slate-50 border-t border-slate-200 p-4">
-              <div className="flex flex-col md:flex-row items-center gap-4 max-w-3xl mx-auto">
+              <div className="flex flex-col lg:flex-row items-center gap-4 max-w-4xl mx-auto">
                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider shrink-0 mr-2">快速添加</div>
                  <input 
                     type="text" 
                     value={newPlayerNumber}
                     onChange={(e) => setNewPlayerNumber(e.target.value)}
                     placeholder="#"
-                    className="w-20 p-2.5 border border-slate-300 rounded-lg text-sm text-center focus:ring-2 outline-none"
+                    className="w-16 md:w-20 p-2.5 border border-slate-300 rounded-lg text-sm text-center focus:ring-2 outline-none"
                     style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
                  />
                  <input 
@@ -719,11 +746,20 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                     placeholder="球员姓名"
                     className="flex-1 w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 outline-none"
                     style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
-                    onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
                  />
+                 <div className="relative w-full md:w-40">
+                    <input 
+                       type="date" 
+                       value={newPlayerBirthday}
+                       onChange={(e) => setNewPlayerBirthday(e.target.value)}
+                       className="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 outline-none"
+                       style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
+                       placeholder="生日"
+                    />
+                 </div>
                  <button 
                     onClick={handleAdd}
-                    className="w-full md:w-auto px-6 py-2.5 text-white font-medium rounded-lg shadow-sm hover:brightness-110 transition-all flex items-center justify-center shrink-0"
+                    className="w-full lg:w-auto px-6 py-2.5 text-white font-medium rounded-lg shadow-sm hover:brightness-110 transition-all flex items-center justify-center shrink-0"
                     style={{ backgroundColor: 'var(--primary)' }}
                  >
                     <Plus className="w-4 h-4 mr-2" />
@@ -799,6 +835,16 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                     onKeyDown={(e) => e.key === 'Enter' && saveEdit()}
                   />
                   {editError && <p className="text-sm text-red-500 mt-1">{editError}</p>}
+               </div>
+               <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">生日</label>
+                  <input 
+                    type="date" 
+                    value={editBirthday}
+                    onChange={(e) => setEditBirthday(e.target.value)}
+                    className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2"
+                    style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
+                  />
                </div>
                <div className="flex gap-3">
                  <button 

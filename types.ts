@@ -1,3 +1,4 @@
+
 export interface DataItem {
   [key: string]: string | number | boolean | null | undefined | any;
 }
@@ -30,6 +31,7 @@ export interface PlayerProfile {
   position?: string;
   avatar?: string; // Base64 string for profile picture
   teamId?: string; // Data Isolation
+  birthday?: string; // New: Birthday for age calculation (YYYY-MM-DD)
 }
 
 export interface GoalDetail {
@@ -189,6 +191,7 @@ export interface OpponentManagerProps {
   onRemoveOpponent: (id: string) => void;
   onEditOpponent: (id: string, name: string, logo?: string) => void;
   currentTeamName?: string;
+  currentUserRole?: UserRole; // Added for read-only check
 }
 
 export interface TeamManagerProps {

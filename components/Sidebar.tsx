@@ -50,7 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     { id: AppRoute.DASHBOARD, label: '球队统计', icon: Trophy, roles: ['admin', 'captain', 'player'] },
     { id: AppRoute.MATCH_LIST, label: '比赛记录', icon: List, roles: ['admin', 'captain', 'player'] },
     { id: AppRoute.PLAYERS, label: '球员管理', icon: Shirt, roles: ['admin', 'captain', 'player'] }, 
-    { id: AppRoute.OPPONENTS, label: '对手管理', icon: Users, roles: ['admin', 'captain'] },
+    { id: AppRoute.OPPONENTS, label: '对手管理', icon: Users, roles: ['admin', 'captain', 'player'] },
     { id: AppRoute.SEASONS, label: '赛季管理', icon: CalendarRange, roles: ['admin', 'captain'] },
     { id: AppRoute.VENUES, label: '场地管理', icon: MapPin, roles: ['admin', 'captain'] },
     { id: AppRoute.TEAMS_MANAGEMENT, label: '球队管理', icon: Briefcase, roles: ['admin'] }, 
