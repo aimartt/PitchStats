@@ -43,19 +43,6 @@ export const defaultDb: FullDatabase = {
       }
     },
     {
-      "id": "1764059538761",
-      "username": "yangtao",
-      "password": "yangtao",
-      "name": "杨涛",
-      "role": "player",
-      "teamIds": [
-        "team-default-001"
-      ],
-      "linkedPlayerNames": {
-        "team-default-001": "杨涛"
-      }
-    },
-    {
       "id": "1764646319431",
       "username": "liuke",
       "password": "liuke",
@@ -1578,6 +1565,72 @@ export const defaultDb: FullDatabase = {
       "notes": "",
       "countForStats": true,
       "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1764718883462",
+      "date": "2025-12-01",
+      "season": "华侨城2025年冬",
+      "round": 2,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "华侨城足球公园",
+      "opponent": "雾中南开",
+      "ourScore": 2,
+      "opponentScore": 3,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "曹晓霖",
+        "车驰",
+        "陈启晅",
+        "何星谕",
+        "李单",
+        "林浩",
+        "刘豪",
+        "唐涛",
+        "谭光华",
+        "杨皓宇",
+        "杨涛",
+        "张龑瀚",
+        "朱峰"
+      ],
+      "starters": [
+        "曹晓霖",
+        "车驰",
+        "陈启晅",
+        "何星谕",
+        "李单",
+        "林浩",
+        "刘豪",
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 3
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "陈启晅",
+          "assist": "曹晓霖",
+          "isPenalty": false
+        },
+        {
+          "scorer": "何星谕",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "teamId": "team-default-001"
     }
   ],
   "opponents": [
@@ -2010,5 +2063,5 @@ export const defaultDb: FullDatabase = {
       "teamId": "1764057295948"
     }
   ],
-  "theme": "blue"
+  "theme": "red"
 };
