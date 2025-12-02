@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Shirt, Plus, Trash2, Search, Pencil, X, Check, User, Trophy, Zap, Camera, ArrowUpDown, ArrowUp, ArrowDown, Shield, Filter, HeartCrack, Cake } from 'lucide-react';
-import { PlayerManagerProps, PlayerProfile } from '../types';
+import { Shirt, Plus, Trash2, Search, Pencil, X, Check, User, Trophy, Zap, Camera, ArrowUpDown, ArrowUp, ArrowDown, Shield, Filter, HeartCrack, Cake, Eye, ArrowLeft, Calendar } from 'lucide-react';
+import { PlayerManagerProps, PlayerProfile, MatchRecord } from '../types';
 
 interface PlayerStats {
   name: string;
@@ -10,40 +10,36 @@ interface PlayerStats {
   birthday?: string;
   age?: number;
   goals: number;
-  penaltiesScored: number; // New: Goals that are penalties
-  ownGoals: number; // New: Own Goals
+  penaltiesScored: number;
+  ownGoals: number;
   assists: number;
   yellowCards: number;
   redCards: number;
   score: number;
-  disciplineScore: number; // For sorting cards
+  disciplineScore: number;
   
-  // Participation
-  matchesPlayed: number; // Total appearances (Internal + Formal)
-  leagueMatchesPlayed: number; // Formal/Stats-Counting matches only
-  starts: number; // All starts (Internal + Formal)
-  penaltiesWon: number; // New: Penalties won
+  matchesPlayed: number;
+  leagueMatchesPlayed: number;
+  starts: number;
+  penaltiesWon: number;
 
-  // Advanced Stats (Calculated based on Formal Matches)
   goalsPerGame: number;
   assistsPerGame: number;
   
-  // GK Stats (Formal Matches only)
   matchesAsGK: number;
   conceded: number;
   concededPerGame: number;
 }
 
-// Helper to format float with 1 decimal place, return '-' if 0 or NaN
+// Helper to format float with 1 decimal place
 const formatStat = (val: number, showZero = false) => {
    if (isNaN(val)) return '-';
    if (val === 0 && !showZero) return '-';
-   // Check if integer
    if (Number.isInteger(val)) return val.toString();
    return val.toFixed(2);
 };
 
-// Helper to calculate age from birthday
+// Helper to calculate age
 const calculateAge = (birthday?: string): number | undefined => {
   if (!birthday) return undefined;
   const birthDate = new Date(birthday);
@@ -56,6 +52,313 @@ const calculateAge = (birthday?: string): number | undefined => {
   return age;
 };
 
+// --- Sub-component: Player Detail View ---
+interface SeasonStat {
+  season: string;
+  matchesPlayed: number;
+  leagueMatchesPlayed: number;
+  goals: number;
+  assists: number;
+  yellowCards: number;
+  redCards: number;
+  conceded: number;
+  matchesAsGK: number;
+  starts: number;
+  ownGoals: number;
+}
+
+const PlayerDetailView: React.FC<{ 
+  player: PlayerStats; 
+  matches: MatchRecord[]; 
+  seasons: string[]; 
+  onBack: () => void 
+}> = ({ player, matches, seasons, onBack }) => {
+
+  // 1. Calculate Team Season Totals (Total matches per season for the team)
+  const seasonTotals = useMemo(() => {
+     const totals: Record<string, { total: number, league: number }> = {};
+     matches.forEach(m => {
+        if (!totals[m.season]) totals[m.season] = { total: 0, league: 0 };
+        totals[m.season].total++;
+        if (m.countForStats) totals[m.season].league++;
+     });
+     return totals;
+  }, [matches]);
+  
+  // 2. Calculate Aggregated Career Stats & Detailed Season Stats for the Player
+  const { careerStats, seasonStats } = useMemo(() => {
+    const career = {
+        matchesPlayed: 0,
+        leagueMatchesPlayed: 0,
+        goals: 0,
+        assists: 0,
+        ownGoals: 0
+    };
+
+    const stats: Record<string, SeasonStat> = {};
+    
+    matches.forEach(m => {
+       // Check if player participated
+       const inSquad = m.squad?.includes(player.name);
+       if (!inSquad) return;
+
+       // --- Update Career Stats ---
+       career.matchesPlayed++;
+       if (m.countForStats) career.leagueMatchesPlayed++;
+
+       let g = 0, a = 0, og = 0;
+       m.goalsDetails?.forEach(goal => {
+          if (goal.scorer === player.name) g++;
+          if (goal.assist === player.name) a++;
+       });
+       if (m.ownGoals?.includes(player.name)) og++;
+
+       career.goals += g;
+       career.assists += a;
+       career.ownGoals += og;
+
+       // --- Update Season Stats ---
+       if (!stats[m.season]) {
+          stats[m.season] = {
+             season: m.season,
+             matchesPlayed: 0,
+             leagueMatchesPlayed: 0,
+             goals: 0,
+             assists: 0,
+             yellowCards: 0,
+             redCards: 0,
+             conceded: 0,
+             matchesAsGK: 0,
+             starts: 0,
+             ownGoals: 0
+          };
+       }
+       
+       const s = stats[m.season];
+       s.matchesPlayed++;
+       if (m.countForStats) s.leagueMatchesPlayed++;
+       if (m.starters?.includes(player.name)) s.starts++;
+       
+       s.goals += g;
+       s.assists += a;
+       s.ownGoals += og;
+
+       // Cards
+       if (m.yellowCards?.includes(player.name)) s.yellowCards++;
+       if (m.redCards?.includes(player.name)) s.redCards++;
+
+       // GK Stats
+       const gkStat = m.goalkeeperStats?.find(gk => gk.player === player.name);
+       if (gkStat) {
+          s.matchesAsGK++;
+          s.conceded += gkStat.conceded;
+       } else if (m.goalkeepers?.includes(player.name)) {
+          s.matchesAsGK++;
+          s.conceded += m.opponentScore;
+       }
+    });
+
+    // Sort by season order
+    const sortedStats = Object.values(stats).sort((a, b) => {
+       const idxA = seasons.indexOf(a.season);
+       const idxB = seasons.indexOf(b.season);
+       if (idxA === -1) return 1;
+       if (idxB === -1) return -1;
+       return idxA - idxB;
+    });
+
+    return { careerStats: career, seasonStats: sortedStats };
+  }, [matches, player.name, seasons]);
+
+  // Helper for Rate
+  const getRate = (val: number, total: number) => {
+      if (total === 0) return '0%';
+      return Math.round((val / total) * 100) + '%';
+  };
+
+  return (
+    <div className="animate-fade-in space-y-6">
+       <div className="flex items-center gap-4">
+        <button 
+          onClick={onBack}
+          className="p-2 rounded-full hover:bg-slate-200 transition-colors text-slate-500"
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </button>
+        <h2 className="text-xl font-bold text-slate-900">球员详情</h2>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+         {/* Profile Card */}
+         <div className="md:col-span-1">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden h-full flex flex-col relative">
+               {/* Decorative Header Background */}
+               <div className="h-28 bg-gradient-to-r from-slate-800 to-slate-900 relative">
+                  <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '10px 10px' }}></div>
+               </div>
+               
+               <div className="px-6 pb-6 flex-1 flex flex-col items-center -mt-14 text-center relative z-10">
+                  {/* Avatar */}
+                  <div className="w-28 h-28 rounded-full bg-white p-1.5 shadow-md mb-3">
+                     <div className="w-full h-full rounded-full bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200">
+                        {player.avatar ? <img src={player.avatar} className="w-full h-full object-cover" /> : <span className="text-3xl font-bold text-slate-400">{player.number || '#'}</span>}
+                     </div>
+                  </div>
+                  
+                  <h3 className="text-2xl font-bold text-slate-800">{player.name}</h3>
+                  {player.number && <span className="text-sm font-bold text-slate-400 font-mono mb-1">#{player.number}</span>}
+                  
+                  {player.birthday && (
+                        <div className="mt-2 flex items-center text-slate-500 text-xs bg-slate-50 px-3 py-1 rounded-full border border-slate-200">
+                           <Cake className="w-3 h-3 mr-1.5" />
+                           {player.age} 岁
+                        </div>
+                  )}
+
+                  <div className="w-full h-px bg-slate-100 my-6"></div>
+                  
+                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 w-full text-left flex items-center">
+                     <Trophy className="w-3 h-3 mr-1.5" />生涯数据汇总
+                  </h4>
+                  
+                  <div className="grid grid-cols-2 gap-3 w-full">
+                      <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 transition-colors hover:bg-slate-100">
+                           <p className="text-xs text-slate-400 mb-1 font-bold">总场次</p>
+                           <p className="text-2xl font-black text-slate-800">{careerStats.matchesPlayed}</p>
+                      </div>
+                      <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 transition-colors hover:bg-blue-100">
+                           <p className="text-xs text-blue-400 mb-1 font-bold">正式比赛</p>
+                           <p className="text-2xl font-black text-blue-600">{careerStats.leagueMatchesPlayed}</p>
+                      </div>
+                      <div className="bg-emerald-50 p-4 rounded-xl border border-emerald-100 transition-colors hover:bg-emerald-100">
+                           <p className="text-xs text-emerald-600 mb-1 font-bold">总进球</p>
+                           <p className="text-2xl font-black text-emerald-700">{careerStats.goals}</p>
+                      </div>
+                      <div className="bg-indigo-50 p-4 rounded-xl border border-indigo-100 transition-colors hover:bg-indigo-100">
+                           <p className="text-xs text-indigo-500 mb-1 font-bold">总助攻</p>
+                           <p className="text-2xl font-black text-indigo-600">{careerStats.assists}</p>
+                      </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         {/* Season Stats Table */}
+         <div className="md:col-span-2">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-full">
+               <div className="p-5 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
+                  <h3 className="font-bold text-slate-800 flex items-center">
+                     <Calendar className="w-5 h-5 mr-2 text-slate-500" />
+                     赛季数据概览
+                  </h3>
+               </div>
+               <div className="overflow-x-auto flex-1">
+                  <table className="w-full text-sm text-left">
+                     <thead className="text-xs text-slate-500 uppercase bg-slate-50/80 border-b border-slate-100">
+                        <tr>
+                           <th className="px-4 py-3 font-bold">赛季</th>
+                           <th className="px-2 py-3 text-center">总场次 (率)</th>
+                           <th className="px-2 py-3 text-center">正式比赛 (率)</th>
+                           <th className="px-2 py-3 text-center">首发 (率)</th>
+                           <th className="px-2 py-3 text-center">进球 (场均)</th>
+                           <th className="px-2 py-3 text-center">助攻 (场均)</th>
+                           <th className="px-2 py-3 text-center">乌龙</th>
+                           <th className="px-2 py-3 text-center">红/黄</th>
+                           <th className="px-2 py-3 text-center">失球 (场均)</th>
+                        </tr>
+                     </thead>
+                     <tbody className="divide-y divide-slate-100">
+                        {seasonStats.length > 0 ? (
+                           seasonStats.map((stat) => {
+                              const totalMatches = seasonTotals[stat.season]?.total || 0;
+                              const totalLeague = seasonTotals[stat.season]?.league || 0;
+                              
+                              const goalsPerGame = stat.leagueMatchesPlayed > 0 ? stat.goals / stat.leagueMatchesPlayed : 0;
+                              const assistsPerGame = stat.leagueMatchesPlayed > 0 ? stat.assists / stat.leagueMatchesPlayed : 0;
+                              
+                              return (
+                                <tr key={stat.season} className="hover:bg-blue-50/30 even:bg-slate-50/50 transition-colors">
+                                   <td className="px-4 py-3 font-medium text-slate-700 whitespace-nowrap">
+                                      {stat.season}
+                                   </td>
+                                   <td className="px-2 py-3 text-center">
+                                      <div className="flex flex-col items-center">
+                                          <span className="font-bold text-slate-800">{stat.matchesPlayed}</span>
+                                          <span className="text-[10px] text-slate-400">
+                                              ({getRate(stat.matchesPlayed, totalMatches)})
+                                          </span>
+                                      </div>
+                                   </td>
+                                   <td className="px-2 py-3 text-center">
+                                      <div className="flex flex-col items-center">
+                                          <span className="font-bold text-blue-600">{stat.leagueMatchesPlayed}</span>
+                                          <span className="text-[10px] text-slate-400">
+                                              ({getRate(stat.leagueMatchesPlayed, totalLeague)})
+                                          </span>
+                                      </div>
+                                   </td>
+                                   <td className="px-2 py-3 text-center">
+                                      <div className="flex flex-col items-center">
+                                          <span className="font-bold text-amber-600">{stat.starts}</span>
+                                          <span className="text-[10px] text-slate-400">
+                                             ({getRate(stat.starts, stat.matchesPlayed)})
+                                          </span>
+                                      </div>
+                                   </td>
+                                   <td className="px-2 py-3 text-center">
+                                      {stat.goals > 0 ? (
+                                         <div className="flex flex-col items-center">
+                                            <span className="font-bold text-emerald-600">{stat.goals}</span>
+                                            <span className="text-[10px] text-slate-400">{formatStat(goalsPerGame, true)}/场</span>
+                                         </div>
+                                      ) : <span className="text-slate-300">-</span>}
+                                   </td>
+                                   <td className="px-2 py-3 text-center">
+                                      {stat.assists > 0 ? (
+                                         <div className="flex flex-col items-center">
+                                            <span className="font-bold text-indigo-500">{stat.assists}</span>
+                                            <span className="text-[10px] text-slate-400">{formatStat(assistsPerGame, true)}/场</span>
+                                         </div>
+                                      ) : <span className="text-slate-300">-</span>}
+                                   </td>
+                                   <td className="px-2 py-3 text-center">
+                                      {stat.ownGoals > 0 ? <span className="font-bold text-slate-700">{stat.ownGoals}</span> : <span className="text-slate-300">-</span>}
+                                   </td>
+                                   <td className="px-2 py-3 text-center">
+                                       {(stat.yellowCards > 0 || stat.redCards > 0) ? (
+                                          <div className="flex items-center justify-center gap-1">
+                                             {stat.yellowCards > 0 && <span className="bg-yellow-100 text-yellow-800 px-1.5 rounded text-xs border border-yellow-200">{stat.yellowCards}</span>}
+                                             {stat.redCards > 0 && <span className="bg-red-100 text-red-800 px-1.5 rounded text-xs border border-red-200">{stat.redCards}</span>}
+                                          </div>
+                                       ) : <span className="text-slate-300">-</span>}
+                                   </td>
+                                   <td className="px-2 py-3 text-center">
+                                      {stat.matchesAsGK > 0 ? (
+                                         <div className="flex flex-col items-center">
+                                            <span className="font-bold text-slate-600">{stat.conceded}</span>
+                                            <span className="text-[10px] text-slate-400">{formatStat(stat.conceded / stat.matchesAsGK, true)}/场</span>
+                                         </div>
+                                      ) : <span className="text-slate-300">-</span>}
+                                   </td>
+                                </tr>
+                              );
+                           })
+                        ) : (
+                           <tr>
+                              <td colSpan={9} className="text-center py-12 text-slate-400 italic bg-slate-50/30">暂无赛季数据</td>
+                           </tr>
+                        )}
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+      </div>
+    </div>
+  );
+};
+
+
 const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons, onAddPlayer, onRemovePlayer, onEditPlayer, currentUserRole }) => {
   const [newPlayerName, setNewPlayerName] = useState('');
   const [newPlayerNumber, setNewPlayerNumber] = useState('');
@@ -65,22 +368,23 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
   const [error, setError] = useState<string | null>(null);
 
   // Edit State
-  const [editingPlayer, setEditingPlayer] = useState<string | null>(null); // Stores name of player being edited
+  const [editingPlayer, setEditingPlayer] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
   const [editNumber, setEditNumber] = useState('');
   const [editBirthday, setEditBirthday] = useState('');
   const [editAvatar, setEditAvatar] = useState<string | undefined>(undefined);
   const [editError, setEditError] = useState<string | null>(null);
 
-  // Sort State: Default is custom 'default' logic
+  // View Details State
+  const [viewingPlayer, setViewingPlayer] = useState<PlayerStats | null>(null);
+
+  // Sort State
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' }>({ key: 'default', direction: 'desc' });
   
   // Season Filter State
   const [selectedSeason, setSelectedSeason] = useState<string>('');
   
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Permission Check: Player role is Read-Only
   const isReadOnly = currentUserRole === 'player';
 
   useEffect(() => {
@@ -89,22 +393,17 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
      }
   }, [seasons]);
 
-  // Filter matches based on selected season
   const seasonFilteredMatches = useMemo(() => {
       if (!selectedSeason || selectedSeason === 'all') return matches;
       return matches.filter(m => m.season === selectedSeason);
   }, [matches, selectedSeason]);
 
-  // Calculate Totals for Rates
   const totalMatches = seasonFilteredMatches.length;
-  // LOGIC CHANGE: Count 'Formal' matches based on countForStats flag
   const totalLeagueMatches = seasonFilteredMatches.filter(m => !!m.countForStats).length;
 
-  // Stats Calculation
   const playerStats = useMemo(() => {
     const statsMap: Record<string, PlayerStats> = {};
     
-    // Initialize
     players.forEach(p => {
       statsMap[p.name] = { 
         name: p.name, 
@@ -132,19 +431,13 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
       };
     });
 
-    // Compute from matches (Filtered by Season)
     seasonFilteredMatches.forEach(m => {
-      // LOGIC CHANGE: Count stats only for matches marked as countForStats
       const isFormal = !!m.countForStats;
 
-      // Participation Tracking
       if (m.squad && Array.isArray(m.squad)) {
           m.squad.forEach(pName => {
               if (statsMap[pName]) {
-                  // Always increment total matches played (for attendance)
                   statsMap[pName].matchesPlayed++;
-                  
-                  // Only increment formal matches if isFormal
                   if (isFormal) {
                       statsMap[pName].leagueMatchesPlayed++;
                   }
@@ -152,7 +445,6 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
           });
       }
 
-      // Starts - Counted for ALL matches now (per user request)
       if (m.starters && Array.isArray(m.starters)) {
           m.starters.forEach(pName => {
               if (statsMap[pName]) {
@@ -161,24 +453,20 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
           });
       }
 
-      // --- CRITICAL UPDATE: Only count stats below for Formal Matches ---
       if (!isFormal) return;
 
-      // Penalties Won
       if (m.penaltiesWon && Array.isArray(m.penaltiesWon)) {
          m.penaltiesWon.forEach(pName => {
              if (statsMap[pName]) statsMap[pName].penaltiesWon++;
          });
       }
       
-      // Own Goals
       if (m.ownGoals && Array.isArray(m.ownGoals)) {
          m.ownGoals.forEach(pName => {
             if (statsMap[pName]) statsMap[pName].ownGoals++;
          });
       }
 
-      // Goals & Assists
       m.goalsDetails?.forEach(g => {
         if (statsMap[g.scorer]) {
             statsMap[g.scorer].goals++;
@@ -189,7 +477,6 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
         if (g.assist && statsMap[g.assist]) statsMap[g.assist].assists++;
       });
 
-      // Cards
       m.yellowCards?.forEach(p => {
         if (statsMap[p]) statsMap[p].yellowCards++;
       });
@@ -197,8 +484,6 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
         if (statsMap[p]) statsMap[p].redCards++;
       });
 
-      // GK Stats (Conceded) - UPDATED LOGIC
-      // Priority 1: Use specific goalkeeperStats if available
       if (m.goalkeeperStats && m.goalkeeperStats.length > 0) {
           m.goalkeeperStats.forEach(stat => {
               if (statsMap[stat.player]) {
@@ -206,9 +491,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                   statsMap[stat.player].conceded += stat.conceded;
               }
           });
-      } 
-      // Priority 2: Fallback to old simple list (assign full score)
-      else if (m.goalkeepers && Array.isArray(m.goalkeepers)) {
+      } else if (m.goalkeepers && Array.isArray(m.goalkeepers)) {
           m.goalkeepers.forEach(gkName => {
               if (statsMap[gkName]) {
                   statsMap[gkName].matchesAsGK++;
@@ -218,20 +501,11 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
       }
     });
 
-    // Final Calculations
     Object.values(statsMap).forEach(s => {
-      // Rates - Denominator is now leagueMatchesPlayed (Formal Matches) for goals/assists
       s.goalsPerGame = s.leagueMatchesPlayed > 0 ? s.goals / s.leagueMatchesPlayed : 0;
       s.assistsPerGame = s.leagueMatchesPlayed > 0 ? s.assists / s.leagueMatchesPlayed : 0;
-      
-      // GK Stats
       s.concededPerGame = s.matchesAsGK > 0 ? s.conceded / s.matchesAsGK : 0;
-      
-      // Discipline Score (Red = 3, Yellow = 1) for sorting
       s.disciplineScore = (s.redCards * 3) + s.yellowCards;
-
-      // Simple score (optional usage)
-      s.score = (s.goals * 2) + (s.assists * 1.5) + (s.leagueMatchesPlayed * 0.1) - (s.yellowCards * 1) - (s.redCards * 3);
     });
 
     return Object.values(statsMap);
@@ -240,29 +514,20 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
   const sortedStats = useMemo(() => {
     const sorted = [...playerStats];
     sorted.sort((a, b) => {
-        // Default hierarchical sort
         if (sortConfig.key === 'default') {
-             // 1. Total Participation Rate (desc)
              const rateA = totalMatches > 0 ? a.matchesPlayed / totalMatches : 0;
              const rateB = totalMatches > 0 ? b.matchesPlayed / totalMatches : 0;
              if (rateA !== rateB) return rateB - rateA;
 
-             // 2. Formal (League) Participation Rate (desc)
              const lRateA = totalLeagueMatches > 0 ? a.leagueMatchesPlayed / totalLeagueMatches : 0;
              const lRateB = totalLeagueMatches > 0 ? b.leagueMatchesPlayed / totalLeagueMatches : 0;
              if (lRateA !== lRateB) return lRateB - lRateA;
 
-             // 3. Goals (desc)
              if (a.goals !== b.goals) return b.goals - a.goals;
-
-             // 4. Assists (desc)
              if (a.assists !== b.assists) return b.assists - a.assists;
-
-             // 5. Name (asc)
              return a.name.localeCompare(b.name);
         }
 
-        // Standard Sort
         const valA = a[sortConfig.key as keyof PlayerStats];
         const valB = b[sortConfig.key as keyof PlayerStats];
 
@@ -291,7 +556,6 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
      return unluckiest && unluckiest.ownGoals > 0 ? unluckiest : null;
   }, [playerStats]);
   
-  // Best Goalkeeper Logic: Played > 0 matches as GK, sorted by concededPerGame (ASC), then matchesAsGK (DESC)
   const bestGoalkeeper = useMemo(() => {
       const gks = playerStats.filter(p => p.matchesAsGK > 0);
       if (gks.length === 0) return null;
@@ -302,20 +566,14 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
       })[0];
   }, [playerStats]);
 
-  // Handlers
   const handleSort = (key: string) => {
     let direction: 'asc' | 'desc' = 'desc';
-    
-    // If clicking same key, toggle
     if (sortConfig.key === key) {
         if (sortConfig.direction === 'desc') direction = 'asc';
     } else {
-        // If clicking a new key, string defaults to asc, numbers to desc. 
-        // But for simplicity, let's default numbers (stats) to desc. Name to asc.
         if (key === 'name') direction = 'asc';
         if (key === 'age') direction = 'asc';
     }
-    
     setSortConfig({ key, direction });
   };
 
@@ -417,11 +675,10 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
     }
   };
 
-  // Helper for RateBar
   const RateBar = ({ val, total, colorClass = "bg-slate-800" }: { val: number, total: number, colorClass?: string }) => {
      const rate = total > 0 ? Math.round((val / total) * 100) : 0;
      return (
-        <div className="flex flex-col gap-1 w-20">
+        <div className="flex flex-col gap-1 w-full max-w-[80px] mx-auto">
            <div className="flex justify-between text-xs">
               <span className="font-bold text-slate-700">{val}</span>
               <span className="text-slate-400">{rate}%</span>
@@ -437,6 +694,11 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
      if (sortConfig.key !== colKey) return <ArrowUpDown className="w-3 h-3 opacity-30 ml-1" />;
      return sortConfig.direction === 'asc' ? <ArrowUp className="w-3 h-3 ml-1 text-slate-800" /> : <ArrowDown className="w-3 h-3 ml-1 text-slate-800" />;
   };
+
+  // If viewing details, show detail component
+  if (viewingPlayer) {
+    return <PlayerDetailView player={viewingPlayer} matches={matches} seasons={seasons} onBack={() => setViewingPlayer(null)} />;
+  }
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 animate-fade-in relative pb-20">
@@ -454,7 +716,6 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
         </div>
         
         <div className="flex gap-3 flex-wrap">
-           {/* Season Filter */}
            <div className="relative">
               <Filter className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
               <select 
@@ -574,11 +835,11 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                     <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center" onClick={() => handleSort('age')}>
                        <div className="flex items-center justify-center">年龄 <SortIcon colKey="age" /></div>
                     </th>
-                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center" onClick={() => handleSort('matchesPlayed')}>
+                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center w-28" onClick={() => handleSort('matchesPlayed')}>
                        <div className="flex items-center justify-center">总场次 <SortIcon colKey="matchesPlayed" /></div>
                     </th>
-                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center" onClick={() => handleSort('leagueMatchesPlayed')}>
-                       <div className="flex items-center justify-center">正式赛 <SortIcon colKey="leagueMatchesPlayed" /></div>
+                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center w-28" onClick={() => handleSort('leagueMatchesPlayed')}>
+                       <div className="flex items-center justify-center">正式比赛 <SortIcon colKey="leagueMatchesPlayed" /></div>
                     </th>
                     <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center" onClick={() => handleSort('starts')}>
                        <div className="flex items-center justify-center">首发 <SortIcon colKey="starts" /></div>
@@ -606,8 +867,8 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
               </thead>
               <tbody className="divide-y divide-slate-100">
                  {filteredStats.map((player) => (
-                    <tr key={player.name} className="hover:bg-slate-50 transition-colors group">
-                       <td className="px-4 py-3 sticky left-0 bg-white group-hover:bg-slate-50 z-10 whitespace-nowrap">
+                    <tr key={player.name} className="hover:bg-blue-50/50 even:bg-slate-50/50 transition-colors group">
+                       <td className="px-4 py-3 sticky left-0 bg-white group-hover:bg-blue-50/20 group-even:bg-slate-50/50 z-10 whitespace-nowrap">
                           <div className="flex items-center gap-3">
                              <div className="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 font-bold text-slate-400">
                                 {player.avatar ? <img src={player.avatar} className="w-full h-full object-cover"/> : player.number || '#'}
@@ -621,8 +882,10 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                        <td className="px-2 py-3 text-slate-600 text-center">
                           {player.age ? player.age : '-'}
                        </td>
-                       <td className="px-2 py-3 flex justify-center">
-                          <RateBar val={player.matchesPlayed} total={totalMatches} colorClass="bg-emerald-500" />
+                       <td className="px-2 py-3">
+                          <div className="flex justify-center">
+                             <RateBar val={player.matchesPlayed} total={totalMatches} colorClass="bg-emerald-500" />
+                          </div>
                        </td>
                        <td className="px-2 py-3">
                           <div className="flex justify-center">
@@ -631,7 +894,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                        </td>
                        <td className="px-2 py-3 text-center">
                           {player.starts > 0 ? (
-                              <div className="flex flex-col">
+                              <div className="flex flex-col items-center">
                                   <span className="font-bold text-slate-700">{player.starts}</span>
                                   <span className="text-[10px] text-slate-400">
                                      {player.matchesPlayed > 0 ? Math.round((player.starts / player.matchesPlayed) * 100) : 0}%
@@ -693,24 +956,33 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                           )}
                        </td>
                        <td className="px-4 py-3 text-center whitespace-nowrap">
-                          {!isReadOnly && (
-                              <div className="flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                 <button 
-                                    onClick={() => startEditing({ name: player.name, number: player.number, avatar: player.avatar, birthday: player.birthday })}
-                                    className="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors"
-                                    title="编辑"
-                                 >
-                                    <Pencil className="w-4 h-4" />
-                                 </button>
-                                 <button 
-                                    onClick={() => onRemovePlayer(player.name)}
-                                    className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
-                                    title="删除"
-                                 >
-                                    <Trash2 className="w-4 h-4" />
-                                 </button>
-                              </div>
-                          )}
+                            <div className="flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button 
+                                    onClick={() => setViewingPlayer(player)}
+                                    className="p-1.5 text-slate-500 hover:bg-slate-100 rounded transition-colors"
+                                    title="查看详情"
+                                >
+                                    <Eye className="w-4 h-4" />
+                                </button>
+                                {!isReadOnly && (
+                                    <>
+                                        <button 
+                                            onClick={() => startEditing({ name: player.name, number: player.number, avatar: player.avatar, birthday: player.birthday })}
+                                            className="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                                            title="编辑"
+                                        >
+                                            <Pencil className="w-4 h-4" />
+                                        </button>
+                                        <button 
+                                            onClick={() => onRemovePlayer(player.name)}
+                                            className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
+                                            title="删除"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    </>
+                                )}
+                            </div>
                        </td>
                     </tr>
                  ))}
