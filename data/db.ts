@@ -1570,7 +1570,7 @@ export const defaultDb: FullDatabase = {
     },
     {
       "id": "match-1764718883462",
-      "date": "2025-12-01",
+      "date": "2025-12-02",
       "season": "华侨城2025年冬",
       "round": 2,
       "matchType": "联赛",
