@@ -1071,6 +1071,7 @@ export const defaultDb: FullDatabase = {
         "张龑瀚"
       ],
       "goalkeepers": [],
+      "goalkeeperStats": [],
       "goalsDetails": [],
       "yellowCards": [],
       "redCards": [],
@@ -1078,6 +1079,7 @@ export const defaultDb: FullDatabase = {
       "ownGoals": [],
       "notes": "外援6个",
       "countForStats": false,
+      "coach": "胡勇",
       "teamId": "team-default-001"
     },
     {
@@ -1630,6 +1632,7 @@ export const defaultDb: FullDatabase = {
       "ownGoals": [],
       "notes": "",
       "countForStats": true,
+      "coach": "杨皓宇",
       "teamId": "team-default-001"
     }
   ],

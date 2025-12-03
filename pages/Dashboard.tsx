@@ -2,19 +2,32 @@
 
 
 
+
+
 import React, { useMemo, useState } from 'react';
 import { DataItem, DashboardProps } from '../types';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, 
   PieChart, Pie, Cell 
 } from 'recharts';
-import { Trophy, ShieldAlert, Target, Activity, Flag, Filter, Calendar } from 'lucide-react';
+import { Trophy, ShieldAlert, Target, Activity, Flag, Filter, Calendar, UserCog } from 'lucide-react';
 
 const RESULT_COLORS = {
   Win: '#10B981', // Emerald 500
   Draw: '#F59E0B', // Amber 500
   Loss: '#EF4444'  // Red 500
 };
+
+interface CoachStat {
+  name: string;
+  games: number;
+  wins: number;
+  draws: number;
+  losses: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  winRate: number;
+}
 
 const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
   const [selectedSeason, setSelectedSeason] = useState<string>('all');
@@ -35,6 +48,8 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
       Object.keys(item).forEach(key => {
         newItem[key.toLowerCase()] = item[key];
       });
+      // Keep coach specifically in case casing matters, but lowercased key helps generic access
+      newItem.coach = item.coach; 
       return newItem;
     });
 
@@ -51,12 +66,16 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
     let goalsFor = 0;
     let goalsAgainst = 0;
     const history: any[] = [];
+    
+    // Coach Analysis
+    const coachMap: Record<string, CoachStat> = {};
 
     normalizedData.forEach((match, index) => {
       const gf = Number(match['ourscore'] || match['goalsfor'] || match['score'] || 0);
       const ga = Number(match['opponentscore'] || match['goalsagainst'] || 0);
       const opponent = match['opponent'] || match['team'] || `Match ${index + 1}`;
       const date = match['date'] || index;
+      const coachName = match['coach'];
       
       let result = match['result'];
       if (!result) {
@@ -79,6 +98,30 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
         失球: ga,
         result
       });
+
+      // Coach Stats Calculation
+      if (coachName) {
+         if (!coachMap[coachName]) {
+            coachMap[coachName] = { name: coachName, games: 0, wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, winRate: 0 };
+         }
+         const c = coachMap[coachName];
+         c.games++;
+         c.goalsFor += gf;
+         c.goalsAgainst += ga;
+         if (result === 'Win') c.wins++;
+         else if (result === 'Draw') c.draws++;
+         else if (result === 'Loss') c.losses++;
+      }
+    });
+
+    // Finalize Coach Stats
+    const coachStats = Object.values(coachMap).map(c => ({
+       ...c,
+       winRate: c.games > 0 ? (c.wins / c.games) * 100 : 0
+    })).sort((a, b) => {
+        // Sort by Win Rate desc, then Games desc
+        if (b.winRate !== a.winRate) return b.winRate - a.winRate;
+        return b.games - a.games;
     });
 
     const matchesPlayed = normalizedData.length;
@@ -92,7 +135,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
     ].filter(d => d.value > 0);
 
     return {
-      wins, draws, losses, goalsFor, goalsAgainst, matchesPlayed, winRate, goalDiff, history, resultData
+      wins, draws, losses, goalsFor, goalsAgainst, matchesPlayed, winRate, goalDiff, history, resultData, coachStats
     };
   }, [data, selectedSeason]);
 
@@ -132,7 +175,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
      );
   }
 
-  const { wins, draws, losses, goalsFor, goalsAgainst, matchesPlayed, winRate, goalDiff, history, resultData } = stats;
+  const { wins, draws, losses, goalsFor, goalsAgainst, matchesPlayed, winRate, goalDiff, history, resultData, coachStats } = stats;
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -268,6 +311,55 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
           </div>
         </div>
       </div>
+
+      {/* Coach Stats Section */}
+      {coachStats.length > 0 && (
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+           <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center">
+              <UserCog className="w-5 h-5 mr-2 text-indigo-500" />
+              <h3 className="text-lg font-bold text-slate-800">执教表现</h3>
+           </div>
+           <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left text-slate-600">
+                 <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
+                    <tr>
+                       <th className="px-6 py-3 font-bold">主教练</th>
+                       <th className="px-4 py-3 text-center">执教场次</th>
+                       <th className="px-4 py-3 text-center">战绩 (胜/平/负)</th>
+                       <th className="px-4 py-3 text-center">胜率</th>
+                       <th className="px-4 py-3 text-center">进/失球</th>
+                       <th className="px-4 py-3 text-center">场均净胜</th>
+                    </tr>
+                 </thead>
+                 <tbody className="divide-y divide-slate-100">
+                    {coachStats.map((coach, idx) => (
+                       <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                          <td className="px-6 py-4 font-bold text-slate-900">{coach.name}</td>
+                          <td className="px-4 py-4 text-center font-medium">{coach.games}</td>
+                          <td className="px-4 py-4 text-center">
+                             <span className="text-emerald-600 font-bold">{coach.wins}</span> - <span className="text-amber-500 font-bold">{coach.draws}</span> - <span className="text-red-500 font-bold">{coach.losses}</span>
+                          </td>
+                          <td className="px-4 py-4 text-center">
+                             <div className="flex items-center justify-center gap-2">
+                                <span className="font-bold text-slate-800">{coach.winRate.toFixed(0)}%</span>
+                                <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                   <div className="h-full bg-emerald-500" style={{ width: `${coach.winRate}%` }}></div>
+                                </div>
+                             </div>
+                          </td>
+                          <td className="px-4 py-4 text-center">
+                             {coach.goalsFor} : {coach.goalsAgainst}
+                          </td>
+                          <td className="px-4 py-4 text-center font-mono">
+                             {((coach.goalsFor - coach.goalsAgainst) / coach.games).toFixed(1)}
+                          </td>
+                       </tr>
+                    ))}
+                 </tbody>
+              </table>
+           </div>
+        </div>
+      )}
 
       {/* Recent Matches Table */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">

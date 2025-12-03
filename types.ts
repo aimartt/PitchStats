@@ -60,6 +60,7 @@ export interface MatchRecord extends DataItem {
   // Basic Info
   season?: string;
   round?: number;
+  coach?: string; // New: Head Coach for this match
   matchType?: '友谊赛' | '联赛' | '队内赛' | '杯赛' | string;
   format?: '五人制' | '八人制' | '十一人制' | string;
   

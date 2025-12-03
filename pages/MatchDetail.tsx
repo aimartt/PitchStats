@@ -2,9 +2,11 @@
 
 
 
+
+
 import React, { useMemo } from 'react';
 import { MatchRecord, PlayerProfile, OpponentTeam } from '../types';
-import { ArrowLeft, MapPin, Calendar, Trophy, Flag, Users, Info, Shirt } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Trophy, Flag, Users, Info, Shirt, UserCog } from 'lucide-react';
 
 interface MatchDetailProps {
   match: MatchRecord;
@@ -116,8 +118,8 @@ const MatchDetail: React.FC<MatchDetailProps> = ({ match, onBack, currentTeamNam
 
            </div>
            
-           {/* Venue Info Footer */}
-           <div className="mt-8 pt-6 border-t border-slate-100 flex justify-center">
+           {/* Venue & Coach Info Footer */}
+           <div className="mt-8 pt-6 border-t border-slate-100 flex flex-col md:flex-row justify-center items-center gap-3 md:gap-6">
               <div className="flex items-center text-sm text-slate-500 font-medium">
                  <MapPin className="w-4 h-4 mr-2 text-slate-400" />
                  {match.venue || (match.location === 'Home' ? '主场' : match.location === 'Away' ? '客场' : '中立场地')}
@@ -129,6 +131,16 @@ const MatchDetail: React.FC<MatchDetailProps> = ({ match, onBack, currentTeamNam
                     </>
                  )}
               </div>
+              
+              {match.coach && (
+                 <>
+                   <div className="hidden md:block w-1 h-1 bg-slate-300 rounded-full"></div>
+                   <div className="flex items-center text-sm text-slate-600 font-medium bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
+                      <UserCog className="w-4 h-4 mr-2 text-indigo-500" />
+                      主教练: {match.coach}
+                   </div>
+                 </>
+              )}
            </div>
         </div>
       </div>

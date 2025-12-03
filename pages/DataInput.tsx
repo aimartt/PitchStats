@@ -2,9 +2,13 @@
 
 
 
+
+
+
+
 import React, { useState, useRef, useEffect } from 'react';
 import { DataItem, MatchRecord, GoalDetail, PlayerProfile, OpponentTeam, DataInputProps, GoalkeeperStat } from '../types';
-import { Plus, CheckCircle, AlertCircle, Save, ChevronDown, Users, Hash, MapPin, Flag, X, ArrowLeft, Shirt, Check, Search, Info, Shield, Crosshair } from 'lucide-react';
+import { Plus, CheckCircle, AlertCircle, Save, ChevronDown, Users, Hash, MapPin, Flag, X, ArrowLeft, Shirt, Check, Search, Info, Shield, Crosshair, UserCog } from 'lucide-react';
 
 const MATCH_TYPES = ['联赛', '友谊赛', '杯赛', '队内赛'];
 const MATCH_FORMATS = ['八人制', '五人制', '十一人制'];
@@ -108,7 +112,8 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
     opponentScore: '',
     location: 'Home', // Default value, UI hidden
     notes: '',
-    countForStats: true // Default true
+    countForStats: true, // Default true
+    coach: ''
   });
 
   const [selectedSquad, setSelectedSquad] = useState<string[]>([]);
@@ -141,7 +146,8 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
         opponentScore: initialData.opponentScore.toString(),
         location: initialData.location || 'Home',
         notes: initialData.notes || '',
-        countForStats: initialData.countForStats ?? (initialData.matchType !== '队内赛')
+        countForStats: initialData.countForStats ?? (initialData.matchType !== '队内赛'),
+        coach: initialData.coach || ''
       });
       setSelectedSquad(initialData.squad || []);
       setStarters(initialData.starters || []);
@@ -150,8 +156,7 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
       if (initialData.goalkeeperStats && initialData.goalkeeperStats.length > 0) {
         setGkStats(initialData.goalkeeperStats);
       } else if (initialData.goalkeepers && initialData.goalkeepers.length > 0) {
-        // Fallback for legacy data: assign 0 conceded or full conceded? 
-        // Better to assign 0 and let user fill it, or assign full score if only 1 GK.
+        // Fallback for legacy data
         const score = initialData.opponentScore || 0;
         if (initialData.goalkeepers.length === 1) {
              setGkStats([{ player: initialData.goalkeepers[0], conceded: score }]);
@@ -297,7 +302,6 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
     const totalGkConceded = gkStats.reduce((sum, g) => sum + g.conceded, 0);
     if (formData.countForStats && gkStats.length > 0 && totalGkConceded !== opp) {
        // Just a check, maybe not block, but good to ensure data quality.
-       // We won't block, but maybe we should prompt? For now, let it pass but maybe user notices.
     }
 
     let result = 'Draw';
@@ -327,7 +331,8 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
       penaltiesWon: penaltiesWon,
       ownGoals: ownGoals,
       notes: formData.notes,
-      countForStats: formData.countForStats
+      countForStats: formData.countForStats,
+      coach: formData.coach // New Field
     };
 
     onDataLoaded([newMatch], true); 
@@ -374,34 +379,45 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
         
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
           
-          <div className="bg-slate-50 border-b border-slate-100 p-4 md:px-8 flex flex-col md:flex-row gap-4 justify-between items-center">
-             <div className="flex flex-col sm:flex-row gap-4 w-full items-center">
-               <div className="flex-1 w-full">
+          <div className="bg-slate-50 border-b border-slate-100 p-4 md:px-8">
+             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-end">
+               <div className="w-full">
                   <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 block">赛季</label>
                   <select name="season" value={formData.season} onChange={handleFormChange} className="w-full bg-white border border-slate-300 text-slate-700 text-sm rounded-lg p-2 focus:ring-2 outline-none" style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}>
                      {seasonList.length === 0 && <option value="">请添加赛季</option>}
                      {seasonList.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                </div>
-               <div className="flex-1 w-full">
+               <div className="w-full">
                   <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 block">日期</label>
                   <input type="date" name="date" value={formData.date} onChange={handleFormChange} className="w-full bg-white border border-slate-300 text-slate-700 text-sm rounded-lg p-2 focus:ring-2 outline-none" style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties} />
                </div>
-               <div className="flex-1 w-full">
+               <div className="w-full">
                   <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 block flex items-center">
                     <Hash className="w-3 h-3 mr-1" /> 轮次
                   </label>
                   <input type="number" name="round" placeholder="例如: 3" value={formData.round} onChange={handleFormChange} className="w-full bg-white border border-slate-300 text-slate-700 text-sm rounded-lg p-2 focus:ring-2 outline-none" style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties} />
                </div>
-               
-               {/* Stats Toggle */}
-               <div className="flex-1 w-full flex items-center justify-center sm:justify-end pt-5 sm:pt-0">
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" name="countForStats" checked={formData.countForStats} onChange={handleFormChange} className="sr-only peer" />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
-                    <span className="ml-3 text-sm font-bold text-slate-700">计入统计</span>
+               <div className="w-full">
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 block flex items-center">
+                    <UserCog className="w-3 h-3 mr-1" /> 主教练
                   </label>
+                  <SearchablePlayerSelect 
+                    options={playerList.map(p => p.name)}
+                    value={formData.coach} 
+                    onChange={(val) => setFormData(prev => ({ ...prev, coach: val }))} 
+                    placeholder="选择执教教练" 
+                  />
                </div>
+             </div>
+             
+             {/* Stats Toggle */}
+             <div className="mt-4 flex justify-end">
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" name="countForStats" checked={formData.countForStats} onChange={handleFormChange} className="sr-only peer" />
+                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                  <span className="ml-3 text-sm font-bold text-slate-700">计入统计</span>
+                </label>
              </div>
           </div>
 
