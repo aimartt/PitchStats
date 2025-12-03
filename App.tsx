@@ -75,6 +75,7 @@ const AppContent: React.FC = () => {
 
   // Initialize DB and Load Data
   useEffect(() => {
+    // 1. If storage is empty, initialize it with defaultDb
     storageService.initialize();
     
     // Load Theme
@@ -85,6 +86,7 @@ const AppContent: React.FC = () => {
 
     // Load Teams
     const teamsStr = localStorage.getItem(STORAGE_KEYS.TEAMS);
+    // FALLBACK: Use defaultDb if local storage is missing/empty
     const loadedTeams: Team[] = teamsStr ? JSON.parse(teamsStr) : defaultDb.teams;
     setTeams(loadedTeams);
 
@@ -102,7 +104,7 @@ const AppContent: React.FC = () => {
       }
     }
 
-    // Load Data Entities
+    // Load Data Entities (Matches)
     const storedData = localStorage.getItem(STORAGE_KEYS.DATA);
     if (storedData) {
       const parsedMatches: MatchRecord[] = JSON.parse(storedData);
@@ -142,14 +144,15 @@ const AppContent: React.FC = () => {
          setRawData(parsedMatches);
       }
     } else {
-      setRawData([]);
+      // FALLBACK: Use defaultDb directly if not found in storage
+      setRawData(defaultDb.matches); 
     }
 
-    // Load Opponents (Migrate string -> object if needed)
+    // Load Opponents
     const storedOpponents = localStorage.getItem(STORAGE_KEYS.OPPONENTS);
     if (storedOpponents) {
       const parsed = JSON.parse(storedOpponents);
-      // Simple check if it's string array
+      // Migration: string -> object if needed
       if (parsed.length > 0 && typeof parsed[0] === 'string') {
          const defaultTeamId = loadedTeams[0]?.id || 'team-default-001';
          const migrated: OpponentTeam[] = parsed.map((name: string) => ({
@@ -162,9 +165,12 @@ const AppContent: React.FC = () => {
       } else {
          setAllOpponents(parsed);
       }
+    } else {
+      // FALLBACK
+      setAllOpponents(defaultDb.opponents); 
     }
 
-    // Load Seasons (Migrate string -> object)
+    // Load Seasons
     const storedSeasons = localStorage.getItem(STORAGE_KEYS.SEASONS);
     if (storedSeasons) {
        const parsed = JSON.parse(storedSeasons);
@@ -174,16 +180,19 @@ const AppContent: React.FC = () => {
             id: `sea-${Math.random()}`,
             name,
             teamId: defaultTeamId,
-            sortOrder: index // Add default sort order based on index
+            sortOrder: index
          }));
          setAllSeasons(migrated);
          localStorage.setItem(STORAGE_KEYS.SEASONS, JSON.stringify(migrated));
        } else {
          setAllSeasons(parsed);
        }
+    } else {
+      // FALLBACK
+      setAllSeasons(defaultDb.seasons);
     }
 
-    // Load Venues (Migrate string -> object)
+    // Load Venues
     const storedVenues = localStorage.getItem(STORAGE_KEYS.VENUES);
     if (storedVenues) {
        const parsed = JSON.parse(storedVenues);
@@ -193,13 +202,16 @@ const AppContent: React.FC = () => {
             id: `ven-${Math.random()}`,
             name,
             teamId: defaultTeamId,
-            sortOrder: index // Add default sort order based on index
+            sortOrder: index
          }));
          setAllVenues(migrated);
          localStorage.setItem(STORAGE_KEYS.VENUES, JSON.stringify(migrated));
        } else {
          setAllVenues(parsed);
        }
+    } else {
+      // FALLBACK
+      setAllVenues(defaultDb.venues);
     }
 
     // Load Players
@@ -214,6 +226,9 @@ const AppContent: React.FC = () => {
       } else {
          setAllPlayers(parsed);
       }
+    } else {
+      // FALLBACK
+      setAllPlayers(defaultDb.players);
     }
 
     setLoading(false);
@@ -277,10 +292,11 @@ const AppContent: React.FC = () => {
   };
 
   const handleLogout = () => {
-    authService.logout();
-    setAuthState({ user: null, isAuthenticated: false });
-    setCurrentTeam(null);
-    navigate(AppRoute.LOGIN);
+    // 1. Clear all browser local storage
+    localStorage.clear();
+    
+    // 2. Reload to reset in-memory state and re-trigger initialization from defaultDb on next load
+    window.location.reload();
   };
 
   const handleTeamSelect = (teamId: string) => {
@@ -503,9 +519,6 @@ const AppContent: React.FC = () => {
       setEditingMatch(undefined);
     }
     
-    // NOTE: Removed setViewingMatch(undefined) to prevent race condition with Router <Navigate>
-    // when returning from MatchDetail. viewingMatch will be overwritten when selecting a new match.
-
     navigate(route);
   };
 
