@@ -15,6 +15,7 @@ const RESULT_COLORS = {
 interface CoachStat {
   name: string;
   games: number;
+  formalGames: number;
   wins: number;
   draws: number;
   losses: number;
@@ -71,6 +72,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
       const opponent = match['opponent'] || match['team'] || `Match ${index + 1}`;
       const date = match['date'] || index;
       const coachName = match['coach'];
+      const isFormal = match['countforstats'] === true;
       
       let result = match['result'];
       if (!result) {
@@ -100,6 +102,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
             coachMap[coachName] = { 
                 name: coachName, 
                 games: 0, 
+                formalGames: 0,
                 wins: 0, 
                 draws: 0, 
                 losses: 0, 
@@ -111,6 +114,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
          }
          const c = coachMap[coachName];
          c.games++;
+         if (isFormal) c.formalGames++;
          c.goalsFor += gf;
          c.goalsAgainst += ga;
          c.lastMatchDate = date; // Update to latest match date
@@ -341,6 +345,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                        <th className="px-6 py-3 font-bold">主教练</th>
                        <th className="px-4 py-3 text-center">最近执教</th>
                        <th className="px-4 py-3 text-center">执教场次</th>
+                       <th className="px-4 py-3 text-center">正式比赛</th>
                        <th className="px-4 py-3 text-center">战绩 (胜/平/负)</th>
                        <th className="px-4 py-3 text-center">胜率</th>
                        <th className="px-4 py-3 text-center">进/失球</th>
@@ -355,6 +360,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                              {coach.lastMatchDate}
                           </td>
                           <td className="px-4 py-4 text-center font-medium">{coach.games}</td>
+                          <td className="px-4 py-4 text-center font-medium">{coach.formalGames}</td>
                           <td className="px-4 py-4 text-center">
                              <span className="text-emerald-600 font-bold">{coach.wins}</span> - <span className="text-amber-500 font-bold">{coach.draws}</span> - <span className="text-red-500 font-bold">{coach.losses}</span>
                           </td>
