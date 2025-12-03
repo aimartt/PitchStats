@@ -1,9 +1,3 @@
-
-
-
-
-
-
 import React, { useMemo, useState } from 'react';
 import { DataItem, DashboardProps } from '../types';
 import { 
@@ -27,6 +21,7 @@ interface CoachStat {
   goalsFor: number;
   goalsAgainst: number;
   winRate: number;
+  lastMatchDate: string;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
@@ -102,12 +97,23 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
       // Coach Stats Calculation
       if (coachName) {
          if (!coachMap[coachName]) {
-            coachMap[coachName] = { name: coachName, games: 0, wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, winRate: 0 };
+            coachMap[coachName] = { 
+                name: coachName, 
+                games: 0, 
+                wins: 0, 
+                draws: 0, 
+                losses: 0, 
+                goalsFor: 0, 
+                goalsAgainst: 0, 
+                winRate: 0, 
+                lastMatchDate: date 
+            };
          }
          const c = coachMap[coachName];
          c.games++;
          c.goalsFor += gf;
          c.goalsAgainst += ga;
+         c.lastMatchDate = date; // Update to latest match date
          if (result === 'Win') c.wins++;
          else if (result === 'Draw') c.draws++;
          else if (result === 'Loss') c.losses++;
@@ -119,8 +125,12 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
        ...c,
        winRate: c.games > 0 ? (c.wins / c.games) * 100 : 0
     })).sort((a, b) => {
-        // Sort by Win Rate desc, then Games desc
-        if (b.winRate !== a.winRate) return b.winRate - a.winRate;
+        // Sort by Last Match Date desc (Newest first)
+        const dateA = new Date(a.lastMatchDate).getTime() || 0;
+        const dateB = new Date(b.lastMatchDate).getTime() || 0;
+        if (dateA !== dateB) return dateB - dateA;
+        
+        // Then by Games desc
         return b.games - a.games;
     });
 
@@ -315,15 +325,21 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
       {/* Coach Stats Section */}
       {coachStats.length > 0 && (
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-           <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center">
-              <UserCog className="w-5 h-5 mr-2 text-indigo-500" />
-              <h3 className="text-lg font-bold text-slate-800">执教表现</h3>
+           <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+              <div className="flex items-center">
+                <UserCog className="w-5 h-5 mr-2 text-indigo-500" />
+                <h3 className="text-lg font-bold text-slate-800">执教表现</h3>
+              </div>
+              <div className="text-xs text-slate-400 font-medium">
+                 按最近执教时间排序
+              </div>
            </div>
            <div className="overflow-x-auto">
               <table className="w-full text-sm text-left text-slate-600">
                  <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
                     <tr>
                        <th className="px-6 py-3 font-bold">主教练</th>
+                       <th className="px-4 py-3 text-center">最近执教</th>
                        <th className="px-4 py-3 text-center">执教场次</th>
                        <th className="px-4 py-3 text-center">战绩 (胜/平/负)</th>
                        <th className="px-4 py-3 text-center">胜率</th>
@@ -335,6 +351,9 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                     {coachStats.map((coach, idx) => (
                        <tr key={idx} className="hover:bg-slate-50 transition-colors">
                           <td className="px-6 py-4 font-bold text-slate-900">{coach.name}</td>
+                          <td className="px-4 py-4 text-center text-xs text-slate-500 font-mono">
+                             {coach.lastMatchDate}
+                          </td>
                           <td className="px-4 py-4 text-center font-medium">{coach.games}</td>
                           <td className="px-4 py-4 text-center">
                              <span className="text-emerald-600 font-bold">{coach.wins}</span> - <span className="text-amber-500 font-bold">{coach.draws}</span> - <span className="text-red-500 font-bold">{coach.losses}</span>
