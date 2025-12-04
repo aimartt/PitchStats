@@ -284,7 +284,7 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
 
       {/* Hero Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-center md:justify-start"">
+         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-center md:justify-start">
             <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 mr-4">
                <Shield className="w-6 h-6" />
             </div>
