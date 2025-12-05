@@ -84,7 +84,10 @@ const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserR
            <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
              比赛记录
              <span className="text-sm font-normal text-slate-500 bg-slate-100 px-2 py-1 rounded-full border border-slate-200">
-               共 {matches.length} 场
+               {filteredMatches.length !== matches.length 
+                 ? `显示 ${filteredMatches.length} / 共 ${matches.length} 场`
+                 : `共 ${matches.length} 场`
+               }
              </span>
            </h2>
            <p className="text-slate-500 text-sm mt-1">点击比赛卡片查看详情</p>

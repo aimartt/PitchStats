@@ -1,11 +1,4 @@
 
-
-
-
-
-
-
-
 import React, { useState, useRef, useEffect } from 'react';
 import { DataItem, MatchRecord, GoalDetail, PlayerProfile, OpponentTeam, DataInputProps, GoalkeeperStat } from '../types';
 import { Plus, CheckCircle, AlertCircle, Save, ChevronDown, Users, Hash, MapPin, Flag, X, ArrowLeft, Shirt, Check, Search, Info, Shield, Crosshair, UserCog } from 'lucide-react';
@@ -173,8 +166,15 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
       setPenaltiesWon(initialData.penaltiesWon || []);
       setOwnGoals(initialData.ownGoals || []);
     } else {
-      if (seasonList.length > 0) setFormData(prev => ({ ...prev, season: seasonList[0] }));
-      if (venueList.length > 0) setFormData(prev => ({ ...prev, venue: venueList[0] }));
+      // Only set default season/venue if they are currently empty
+      // This check prevents resetting the user's selection on re-renders when prop references change
+      setFormData(prev => {
+        const updates: any = {};
+        if (!prev.season && seasonList.length > 0) updates.season = seasonList[0];
+        if (!prev.venue && venueList.length > 0) updates.venue = venueList[0];
+        
+        return Object.keys(updates).length > 0 ? { ...prev, ...updates } : prev;
+      });
     }
   }, [initialData, seasonList, venueList]);
 
@@ -258,10 +258,14 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
     setFormData(prev => {
         const newData = { ...prev, [name]: type === 'checkbox' ? checked : value };
         
-        // Smart default for matchType
+        // Smart default for matchType:
+        // Only automatically disable stats if switching TO '队内赛'.
+        // DO NOT automatically re-enable stats if switching AWAY from '队内赛', 
+        // as this overrides user intent if they manually unchecked it.
         if (name === 'matchType') {
-            if (value === '队内赛') newData.countForStats = false;
-            else newData.countForStats = true;
+            if (value === '队内赛') {
+               newData.countForStats = false;
+            } 
         }
         return newData;
     });

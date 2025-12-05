@@ -560,27 +560,27 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                  <tbody className="divide-y divide-slate-100">
                     {coachStats.map((coach, idx) => (
                        <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                          <td className="px-6 py-4 font-bold text-slate-900">{coach.name}</td>
+                          <td className="px-6 py-4 font-bold text-slate-900 text-sm">{coach.name}</td>
                           <td className="px-4 py-4 text-center text-xs text-slate-500 font-mono">
                              {coach.lastMatchDate}
                           </td>
-                          <td className="px-4 py-4 text-center font-medium">{coach.games}</td>
-                          <td className="px-4 py-4 text-center font-medium">{coach.formalGames}</td>
-                          <td className="px-4 py-4 text-center">
+                          <td className="px-4 py-4 text-center font-medium text-sm">{coach.games}</td>
+                          <td className="px-4 py-4 text-center font-medium text-sm">{coach.formalGames}</td>
+                          <td className="px-4 py-4 text-center text-sm">
                              <span className="text-emerald-600 font-bold">{coach.wins}</span> - <span className="text-amber-500 font-bold">{coach.draws}</span> - <span className="text-red-500 font-bold">{coach.losses}</span>
                           </td>
                           <td className="px-4 py-4 text-center">
                              <div className="flex items-center justify-center gap-2">
-                                <span className="font-bold text-slate-800">{coach.winRate.toFixed(0)}%</span>
+                                <span className="font-bold text-slate-800 text-sm">{coach.winRate.toFixed(0)}%</span>
                                 <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
                                    <div className="h-full bg-emerald-500" style={{ width: `${coach.winRate}%` }}></div>
                                 </div>
                              </div>
                           </td>
-                          <td className="px-4 py-4 text-center">
+                          <td className="px-4 py-4 text-center text-sm">
                              {coach.goalsFor} : {coach.goalsAgainst}
                           </td>
-                          <td className="px-4 py-4 text-center font-mono">
+                          <td className="px-4 py-4 text-center font-mono text-sm">
                              {((coach.goalsFor - coach.goalsAgainst) / coach.games).toFixed(1)}
                           </td>
                        </tr>
@@ -597,23 +597,23 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
            <h3 className="text-lg font-bold text-slate-800">近期比赛记录</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left text-slate-500">
-            <thead className="text-xs text-slate-700 uppercase bg-slate-50">
+          <table className="w-full text-sm text-left text-slate-600">
+            <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
               <tr>
-                <th className="px-6 py-3">日期</th>
-                <th className="px-4 py-3">类型</th>
+                <th className="px-6 py-3 font-bold">日期</th>
+                <th className="px-4 py-3 text-center">类型</th>
                 <th className="px-6 py-3">对手</th>
                 <th className="px-6 py-3 text-center">结果</th>
                 <th className="px-6 py-3 text-center">比分</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100">
               {/* Reverse history to show newest first */}
               {history.slice().reverse().slice(0, 10).map((match, idx) => (
-                <tr key={idx} className="bg-white border-b hover:bg-slate-50 transition-colors">
-                  <td className="px-6 py-4 font-medium text-slate-900">{match.date}</td>
-                  <td className="px-4 py-4">
-                     <span className={`text-[10px] px-2 py-0.5 rounded border font-medium ${
+                <tr key={idx} className="bg-white hover:bg-slate-50 transition-colors">
+                  <td className="px-6 py-4 font-medium text-slate-900 text-sm">{match.date}</td>
+                  <td className="px-4 py-4 text-center">
+                     <span className={`text-xs px-2.5 py-1 rounded border font-medium ${
                         match.type === '联赛' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' :
                         match.type === '友谊赛' ? 'bg-sky-50 text-sky-600 border-sky-100' :
                         match.type === '杯赛' ? 'bg-amber-50 text-amber-600 border-amber-100' :
@@ -622,9 +622,9 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                         {match.type || '友谊赛'}
                      </span>
                   </td>
-                  <td className="px-6 py-4">{match.name}</td>
+                  <td className="px-6 py-4 text-slate-900 text-sm">{match.name}</td>
                   <td className="px-6 py-4 text-center">
-                    <span className={`px-2 py-1 rounded text-xs font-bold ${
+                    <span className={`px-3 py-1 rounded text-sm font-bold ${
                       match.result === 'Win' ? 'bg-emerald-100 text-emerald-700' :
                       match.result === 'Loss' ? 'bg-red-100 text-red-700' :
                       'bg-amber-100 text-amber-700'
@@ -632,7 +632,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                       {match.result === 'Win' ? '胜' : match.result === 'Loss' ? '负' : '平'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-center font-mono font-bold text-slate-700">
+                  <td className="px-6 py-4 text-center font-mono font-bold text-slate-700 text-sm">
                     {match.进球} : {match.失球}
                   </td>
                 </tr>

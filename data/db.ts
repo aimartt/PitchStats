@@ -1269,7 +1269,8 @@ export const defaultDb: FullDatabase = {
       "penaltiesWon": [],
       "ownGoals": [],
       "notes": "",
-      "countForStats": true,
+      "countForStats": false,
+      "coach": "",
       "teamId": "1764057295948"
     },
     {
@@ -1429,7 +1430,7 @@ export const defaultDb: FullDatabase = {
       "format": "八人制",
       "venue": "平顶山足球乐园",
       "opponent": "正南齐北",
-      "ourScore": 3,
+      "ourScore": 2,
       "opponentScore": 5,
       "location": "Home",
       "result": "Loss",
@@ -1455,6 +1456,7 @@ export const defaultDb: FullDatabase = {
       "ownGoals": [],
       "notes": "",
       "countForStats": true,
+      "coach": "",
       "teamId": "1764057295948"
     },
     {
@@ -1634,6 +1636,58 @@ export const defaultDb: FullDatabase = {
       "countForStats": true,
       "coach": "杨皓宇",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1764896863602",
+      "date": "2025-12-04",
+      "season": "华侨城2025年冬",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "保时通体育文化创意园",
+      "opponent": "奶牛",
+      "ourScore": 5,
+      "opponentScore": 4,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "车驰",
+        "胡勇",
+        "钱星宇",
+        "秦坤",
+        "孙张力",
+        "闫志伟",
+        "杨皓宇",
+        "杨涛",
+        "申相峰"
+      ],
+      "starters": [
+        "车驰",
+        "胡勇",
+        "钱星宇",
+        "孙张力",
+        "闫志伟",
+        "杨皓宇",
+        "杨涛",
+        "申相峰"
+      ],
+      "goalkeepers": [
+        "孙张力"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "孙张力",
+          "conceded": 4
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": false,
+      "coach": "张龑瀚",
+      "teamId": "team-default-001"
     }
   ],
   "opponents": [
@@ -1801,6 +1855,11 @@ export const defaultDb: FullDatabase = {
       "id": "mijo55wl",
       "name": "聚友联",
       "teamId": "1764057295948"
+    },
+    {
+      "id": "mis5yt14",
+      "name": "奶牛",
+      "teamId": "team-default-001"
     }
   ],
   "seasons": [
@@ -2064,7 +2123,13 @@ export const defaultDb: FullDatabase = {
       "name": "张衡",
       "number": "71",
       "teamId": "1764057295948"
+    },
+    {
+      "name": "申相峰",
+      "number": "",
+      "birthday": "",
+      "teamId": "team-default-001"
     }
   ],
-  "theme": "red"
+  "theme": "blue"
 };
