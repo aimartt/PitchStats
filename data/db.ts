@@ -1688,6 +1688,44 @@ export const defaultDb: FullDatabase = {
       "countForStats": false,
       "coach": "张龑瀚",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1764991580058",
+      "date": "2025-12-06",
+      "season": "2026平顶山健康杯",
+      "round": 13,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "一直喝",
+      "ourScore": 4,
+      "opponentScore": 2,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "唐涛"
+      ],
+      "starters": [
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 2
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "",
+      "teamId": "1764057295948"
     }
   ],
   "opponents": [
@@ -2131,5 +2169,5 @@ export const defaultDb: FullDatabase = {
       "teamId": "team-default-001"
     }
   ],
-  "theme": "blue"
+  "theme": "lime"
 };
