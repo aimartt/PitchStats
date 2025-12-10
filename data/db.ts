@@ -1726,6 +1726,74 @@ export const defaultDb: FullDatabase = {
       "countForStats": true,
       "coach": "",
       "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1765328391030",
+      "date": "2025-12-09",
+      "season": "华侨城2025年冬",
+      "round": 3,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "华侨城足球公园",
+      "opponent": "全村的希望",
+      "ourScore": 2,
+      "opponentScore": 1,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "曹晓霖",
+        "车驰",
+        "陈春",
+        "陈启晅",
+        "郭佳东",
+        "何星谕",
+        "胡勇",
+        "李单",
+        "刘豪",
+        "钱星宇",
+        "孙张力",
+        "唐涛",
+        "杨皓宇",
+        "张龑瀚",
+        "朱峰"
+      ],
+      "starters": [
+        "车驰",
+        "陈启晅",
+        "何星谕",
+        "胡勇",
+        "李单",
+        "刘豪",
+        "钱星宇",
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 1
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "陈启晅",
+          "isPenalty": false
+        },
+        {
+          "scorer": "何星谕",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "张龑瀚",
+      "teamId": "team-default-001"
     }
   ],
   "opponents": [
@@ -2169,5 +2237,5 @@ export const defaultDb: FullDatabase = {
       "teamId": "team-default-001"
     }
   ],
-  "theme": "lime"
+  "theme": "sky"
 };
