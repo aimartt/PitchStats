@@ -27,7 +27,8 @@ interface CoachStat {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
-  const [selectedSeason, setSelectedSeason] = useState<string>('all');
+  // Default to the first season (ranked #1) if available, otherwise 'all'
+  const [selectedSeason, setSelectedSeason] = useState<string>(seasons.length > 0 ? seasons[0] : 'all');
 
   const stats = useMemo(() => {
     if (!data || data.length === 0) return null;
@@ -547,14 +548,14 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
               <table className="w-full text-sm text-left text-slate-600">
                  <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
                     <tr>
-                       <th className="px-6 py-3 font-bold">主教练</th>
-                       <th className="px-4 py-3 text-center">最近执教</th>
-                       <th className="px-4 py-3 text-center">执教场次</th>
-                       <th className="px-4 py-3 text-center">正式比赛</th>
-                       <th className="px-4 py-3 text-center">战绩 (胜/平/负)</th>
-                       <th className="px-4 py-3 text-center">胜率</th>
-                       <th className="px-4 py-3 text-center">进/失球</th>
-                       <th className="px-4 py-3 text-center">场均净胜</th>
+                       <th className="px-6 py-3 font-bold text-sm">主教练</th>
+                       <th className="px-4 py-3 text-center text-sm">最近执教</th>
+                       <th className="px-4 py-3 text-center text-sm">执教场次</th>
+                       <th className="px-4 py-3 text-center text-sm">正式比赛</th>
+                       <th className="px-4 py-3 text-center text-sm">战绩 (胜/平/负)</th>
+                       <th className="px-4 py-3 text-center text-sm">胜率</th>
+                       <th className="px-4 py-3 text-center text-sm">进/失球</th>
+                       <th className="px-4 py-3 text-center text-sm">场均净胜</th>
                     </tr>
                  </thead>
                  <tbody className="divide-y divide-slate-100">
@@ -600,11 +601,11 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
           <table className="w-full text-sm text-left text-slate-600">
             <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
               <tr>
-                <th className="px-6 py-3 font-bold">日期</th>
-                <th className="px-4 py-3 text-center">类型</th>
-                <th className="px-6 py-3">对手</th>
-                <th className="px-6 py-3 text-center">结果</th>
-                <th className="px-6 py-3 text-center">比分</th>
+                <th className="px-6 py-3 font-bold text-sm">日期</th>
+                <th className="px-4 py-3 text-center text-sm">类型</th>
+                <th className="px-6 py-3 text-sm">对手</th>
+                <th className="px-6 py-3 text-center text-sm">结果</th>
+                <th className="px-6 py-3 text-center text-sm">比分</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">

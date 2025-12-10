@@ -223,9 +223,9 @@ const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserR
                         {/* Goals */}
                         {match.goalsDetails && match.goalsDetails.length > 0 && (
                            <div className="flex flex-wrap items-center gap-y-1 text-sm">
-                               <span className="mr-2 text-base" role="img" aria-label="goals">⚽</span>
                                {match.goalsDetails.map((goal, idx) => (
                                   <div key={idx} className="flex items-center text-slate-700 mr-3 last:mr-0">
+                                     <span className="mr-1 text-xs" role="img" aria-label="goal">⚽</span>
                                      <span className="font-bold">{goal.scorer}</span>
                                      {goal.isPenalty && <span className="text-[10px] text-red-500 ml-0.5 font-bold" title="点球">P</span>}
                                      {goal.assist && (
