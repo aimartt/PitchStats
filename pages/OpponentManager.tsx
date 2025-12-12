@@ -14,6 +14,7 @@ interface OpponentStats {
   goalsFor: number;
   goalsAgainst: number;
   lastResult?: 'Win' | 'Draw' | 'Loss';
+  history: string[];
 }
 
 const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, onAddOpponent, onRemoveOpponent, onEditOpponent, currentTeamName, currentUserRole }) => {
@@ -54,12 +55,16 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
         draws: 0,
         losses: 0,
         goalsFor: 0,
-        goalsAgainst: 0
+        goalsAgainst: 0,
+        history: []
       };
     });
 
-    // Process matches
-    matches.forEach(m => {
+    // Sort matches by date ascending to ensure lastResult captures the latest game
+    const sortedMatches = [...matches].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+    // Process sorted matches
+    sortedMatches.forEach(m => {
       // Only include matches that are NOT internal matches
       if (m.matchType === '队内赛') return;
 
@@ -67,7 +72,7 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
       
       // If we encounter an opponent in matches that isn't in our list (and isn't internal), add a temp record
       if (!statsMap[oppName]) {
-         statsMap[oppName] = { id: 'temp', name: oppName, matchesPlayed: 0, wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0 };
+         statsMap[oppName] = { id: 'temp', name: oppName, matchesPlayed: 0, wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, history: [] };
       }
 
       const stats = statsMap[oppName];
@@ -87,6 +92,7 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
       else if (result === 'Draw') stats.draws++;
       else if (result === 'Loss') stats.losses++;
 
+      stats.history.push(result as string);
       stats.lastResult = result as 'Win' | 'Draw' | 'Loss';
     });
 
@@ -454,12 +460,20 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
                       </div>
                    </div>
                    
-                   {/* Visual Bar */}
+                   {/* Visual Bar - Chronological Timeline */}
                    {team.matchesPlayed > 0 && (
-                      <div className="h-1.5 w-full flex">
-                         <div style={{ width: `${(team.wins / team.matchesPlayed) * 100}%` }} className="bg-emerald-400"></div>
-                         <div style={{ width: `${(team.draws / team.matchesPlayed) * 100}%` }} className="bg-amber-400"></div>
-                         <div style={{ width: `${(team.losses / team.matchesPlayed) * 100}%` }} className="bg-red-400"></div>
+                      <div className="h-1.5 w-full flex overflow-hidden">
+                         {team.history.map((res, i) => (
+                           <div 
+                             key={i}
+                             className={`h-full flex-1 ${
+                               res === 'Win' ? 'bg-emerald-400' : 
+                               res === 'Draw' ? 'bg-amber-400' : 
+                               'bg-red-400'
+                             }`}
+                             title={`Match ${i+1}: ${res}`} 
+                           />
+                         ))}
                       </div>
                    )}
                 </div>
