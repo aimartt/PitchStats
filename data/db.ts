@@ -2372,6 +2372,79 @@ export const defaultDb: FullDatabase = {
       "countForStats": true,
       "coach": "",
       "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1765847892553",
+      "date": "2025-12-15",
+      "season": "华侨城2025年冬",
+      "round": 4,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "华侨城足球公园",
+      "opponent": "ABS FC",
+      "ourScore": 1,
+      "opponentScore": 6,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "曹晓霖",
+        "车驰",
+        "陈启晅",
+        "郭佳东",
+        "胡勇",
+        "李单",
+        "李彦达",
+        "林浩",
+        "刘豪",
+        "钱星宇",
+        "唐涛",
+        "王薪炎",
+        "杨涛",
+        "张善博",
+        "张龑瀚",
+        "朱峰",
+        "赵建宇"
+      ],
+      "starters": [
+        "车驰",
+        "陈启晅",
+        "胡勇",
+        "李单",
+        "林浩",
+        "刘豪",
+        "钱星宇",
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 6
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "杨涛",
+          "assist": "曹晓霖",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [
+        "车驰",
+        "郭佳东",
+        "杨涛"
+      ],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [
+        "郭佳东"
+      ],
+      "notes": "",
+      "countForStats": true,
+      "coach": "张龑瀚",
+      "teamId": "team-default-001"
     }
   ],
   "opponents": [
@@ -2865,7 +2938,13 @@ export const defaultDb: FullDatabase = {
       "number": "",
       "birthday": "",
       "teamId": "team-default-001"
+    },
+    {
+      "name": "赵建宇",
+      "number": "7",
+      "birthday": "1992-11-02",
+      "teamId": "team-default-001"
     }
   ],
-  "theme": "red"
+  "theme": "emerald"
 };
