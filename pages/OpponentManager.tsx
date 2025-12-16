@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo, useRef } from 'react';
-import { Users, Plus, Trash2, Search, Shield, Pencil, X, Check, Swords, TrendingUp, History, Camera, Eye, Calendar, MapPin, Trophy, Crown, Handshake, Shirt } from 'lucide-react';
+import { Users, Plus, Trash2, Search, Shield, Pencil, X, Check, Swords, TrendingUp, History, Camera, Eye, Calendar, MapPin, Trophy, Crown, Handshake, Shirt, Ghost, Heart } from 'lucide-react';
 import { OpponentManagerProps, OpponentTeam, MatchRecord } from '../types';
 
 interface OpponentStats {
@@ -250,8 +250,19 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
     stat.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Derived Stats
   const totalMatchesAgainst = filteredStats.reduce((acc, curr) => acc + curr.matchesPlayed, 0);
   const mostFrequentOpponent = [...filteredStats].sort((a,b) => b.matchesPlayed - a.matchesPlayed)[0];
+
+  // Calculate Nemesis and Favorite
+  const sortedByNetGoals = useMemo(() => {
+     return [...filteredStats]
+       .filter(s => s.matchesPlayed > 0)
+       .sort((a, b) => (a.goalsFor - a.goalsAgainst) - (b.goalsFor - b.goalsAgainst));
+  }, [filteredStats]);
+
+  const nemesis = sortedByNetGoals.length > 0 ? sortedByNetGoals[0] : null;
+  const favoriteOpponent = sortedByNetGoals.length > 0 ? sortedByNetGoals[sortedByNetGoals.length - 1] : null;
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 animate-fade-in relative">
@@ -289,35 +300,66 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
       </div>
 
       {/* Hero Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-center md:justify-start">
-            <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 mr-4">
-               <Shield className="w-6 h-6" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+         {/* Count */}
+         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center">
+            <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 mr-3 shrink-0">
+               <Shield className="w-5 h-5" />
             </div>
             <div>
-               <p className="text-xs text-slate-500 font-bold uppercase">在册对手</p>
-               <h3 className="text-2xl font-bold text-slate-800">{opponents.filter(o => o.name !== '队内对抗').length} <span className="text-sm font-normal text-slate-400">支</span></h3>
+               <p className="text-[10px] text-slate-500 font-bold uppercase">在册对手</p>
+               <h3 className="text-xl font-bold text-slate-800">{opponents.filter(o => o.name !== '队内对抗').length} <span className="text-xs font-normal text-slate-400">支</span></h3>
             </div>
          </div>
 
-         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-center md:justify-start">
-            <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 mr-4">
-               <Swords className="w-6 h-6" />
+         {/* Total Matches */}
+         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center">
+            <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 mr-3 shrink-0">
+               <Swords className="w-5 h-5" />
             </div>
             <div>
-               <p className="text-xs text-slate-500 font-bold uppercase">已记录交手</p>
-               <h3 className="text-2xl font-bold text-slate-800">{totalMatchesAgainst} <span className="text-sm font-normal text-slate-400">场</span></h3>
+               <p className="text-[10px] text-slate-500 font-bold uppercase">已记录交手</p>
+               <h3 className="text-xl font-bold text-slate-800">{totalMatchesAgainst} <span className="text-xs font-normal text-slate-400">场</span></h3>
             </div>
          </div>
 
-         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-center md:justify-start">
-            <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center text-orange-600 mr-4">
-               <TrendingUp className="w-6 h-6" />
+         {/* Frequent Opponent */}
+         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center">
+            <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-600 mr-3 shrink-0">
+               <TrendingUp className="w-5 h-5" />
             </div>
-            <div>
-               <p className="text-xs text-slate-500 font-bold uppercase">老对手</p>
-               <h3 className="text-xl font-bold text-slate-800 truncate max-w-[150px]">{mostFrequentOpponent ? mostFrequentOpponent.name : '-'}</h3>
-               <p className="text-xs text-slate-400">{mostFrequentOpponent ? `交手 ${mostFrequentOpponent.matchesPlayed} 次` : '暂无数据'}</p>
+            <div className="overflow-hidden">
+               <p className="text-[10px] text-slate-500 font-bold uppercase">老对手</p>
+               <h3 className="text-lg font-bold text-slate-800 truncate">{mostFrequentOpponent ? mostFrequentOpponent.name : '-'}</h3>
+               <p className="text-[10px] text-slate-400">{mostFrequentOpponent ? `交手 ${mostFrequentOpponent.matchesPlayed} 次` : '暂无数据'}</p>
+            </div>
+         </div>
+
+         {/* Nemesis (苦主) */}
+         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center">
+            <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 mr-3 shrink-0">
+               <Ghost className="w-5 h-5" />
+            </div>
+            <div className="overflow-hidden">
+               <p className="text-[10px] text-slate-500 font-bold uppercase">苦主</p>
+               <h3 className="text-lg font-bold text-slate-800 truncate">{nemesis ? nemesis.name : '-'}</h3>
+               <p className="text-[10px] text-slate-400">
+                  {nemesis ? `净负 ${Math.abs(nemesis.goalsFor - nemesis.goalsAgainst)} 球` : '暂无数据'}
+               </p>
+            </div>
+         </div>
+
+         {/* Favorite Opponent (最喜欢的对手) */}
+         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center">
+            <div className="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center text-rose-600 mr-3 shrink-0">
+               <Heart className="w-5 h-5" />
+            </div>
+            <div className="overflow-hidden">
+               <p className="text-[10px] text-slate-500 font-bold uppercase">最喜欢的对手</p>
+               <h3 className="text-lg font-bold text-slate-800 truncate">{favoriteOpponent ? favoriteOpponent.name : '-'}</h3>
+               <p className="text-[10px] text-slate-400">
+                  {favoriteOpponent ? `净胜 ${Math.abs(favoriteOpponent.goalsFor - favoriteOpponent.goalsAgainst)} 球` : '暂无数据'}
+               </p>
             </div>
          </div>
       </div>

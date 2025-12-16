@@ -925,6 +925,7 @@
         "张龑瀚"
       ],
       "goalkeepers": [],
+      "goalkeeperStats": [],
       "goalsDetails": [],
       "yellowCards": [],
       "redCards": [],
@@ -932,6 +933,7 @@
       "ownGoals": [],
       "notes": "外援4个",
       "countForStats": false,
+      "coach": "车驰",
       "teamId": "team-default-001"
     },
     {
@@ -972,6 +974,7 @@
         "朱峰"
       ],
       "goalkeepers": [],
+      "goalkeeperStats": [],
       "goalsDetails": [],
       "yellowCards": [],
       "redCards": [],
@@ -979,6 +982,7 @@
       "ownGoals": [],
       "notes": "",
       "countForStats": false,
+      "coach": "车驰",
       "teamId": "team-default-001"
     },
     {
@@ -1025,6 +1029,12 @@
       "goalkeepers": [
         "唐涛"
       ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 5
+        }
+      ],
       "goalsDetails": [
         {
           "scorer": "钱星宇",
@@ -1038,6 +1048,7 @@
       "ownGoals": [],
       "notes": "对手违规，3-0判胜",
       "countForStats": true,
+      "coach": "车驰",
       "teamId": "team-default-001"
     },
     {
