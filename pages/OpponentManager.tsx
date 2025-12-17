@@ -355,7 +355,7 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
                <Heart className="w-5 h-5" />
             </div>
             <div className="overflow-hidden">
-               <p className="text-[10px] text-slate-500 font-bold uppercase">最喜欢的对手</p>
+               <p className="text-[10px] text-slate-500 font-bold uppercase">软柿子</p>
                <h3 className="text-lg font-bold text-slate-800 truncate">{favoriteOpponent ? favoriteOpponent.name : '-'}</h3>
                <p className="text-[10px] text-slate-400">
                   {favoriteOpponent ? `净胜 ${Math.abs(favoriteOpponent.goalsFor - favoriteOpponent.goalsAgainst)} 球` : '暂无数据'}
