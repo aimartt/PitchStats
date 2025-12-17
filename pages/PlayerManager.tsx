@@ -253,18 +253,18 @@ const PlayerDetailView: React.FC<{
                   </h3>
                </div>
                <div className="overflow-x-auto flex-1">
-                  <table className="w-full text-sm text-left">
-                     <thead className="text-xs text-slate-500 uppercase bg-slate-50/80 border-b border-slate-100">
+                  <table className="w-full text-xs md:text-sm text-left">
+                     <thead className="text-[10px] md:text-xs text-slate-500 uppercase bg-slate-50/80 border-b border-slate-100">
                         <tr>
-                           <th className="px-4 py-3 font-bold">赛季</th>
-                           <th className="px-2 py-3 text-center">总场次 (率)</th>
-                           <th className="px-2 py-3 text-center">正式比赛 (率)</th>
-                           <th className="px-2 py-3 text-center">首发 (率)</th>
-                           <th className="px-2 py-3 text-center">进球 (场均)</th>
-                           <th className="px-2 py-3 text-center">助攻 (场均)</th>
-                           <th className="px-2 py-3 text-center">乌龙</th>
-                           <th className="px-2 py-3 text-center">红/黄</th>
-                           <th className="px-2 py-3 text-center">失球 (场均)</th>
+                           <th className="px-3 md:px-4 py-3 font-bold whitespace-nowrap">赛季</th>
+                           <th className="px-2 py-3 text-center whitespace-nowrap">总场次 (率)</th>
+                           <th className="px-2 py-3 text-center whitespace-nowrap">正式比赛 (率)</th>
+                           <th className="px-2 py-3 text-center whitespace-nowrap">首发 (率)</th>
+                           <th className="px-2 py-3 text-center whitespace-nowrap">进球 (场均)</th>
+                           <th className="px-2 py-3 text-center whitespace-nowrap">助攻 (场均)</th>
+                           <th className="px-2 py-3 text-center whitespace-nowrap">乌龙</th>
+                           <th className="px-2 py-3 text-center whitespace-nowrap">红/黄</th>
+                           <th className="px-2 py-3 text-center whitespace-nowrap">失球 (场均)</th>
                         </tr>
                      </thead>
                      <tbody className="divide-y divide-slate-100">
@@ -278,7 +278,7 @@ const PlayerDetailView: React.FC<{
                               
                               return (
                                 <tr key={stat.season} className="hover:bg-blue-50/30 even:bg-slate-50/50 transition-colors">
-                                   <td className="px-4 py-3 font-medium text-slate-700 whitespace-nowrap">
+                                   <td className="px-3 md:px-4 py-3 font-medium text-slate-700 whitespace-nowrap">
                                       {stat.season}
                                    </td>
                                    <td className="px-2 py-3 text-center">
@@ -678,12 +678,12 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
   const RateBar = ({ val, total, colorClass = "bg-slate-800" }: { val: number, total: number, colorClass?: string }) => {
      const rate = total > 0 ? Math.round((val / total) * 100) : 0;
      return (
-        <div className="flex flex-col gap-1 w-full max-w-[80px] mx-auto">
-           <div className="flex justify-between text-xs">
+        <div className="flex flex-col gap-1 w-full max-w-[50px] md:max-w-[80px] mx-auto">
+           <div className="flex justify-between text-[10px] md:text-xs">
               <span className="font-bold text-slate-700">{val}</span>
               <span className="text-slate-400">{rate}%</span>
            </div>
-           <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+           <div className="h-1 md:h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
               <div className={`h-full rounded-full transition-all ${colorClass}`} style={{ width: `${rate}%` }}></div>
            </div>
         </div>
@@ -691,8 +691,8 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
   };
 
   const SortIcon = ({ colKey }: { colKey: string }) => {
-     if (sortConfig.key !== colKey) return <ArrowUpDown className="w-3 h-3 opacity-30 ml-1" />;
-     return sortConfig.direction === 'asc' ? <ArrowUp className="w-3 h-3 ml-1 text-slate-800" /> : <ArrowDown className="w-3 h-3 ml-1 text-slate-800" />;
+     if (sortConfig.key !== colKey) return <ArrowUpDown className="w-2 h-2 md:w-3 md:h-3 opacity-30 ml-1" />;
+     return sortConfig.direction === 'asc' ? <ArrowUp className="w-2 h-2 md:w-3 md:h-3 ml-1 text-slate-800" /> : <ArrowDown className="w-2 h-2 md:w-3 md:h-3 ml-1 text-slate-800" />;
   };
 
   // If viewing details, show detail component
@@ -701,7 +701,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 animate-fade-in relative pb-20">
+    <div className="max-w-7xl mx-auto space-y-6 animate-fade-in relative pb-20">
       
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -716,12 +716,12 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
         </div>
         
         <div className="flex gap-3 flex-wrap">
-           <div className="relative">
+           <div className="relative w-full md:w-auto">
               <Filter className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
               <select 
                  value={selectedSeason}
                  onChange={(e) => setSelectedSeason(e.target.value)}
-                 className="pl-9 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 outline-none w-56 shadow-sm text-sm appearance-none bg-white cursor-pointer"
+                 className="w-full md:w-56 pl-9 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 outline-none shadow-sm text-sm appearance-none bg-white cursor-pointer"
                  style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
               >
                   <option value="all">所有赛季</option>
@@ -729,14 +729,14 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
               </select>
            </div>
 
-           <div className="relative">
+           <div className="relative w-full md:w-auto flex-1 md:flex-none">
               <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
               <input 
                 type="text" 
                 placeholder="搜索姓名或号码..." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 outline-none w-48 shadow-sm text-sm"
+                className="w-full md:w-48 pl-9 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 outline-none shadow-sm text-sm"
                 style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
               />
            </div>
@@ -744,7 +744,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
            {!isReadOnly && (
                <button 
                   onClick={() => document.getElementById('add-player-row')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="flex items-center px-4 py-2 text-white rounded-lg shadow-sm font-medium hover:brightness-110 transition-all text-sm"
+                  className="hidden md:flex items-center px-4 py-2 text-white rounded-lg shadow-sm font-medium hover:brightness-110 transition-all text-sm"
                   style={{ backgroundColor: 'var(--primary)' }}
                >
                   <Plus className="w-4 h-4 mr-2" />
@@ -754,68 +754,68 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
         </div>
       </div>
 
-      {/* Hall of Fame */}
+      {/* Hall of Fame - Compact Grid on Mobile */}
       {playerStats.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4">
            {/* Top Scorer */}
-           <div className="bg-white p-4 rounded-xl border border-yellow-100 shadow-sm flex items-center gap-4 relative overflow-hidden">
+           <div className="bg-white p-3 md:p-4 rounded-xl border border-yellow-100 shadow-sm flex items-center gap-3 md:gap-4 relative overflow-hidden">
                <div className="absolute right-0 bottom-0 opacity-10">
-                  <Trophy className="w-24 h-24 text-yellow-500" />
+                  <Trophy className="w-16 h-16 md:w-24 md:h-24 text-yellow-500" />
                </div>
-               <div className="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 font-bold border border-yellow-200 overflow-hidden shrink-0">
+               <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 font-bold border border-yellow-200 overflow-hidden shrink-0">
                   {topScorer?.avatar ? <img src={topScorer.avatar} className="w-full h-full object-cover"/> : topScorer?.name.charAt(0)}
                </div>
-               <div>
-                  <p className="text-xs font-bold text-yellow-600 uppercase tracking-wider">最佳射手</p>
-                  <h3 className="text-lg font-bold text-slate-800 truncate max-w-[120px]">{topScorer?.name || '-'}</h3>
-                  <p className="text-sm text-slate-500">{topScorer?.goals || 0} 进球</p>
+               <div className="min-w-0">
+                  <p className="text-[10px] md:text-xs font-bold text-yellow-600 uppercase tracking-wider truncate">最佳射手</p>
+                  <h3 className="text-sm md:text-lg font-bold text-slate-800 truncate">{topScorer?.name || '-'}</h3>
+                  <p className="text-xs md:text-sm text-slate-500">{topScorer?.goals || 0} 进球</p>
                </div>
            </div>
 
            {/* Top Assister */}
-           <div className="bg-white p-4 rounded-xl border border-blue-100 shadow-sm flex items-center gap-4 relative overflow-hidden">
+           <div className="bg-white p-3 md:p-4 rounded-xl border border-blue-100 shadow-sm flex items-center gap-3 md:gap-4 relative overflow-hidden">
                <div className="absolute right-0 bottom-0 opacity-10">
-                  <Zap className="w-24 h-24 text-blue-500" />
+                  <Zap className="w-16 h-16 md:w-24 md:h-24 text-blue-500" />
                </div>
-               <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold border border-blue-200 overflow-hidden shrink-0">
+               <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold border border-blue-200 overflow-hidden shrink-0">
                   {topAssister?.avatar ? <img src={topAssister.avatar} className="w-full h-full object-cover"/> : topAssister?.name.charAt(0)}
                </div>
-               <div>
-                  <p className="text-xs font-bold text-blue-600 uppercase tracking-wider">助攻王</p>
-                  <h3 className="text-lg font-bold text-slate-800 truncate max-w-[120px]">{topAssister?.name || '-'}</h3>
-                  <p className="text-sm text-slate-500">{topAssister?.assists || 0} 助攻</p>
+               <div className="min-w-0">
+                  <p className="text-[10px] md:text-xs font-bold text-blue-600 uppercase tracking-wider truncate">助攻王</p>
+                  <h3 className="text-sm md:text-lg font-bold text-slate-800 truncate">{topAssister?.name || '-'}</h3>
+                  <p className="text-xs md:text-sm text-slate-500">{topAssister?.assists || 0} 助攻</p>
                </div>
            </div>
 
            {/* Best Goalkeeper */}
-           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4 relative overflow-hidden">
+           <div className="bg-white p-3 md:p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3 md:gap-4 relative overflow-hidden">
                <div className="absolute right-0 bottom-0 opacity-10">
-                  <Shield className="w-24 h-24 text-slate-500" />
+                  <Shield className="w-16 h-16 md:w-24 md:h-24 text-slate-500" />
                </div>
-               <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold border border-slate-200 overflow-hidden shrink-0">
+               <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold border border-slate-200 overflow-hidden shrink-0">
                   {bestGoalkeeper?.avatar ? <img src={bestGoalkeeper.avatar} className="w-full h-full object-cover"/> : (bestGoalkeeper?.name.charAt(0) || '-')}
                </div>
-               <div>
-                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">最佳守门员</p>
-                  <h3 className="text-lg font-bold text-slate-800 truncate max-w-[120px]">{bestGoalkeeper?.name || '-'}</h3>
-                  <p className="text-sm text-slate-500">
+               <div className="min-w-0">
+                  <p className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider truncate">最佳守门员</p>
+                  <h3 className="text-sm md:text-lg font-bold text-slate-800 truncate">{bestGoalkeeper?.name || '-'}</h3>
+                  <p className="text-xs md:text-sm text-slate-500 truncate">
                      场均失 {bestGoalkeeper ? formatStat(bestGoalkeeper.concededPerGame, true) : '-'} 球
                   </p>
                </div>
            </div>
 
            {/* Unlucky Player */}
-           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4 relative overflow-hidden">
+           <div className="bg-white p-3 md:p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3 md:gap-4 relative overflow-hidden">
                <div className="absolute right-0 bottom-0 opacity-10">
-                  <HeartCrack className="w-24 h-24 text-slate-600" />
+                  <HeartCrack className="w-16 h-16 md:w-24 md:h-24 text-slate-600" />
                </div>
-               <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold border border-slate-200 overflow-hidden shrink-0">
+               <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold border border-slate-200 overflow-hidden shrink-0">
                   {mostUnlucky?.avatar ? <img src={mostUnlucky.avatar} className="w-full h-full object-cover"/> : (mostUnlucky?.name.charAt(0) || '-')}
                </div>
-               <div>
-                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">不幸的球员</p>
-                  <h3 className="text-lg font-bold text-slate-800 truncate max-w-[120px]">{mostUnlucky?.name || '-'}</h3>
-                  <p className="text-sm text-slate-500">
+               <div className="min-w-0">
+                  <p className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider truncate">不幸的球员</p>
+                  <h3 className="text-sm md:text-lg font-bold text-slate-800 truncate">{mostUnlucky?.name || '-'}</h3>
+                  <p className="text-xs md:text-sm text-slate-500 truncate">
                      {mostUnlucky ? `${mostUnlucky.ownGoals} 乌龙` : '暂无数据'}
                   </p>
                </div>
@@ -826,73 +826,73 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
       {/* Main Table View */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div className="overflow-x-auto">
-           <table className="w-full text-sm text-left">
-              <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
+           <table className="w-full text-xs md:text-sm text-left">
+              <thead className="text-[10px] md:text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
                  <tr>
-                    <th className="px-4 py-3 cursor-pointer hover:bg-slate-100 transition-colors group sticky left-0 bg-slate-50 z-10 whitespace-nowrap" onClick={() => handleSort('name')}>
+                    <th className="px-2 md:px-4 py-3 cursor-pointer hover:bg-slate-100 transition-colors group sticky left-0 bg-slate-50 z-20 whitespace-nowrap shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] md:shadow-none" onClick={() => handleSort('name')}>
                        <div className="flex items-center">球员 <SortIcon colKey="name" /></div>
                     </th>
-                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center" onClick={() => handleSort('age')}>
+                    <th className="px-1 md:px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center whitespace-nowrap" onClick={() => handleSort('age')}>
                        <div className="flex items-center justify-center">年龄 <SortIcon colKey="age" /></div>
                     </th>
-                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center w-28" onClick={() => handleSort('matchesPlayed')}>
+                    <th className="px-1 md:px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center w-20 md:w-28 whitespace-nowrap" onClick={() => handleSort('matchesPlayed')}>
                        <div className="flex items-center justify-center">总场次 <SortIcon colKey="matchesPlayed" /></div>
                     </th>
-                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center w-28" onClick={() => handleSort('leagueMatchesPlayed')}>
+                    <th className="px-1 md:px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center w-20 md:w-28 whitespace-nowrap" onClick={() => handleSort('leagueMatchesPlayed')}>
                        <div className="flex items-center justify-center">正式比赛 <SortIcon colKey="leagueMatchesPlayed" /></div>
                     </th>
-                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center" onClick={() => handleSort('starts')}>
+                    <th className="px-1 md:px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center whitespace-nowrap" onClick={() => handleSort('starts')}>
                        <div className="flex items-center justify-center">首发 <SortIcon colKey="starts" /></div>
                     </th>
-                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center bg-slate-100/50" onClick={() => handleSort('goals')}>
+                    <th className="px-1 md:px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center bg-slate-100/50 whitespace-nowrap" onClick={() => handleSort('goals')}>
                        <div className="flex items-center justify-center">进球 <SortIcon colKey="goals" /></div>
                     </th>
-                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center bg-slate-100/50" onClick={() => handleSort('assists')}>
+                    <th className="px-1 md:px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center bg-slate-100/50 whitespace-nowrap" onClick={() => handleSort('assists')}>
                        <div className="flex items-center justify-center">助攻 <SortIcon colKey="assists" /></div>
                     </th>
-                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center" onClick={() => handleSort('ownGoals')}>
+                    <th className="px-1 md:px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center whitespace-nowrap" onClick={() => handleSort('ownGoals')}>
                        <div className="flex items-center justify-center">乌龙 <SortIcon colKey="ownGoals" /></div>
                     </th>
-                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center" onClick={() => handleSort('disciplineScore')}>
+                    <th className="px-1 md:px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center whitespace-nowrap" onClick={() => handleSort('disciplineScore')}>
                        <div className="flex items-center justify-center">红黄牌 <SortIcon colKey="disciplineScore" /></div>
                     </th>
-                    <th className="px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center" onClick={() => handleSort('conceded')}>
+                    <th className="px-1 md:px-2 py-3 cursor-pointer hover:bg-slate-100 transition-colors text-center whitespace-nowrap" onClick={() => handleSort('conceded')}>
                        <div className="flex items-center justify-center gap-1 text-slate-400 group-hover:text-slate-600" title="仅统计作为守门员时的失球">
                            <Shield className="w-3 h-3" />
                            失球 <SortIcon colKey="conceded" />
                        </div>
                     </th>
-                    <th className="px-4 py-3 text-center whitespace-nowrap">操作</th>
+                    <th className="px-2 md:px-4 py-3 text-center whitespace-nowrap">操作</th>
                  </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                  {filteredStats.map((player) => (
                     <tr key={player.name} className="hover:bg-blue-50/50 even:bg-slate-50/50 transition-colors group">
-                       <td className="px-4 py-3 sticky left-0 bg-white group-hover:bg-blue-50/20 group-even:bg-slate-50/50 z-10 whitespace-nowrap">
-                          <div className="flex items-center gap-3">
-                             <div className="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 font-bold text-slate-400">
+                       <td className="px-2 md:px-4 py-3 sticky left-0 bg-white group-hover:bg-blue-50/20 group-even:bg-slate-50/50 z-20 whitespace-nowrap shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] md:shadow-none border-r border-slate-100 md:border-none">
+                          <div className="flex items-center gap-2 md:gap-3">
+                             <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 font-bold text-slate-400 text-xs md:text-sm">
                                 {player.avatar ? <img src={player.avatar} className="w-full h-full object-cover"/> : player.number || '#'}
                              </div>
                              <div>
-                                <div className="font-bold text-slate-800 text-sm">{player.name}</div>
+                                <div className="font-bold text-slate-800 text-xs md:text-sm">{player.name}</div>
                                 {player.number && <div className="text-[10px] text-slate-400 font-mono">#{player.number}</div>}
                              </div>
                           </div>
                        </td>
-                       <td className="px-2 py-3 text-slate-600 text-center">
+                       <td className="px-1 md:px-2 py-3 text-slate-600 text-center text-xs md:text-sm">
                           {player.age ? player.age : '-'}
                        </td>
-                       <td className="px-2 py-3">
+                       <td className="px-1 md:px-2 py-3">
                           <div className="flex justify-center">
                              <RateBar val={player.matchesPlayed} total={totalMatches} colorClass="bg-emerald-500" />
                           </div>
                        </td>
-                       <td className="px-2 py-3">
+                       <td className="px-1 md:px-2 py-3">
                           <div className="flex justify-center">
                               <RateBar val={player.leagueMatchesPlayed} total={totalLeagueMatches} colorClass="bg-blue-500" />
                           </div>
                        </td>
-                       <td className="px-2 py-3 text-center">
+                       <td className="px-1 md:px-2 py-3 text-center text-xs md:text-sm">
                           {player.starts > 0 ? (
                               <div className="flex flex-col items-center">
                                   <span className="font-bold text-slate-700">{player.starts}</span>
@@ -904,39 +904,39 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                               <span className="text-slate-300">-</span>
                           )}
                        </td>
-                       <td className="px-2 py-3 text-center bg-slate-50/30">
+                       <td className="px-1 md:px-2 py-3 text-center bg-slate-50/30 text-xs md:text-sm">
                           <div className="flex flex-col">
                               <span className="font-bold text-slate-800">
                                  {player.goals} 
-                                 {player.penaltiesScored > 0 && <span className="text-slate-400 text-xs ml-1">({player.penaltiesScored})</span>}
+                                 {player.penaltiesScored > 0 && <span className="text-slate-400 text-[10px] ml-0.5">({player.penaltiesScored})</span>}
                               </span>
-                              <span className="text-[10px] text-slate-400">{formatStat(player.goalsPerGame)} / 场</span>
+                              <span className="text-[10px] text-slate-400 hidden md:inline">{formatStat(player.goalsPerGame)} / 场</span>
                           </div>
                        </td>
-                       <td className="px-2 py-3 text-center bg-slate-50/30">
+                       <td className="px-1 md:px-2 py-3 text-center bg-slate-50/30 text-xs md:text-sm">
                            <div className="flex flex-col">
                               <span className="font-bold text-slate-800">{player.assists}</span>
-                              <span className="text-[10px] text-slate-400">{formatStat(player.assistsPerGame)} / 场</span>
+                              <span className="text-[10px] text-slate-400 hidden md:inline">{formatStat(player.assistsPerGame)} / 场</span>
                           </div>
                        </td>
-                       <td className="px-2 py-3 text-center">
+                       <td className="px-1 md:px-2 py-3 text-center text-xs md:text-sm">
                            {player.ownGoals > 0 ? (
                                <span className="font-bold text-slate-700">{player.ownGoals}</span>
                            ) : (
                                <span className="text-slate-300">-</span>
                            )}
                        </td>
-                       <td className="px-2 py-3 text-center">
+                       <td className="px-1 md:px-2 py-3 text-center">
                            <div className="flex items-center justify-center gap-1">
                                {player.yellowCards > 0 && (
-                                   <div className="flex items-center bg-yellow-100 text-yellow-800 px-1.5 py-0.5 rounded border border-yellow-200 text-xs font-bold" title="黄牌">
-                                       <div className="w-2 h-3 bg-yellow-400 mr-1 rounded-[1px] border border-black/10"></div>
+                                   <div className="flex items-center bg-yellow-100 text-yellow-800 px-1.5 py-0.5 rounded border border-yellow-200 text-[10px] md:text-xs font-bold" title="黄牌">
+                                       <div className="w-1.5 h-2 md:w-2 md:h-3 bg-yellow-400 mr-1 rounded-[1px] border border-black/10"></div>
                                        {player.yellowCards}
                                    </div>
                                )}
                                {player.redCards > 0 && (
-                                   <div className="flex items-center bg-red-100 text-red-800 px-1.5 py-0.5 rounded border border-red-200 text-xs font-bold" title="红牌">
-                                       <div className="w-2 h-3 bg-red-500 mr-1 rounded-[1px] border border-black/10"></div>
+                                   <div className="flex items-center bg-red-100 text-red-800 px-1.5 py-0.5 rounded border border-red-200 text-[10px] md:text-xs font-bold" title="红牌">
+                                       <div className="w-1.5 h-2 md:w-2 md:h-3 bg-red-500 mr-1 rounded-[1px] border border-black/10"></div>
                                        {player.redCards}
                                    </div>
                                )}
@@ -945,18 +945,18 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                                )}
                            </div>
                        </td>
-                       <td className="px-2 py-3 text-center">
+                       <td className="px-1 md:px-2 py-3 text-center text-xs md:text-sm">
                           {player.matchesAsGK > 0 ? (
                              <div className="flex flex-col">
                                 <span className="font-bold text-slate-600">{player.conceded}</span>
-                                <span className="text-[10px] text-slate-400">{formatStat(player.concededPerGame)} / 场</span>
+                                <span className="text-[10px] text-slate-400 hidden md:inline">{formatStat(player.concededPerGame)} / 场</span>
                              </div>
                           ) : (
                              <span className="text-slate-200">-</span>
                           )}
                        </td>
-                       <td className="px-4 py-3 text-center whitespace-nowrap">
-                            <div className="flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                       <td className="px-2 md:px-4 py-3 text-center whitespace-nowrap">
+                            <div className="flex items-center justify-center gap-1">
                                 <button 
                                     onClick={() => setViewingPlayer(player)}
                                     className="p-1.5 text-slate-500 hover:bg-slate-100 rounded transition-colors"
@@ -1001,25 +1001,29 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
         {/* Quick Add Row (Footer) */}
         {!isReadOnly && (
            <div id="add-player-row" className="bg-slate-50 border-t border-slate-200 p-4">
-              <div className="flex flex-col lg:flex-row items-center gap-4 max-w-4xl mx-auto">
-                 <div className="text-xs font-bold text-slate-400 uppercase tracking-wider shrink-0 mr-2">快速添加</div>
-                 <input 
-                    type="text" 
-                    value={newPlayerNumber}
-                    onChange={(e) => setNewPlayerNumber(e.target.value)}
-                    placeholder="#"
-                    className="w-16 md:w-20 p-2.5 border border-slate-300 rounded-lg text-sm text-center focus:ring-2 outline-none"
-                    style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
-                 />
-                 <input 
-                    type="text" 
-                    value={newPlayerName}
-                    onChange={(e) => setNewPlayerName(e.target.value)}
-                    placeholder="球员姓名"
-                    className="flex-1 w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 outline-none"
-                    style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
-                 />
-                 <div className="relative w-full md:w-40">
+              <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3 md:gap-4 max-w-4xl mx-auto">
+                 <div className="text-xs font-bold text-slate-400 uppercase tracking-wider shrink-0 lg:mr-2 text-center lg:text-left">快速添加</div>
+                 
+                 <div className="flex gap-2">
+                    <input 
+                        type="text" 
+                        value={newPlayerNumber}
+                        onChange={(e) => setNewPlayerNumber(e.target.value)}
+                        placeholder="#"
+                        className="w-16 md:w-20 p-2.5 border border-slate-300 rounded-lg text-sm text-center focus:ring-2 outline-none"
+                        style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
+                    />
+                    <input 
+                        type="text" 
+                        value={newPlayerName}
+                        onChange={(e) => setNewPlayerName(e.target.value)}
+                        placeholder="球员姓名"
+                        className="flex-1 w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 outline-none"
+                        style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
+                    />
+                 </div>
+                 
+                 <div className="relative w-full lg:w-40">
                     <input 
                        type="date" 
                        value={newPlayerBirthday}

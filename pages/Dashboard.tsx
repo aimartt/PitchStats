@@ -213,7 +213,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
      return (
         <div className="space-y-6 animate-fade-in">
            <div className="flex justify-end">
-              <div className="relative w-48">
+              <div className="relative w-full md:w-48">
                 <Calendar className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <select 
                   value={selectedSeason}
@@ -241,14 +241,14 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
   } = stats;
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-4 md:space-y-6 animate-fade-in pb-20">
       
       {/* Filter Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
          <div className="flex items-center gap-2">
             <h2 className="text-lg font-bold text-slate-800">球队数据看板</h2>
          </div>
-         <div className="relative w-48">
+         <div className="relative w-full md:w-48">
             <Calendar className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <select 
               value={selectedSeason}
@@ -262,21 +262,21 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
          </div>
       </div>
 
-      {/* Stats Cards - Consistent Two-Tier Design */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Stats Cards - Optimized Grid for Mobile */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         
         {/* Card 1: Matches */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
            {/* Top: All */}
-           <div className="p-4 py-3 flex-1 flex flex-col justify-center">
+           <div className="p-3 md:p-4 flex-1 flex flex-col justify-center">
               <div className="flex justify-between items-start mb-1">
-                 <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">总场次</span>
+                 <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider">总场次</span>
               </div>
-              <div className="flex justify-between items-end">
-                 <span className="text-3xl font-black text-slate-800 leading-none">{matchesPlayed}</span>
-                 <div className="text-right">
-                    <span className="text-[10px] text-slate-400 block mb-0.5 uppercase tracking-wide">胜-平-负</span>
-                    <span className="text-sm font-bold text-slate-600 font-mono">
+              <div className="flex flex-col md:flex-row md:justify-between md:items-end">
+                 <span className="text-2xl md:text-3xl font-black text-slate-800 leading-none mb-1 md:mb-0">{matchesPlayed}</span>
+                 <div className="md:text-right">
+                    <span className="text-[10px] text-slate-400 hidden md:block mb-0.5 uppercase tracking-wide">胜-平-负</span>
+                    <span className="text-xs md:text-sm font-bold text-slate-600 font-mono block">
                        <span className="text-emerald-500">{wins}</span>-
                        <span className="text-amber-500">{draws}</span>-
                        <span className="text-red-500">{losses}</span>
@@ -285,18 +285,18 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
               </div>
            </div>
            
-           <div className="h-px bg-slate-100 mx-4"></div>
+           <div className="h-px bg-slate-100 mx-3"></div>
 
            {/* Bottom: Formal */}
-           <div className="p-4 py-3 flex-1 flex flex-col justify-center">
+           <div className="p-3 md:p-4 flex-1 flex flex-col justify-center bg-slate-50/50">
               <div className="flex justify-between items-start mb-1">
-                 <span className="text-xs font-bold text-indigo-500 uppercase tracking-wider">正式比赛</span>
+                 <span className="text-[10px] md:text-xs font-bold text-indigo-500 uppercase tracking-wider">正式比赛</span>
               </div>
-              <div className="flex justify-between items-end">
-                 <span className="text-3xl font-black text-slate-800 leading-none">{formalMatchesPlayed}</span>
-                 <div className="text-right">
-                    <span className="text-[10px] text-slate-400 block mb-0.5 uppercase tracking-wide">胜-平-负</span>
-                    <span className="text-sm font-bold text-slate-600 font-mono">
+              <div className="flex flex-col md:flex-row md:justify-between md:items-end">
+                 <span className="text-2xl md:text-3xl font-black text-slate-800 leading-none mb-1 md:mb-0">{formalMatchesPlayed}</span>
+                 <div className="md:text-right">
+                    <span className="text-[10px] text-slate-400 hidden md:block mb-0.5 uppercase tracking-wide">胜-平-负</span>
+                    <span className="text-xs md:text-sm font-bold text-slate-600 font-mono block">
                        <span className="text-emerald-500">{formalWins}</span>-
                        <span className="text-amber-500">{formalDraws}</span>-
                        <span className="text-red-500">{formalLosses}</span>
@@ -309,31 +309,31 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
         {/* Card 2: Win Rate */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
            {/* Top: All */}
-           <div className="p-4 py-3 flex-1 flex flex-col justify-center">
+           <div className="p-3 md:p-4 flex-1 flex flex-col justify-center">
               <div className="flex justify-between items-start mb-1">
-                 <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">总胜率</span>
+                 <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider">总胜率</span>
               </div>
-              <div className="flex justify-between items-end">
-                 <span className="text-3xl font-black text-blue-600 leading-none">{winRate}<span className="text-lg text-blue-400 ml-0.5">%</span></span>
-                 <div className="text-right">
-                    <span className="text-[10px] text-slate-400 block mb-0.5 uppercase tracking-wide">不败率</span>
-                    <span className="text-sm font-bold text-slate-600 font-mono">{undefeatedRate}%</span>
+              <div className="flex flex-col md:flex-row md:justify-between md:items-end">
+                 <span className="text-2xl md:text-3xl font-black text-blue-600 leading-none mb-1 md:mb-0">{winRate}<span className="text-sm md:text-lg text-blue-400 ml-0.5">%</span></span>
+                 <div className="md:text-right">
+                    <span className="text-[10px] text-slate-400 hidden md:block mb-0.5 uppercase tracking-wide">不败率</span>
+                    <span className="text-xs md:text-sm font-bold text-slate-600 font-mono block">{undefeatedRate}%</span>
                  </div>
               </div>
            </div>
 
-           <div className="h-px bg-slate-100 mx-4"></div>
+           <div className="h-px bg-slate-100 mx-3"></div>
 
            {/* Bottom: Formal */}
-           <div className="p-4 py-3 flex-1 flex flex-col justify-center">
+           <div className="p-3 md:p-4 flex-1 flex flex-col justify-center bg-slate-50/50">
               <div className="flex justify-between items-start mb-1">
-                 <span className="text-xs font-bold text-indigo-500 uppercase tracking-wider">正式胜率</span>
+                 <span className="text-[10px] md:text-xs font-bold text-indigo-500 uppercase tracking-wider">正式胜率</span>
               </div>
-              <div className="flex justify-between items-end">
-                 <span className="text-3xl font-black text-blue-600 leading-none">{formalWinRate}<span className="text-lg text-blue-400 ml-0.5">%</span></span>
-                 <div className="text-right">
-                    <span className="text-[10px] text-slate-400 block mb-0.5 uppercase tracking-wide">不败率</span>
-                    <span className="text-sm font-bold text-slate-600 font-mono">{formalUndefeatedRate}%</span>
+              <div className="flex flex-col md:flex-row md:justify-between md:items-end">
+                 <span className="text-2xl md:text-3xl font-black text-blue-600 leading-none mb-1 md:mb-0">{formalWinRate}<span className="text-sm md:text-lg text-blue-400 ml-0.5">%</span></span>
+                 <div className="md:text-right">
+                    <span className="text-[10px] text-slate-400 hidden md:block mb-0.5 uppercase tracking-wide">不败率</span>
+                    <span className="text-xs md:text-sm font-bold text-slate-600 font-mono block">{formalUndefeatedRate}%</span>
                  </div>
               </div>
            </div>
@@ -342,50 +342,50 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
         {/* Card 3: Offense */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
            {/* Top: All */}
-           <div className="p-4 py-3 flex-1 flex flex-col justify-center">
+           <div className="p-3 md:p-4 flex-1 flex flex-col justify-center">
               <div className="flex justify-between items-start mb-1">
-                 <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">总进球</span>
+                 <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider">总进球</span>
               </div>
-              <div className="flex justify-between items-end">
-                 <span className="text-3xl font-black text-emerald-600 leading-none">{goalsFor}</span>
-                 <div className="text-right">
-                    <span className="text-[10px] text-slate-400 block mb-0.5 uppercase tracking-wide">场均进球</span>
-                    <span className="text-sm font-bold text-slate-600 font-mono">{avgGoalsFor}</span>
+              <div className="flex flex-col md:flex-row md:justify-between md:items-end">
+                 <span className="text-2xl md:text-3xl font-black text-emerald-600 leading-none mb-1 md:mb-0">{goalsFor}</span>
+                 <div className="md:text-right">
+                    <span className="text-[10px] text-slate-400 hidden md:block mb-0.5 uppercase tracking-wide">场均进球</span>
+                    <span className="text-xs md:text-sm font-bold text-slate-600 font-mono block">{avgGoalsFor}</span>
                  </div>
               </div>
            </div>
 
-           <div className="h-px bg-slate-100 mx-4"></div>
+           <div className="h-px bg-slate-100 mx-3"></div>
 
            {/* Bottom: Formal */}
-           <div className="p-4 py-3 flex-1 flex flex-col justify-center">
+           <div className="p-3 md:p-4 flex-1 flex flex-col justify-center bg-slate-50/50">
               <div className="flex justify-between items-start mb-1">
-                 <span className="text-xs font-bold text-indigo-500 uppercase tracking-wider">正式进球</span>
+                 <span className="text-[10px] md:text-xs font-bold text-indigo-500 uppercase tracking-wider">正式进球</span>
               </div>
-              <div className="flex justify-between items-end">
-                 <span className="text-3xl font-black text-emerald-600 leading-none">{formalGoalsFor}</span>
-                 <div className="text-right">
-                    <span className="text-[10px] text-slate-400 block mb-0.5 uppercase tracking-wide">场均进球</span>
-                    <span className="text-sm font-bold text-slate-600 font-mono">{avgFormalGoalsFor}</span>
+              <div className="flex flex-col md:flex-row md:justify-between md:items-end">
+                 <span className="text-2xl md:text-3xl font-black text-emerald-600 leading-none mb-1 md:mb-0">{formalGoalsFor}</span>
+                 <div className="md:text-right">
+                    <span className="text-[10px] text-slate-400 hidden md:block mb-0.5 uppercase tracking-wide">场均进球</span>
+                    <span className="text-xs md:text-sm font-bold text-slate-600 font-mono block">{avgFormalGoalsFor}</span>
                  </div>
               </div>
            </div>
         </div>
 
-        {/* Card 4: Defense - Consistently Styled */}
+        {/* Card 4: Defense */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
            {/* Top: All */}
-           <div className="p-4 py-3 flex-1 flex flex-col justify-center">
+           <div className="p-3 md:p-4 flex-1 flex flex-col justify-center">
               <div className="flex justify-between items-start mb-1">
-                 <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">总净胜</span>
+                 <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider">总净胜</span>
               </div>
-              <div className="flex justify-between items-end">
-                 <span className={`text-3xl font-black leading-none ${goalDiff >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+              <div className="flex flex-col md:flex-row md:justify-between md:items-end">
+                 <span className={`text-2xl md:text-3xl font-black leading-none mb-1 md:mb-0 ${goalDiff >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
                     {goalDiff > 0 ? '+' : ''}{goalDiff}
                  </span>
-                 <div className="text-right">
-                    <span className="text-[10px] text-slate-400 block mb-0.5 uppercase tracking-wide">场均失球</span>
-                    <span className="text-sm font-bold text-rose-500 font-mono flex items-center justify-end">
+                 <div className="md:text-right">
+                    <span className="text-[10px] text-slate-400 hidden md:block mb-0.5 uppercase tracking-wide">场均失球</span>
+                    <span className="text-xs md:text-sm font-bold text-rose-500 font-mono flex items-center md:justify-end">
                        <Shield className="w-3 h-3 mr-1" />
                        {avgGoalsAgainst}
                     </span>
@@ -393,20 +393,20 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
               </div>
            </div>
 
-           <div className="h-px bg-slate-100 mx-4"></div>
+           <div className="h-px bg-slate-100 mx-3"></div>
 
            {/* Bottom: Formal */}
-           <div className="p-4 py-3 flex-1 flex flex-col justify-center">
+           <div className="p-3 md:p-4 flex-1 flex flex-col justify-center bg-slate-50/50">
               <div className="flex justify-between items-start mb-1">
-                 <span className="text-xs font-bold text-indigo-500 uppercase tracking-wider">正式净胜</span>
+                 <span className="text-[10px] md:text-xs font-bold text-indigo-500 uppercase tracking-wider">正式净胜</span>
               </div>
-              <div className="flex justify-between items-end">
-                 <span className={`text-3xl font-black leading-none ${formalGoalDiff >= 0 ? 'text-slate-800' : 'text-rose-600'}`}>
+              <div className="flex flex-col md:flex-row md:justify-between md:items-end">
+                 <span className={`text-2xl md:text-3xl font-black leading-none mb-1 md:mb-0 ${formalGoalDiff >= 0 ? 'text-slate-800' : 'text-rose-600'}`}>
                     {formalGoalDiff > 0 ? '+' : ''}{formalGoalDiff}
                  </span>
-                 <div className="text-right">
-                    <span className="text-[10px] text-slate-400 block mb-0.5 uppercase tracking-wide">场均失球</span>
-                    <span className="text-sm font-bold text-rose-500 font-mono flex items-center justify-end">
+                 <div className="md:text-right">
+                    <span className="text-[10px] text-slate-400 hidden md:block mb-0.5 uppercase tracking-wide">场均失球</span>
+                    <span className="text-xs md:text-sm font-bold text-rose-500 font-mono flex items-center md:justify-end">
                        <Shield className="w-3 h-3 mr-1" />
                        {avgFormalGoalsAgainst}
                     </span>
@@ -420,12 +420,12 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
       {/* Main Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Bar Chart - Goals History */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 lg:col-span-2">
+        <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200 lg:col-span-2">
           <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center">
             <Activity className="w-5 h-5 mr-2" style={{ color: 'var(--primary)' }} />
             进球趋势分析
           </h3>
-          <div className="h-80 w-full">
+          <div className="h-60 md:h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={history}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
@@ -444,10 +444,10 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
         </div>
 
         {/* Pie Charts - Results */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col min-h-[320px]">
+        <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col min-h-[320px]">
           <h3 className="text-lg font-bold text-slate-800 mb-4">比赛结果分布</h3>
           
-          <div className="flex-1 grid grid-cols-2 gap-4 items-center">
+          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
              {/* Chart 1: All Matches */}
              <div className="flex flex-col items-center justify-center">
                 {/* Label above chart */}
@@ -455,11 +455,11 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider bg-slate-100 px-3 py-1 rounded-full border border-slate-200">全部</span>
                 </div>
                 
-                <div className="relative h-48 w-full">
+                <div className="relative h-40 w-full">
                     {/* Center Text */}
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-                       <p className="text-3xl font-black text-slate-800">
-                          {matchesPlayed}<span className="text-sm font-bold text-slate-400 ml-0.5">场</span>
+                       <p className="text-2xl font-black text-slate-800">
+                          {matchesPlayed}<span className="text-xs font-bold text-slate-400 ml-0.5">场</span>
                        </p>
                     </div>
                     
@@ -469,8 +469,8 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                           data={resultData}
                           cx="50%"
                           cy="50%"
-                          innerRadius={60}
-                          outerRadius={80}
+                          innerRadius={50}
+                          outerRadius={70}
                           paddingAngle={5}
                           dataKey="value"
                           stroke="none"
@@ -486,17 +486,17 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
              </div>
 
              {/* Chart 2: Formal Matches */}
-             <div className="flex flex-col items-center justify-center border-l border-slate-100">
+             <div className="flex flex-col items-center justify-center sm:border-l border-slate-100 pt-4 sm:pt-0 border-t sm:border-t-0">
                 {/* Label above chart */}
                 <div className="mb-2">
                    <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">正式</span>
                 </div>
 
-                <div className="relative h-48 w-full">
+                <div className="relative h-40 w-full">
                     {/* Center Text */}
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-                       <p className="text-3xl font-black text-slate-800">
-                          {formalMatchesPlayed}<span className="text-sm font-bold text-slate-400 ml-0.5">场</span>
+                       <p className="text-2xl font-black text-slate-800">
+                          {formalMatchesPlayed}<span className="text-xs font-bold text-slate-400 ml-0.5">场</span>
                        </p>
                     </div>
 
@@ -506,8 +506,8 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                           data={formalResultData}
                           cx="50%"
                           cy="50%"
-                          innerRadius={60}
-                          outerRadius={80}
+                          innerRadius={50}
+                          outerRadius={70}
                           paddingAngle={5}
                           dataKey="value"
                           stroke="none"
@@ -535,53 +535,53 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
       {/* Coach Stats Section */}
       {coachStats.length > 0 && (
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-           <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+           <div className="px-4 md:px-6 py-3 md:py-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
               <div className="flex items-center">
                 <UserCog className="w-5 h-5 mr-2 text-indigo-500" />
-                <h3 className="text-lg font-bold text-slate-800">执教表现</h3>
+                <h3 className="text-base md:text-lg font-bold text-slate-800">执教表现</h3>
               </div>
-              <div className="text-xs text-slate-400 font-medium">
+              <div className="text-[10px] md:text-xs text-slate-400 font-medium">
                  按最近执教时间排序
               </div>
            </div>
            <div className="overflow-x-auto">
-              <table className="w-full text-sm text-left text-slate-600">
-                 <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
+              <table className="w-full text-xs md:text-sm text-left text-slate-600">
+                 <thead className="text-[10px] md:text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
                     <tr>
-                       <th className="px-6 py-3 font-bold text-sm">主教练</th>
-                       <th className="px-4 py-3 text-center text-sm">最近执教</th>
-                       <th className="px-4 py-3 text-center text-sm">执教场次</th>
-                       <th className="px-4 py-3 text-center text-sm">正式比赛</th>
-                       <th className="px-4 py-3 text-center text-sm">战绩 (胜/平/负)</th>
-                       <th className="px-4 py-3 text-center text-sm">胜率</th>
-                       <th className="px-4 py-3 text-center text-sm">进/失球</th>
-                       <th className="px-4 py-3 text-center text-sm">场均净胜</th>
+                       <th className="px-3 md:px-6 py-3 font-bold whitespace-nowrap sticky left-0 bg-slate-50 z-10">主教练</th>
+                       <th className="px-2 md:px-4 py-3 text-center whitespace-nowrap">最近执教</th>
+                       <th className="px-2 md:px-4 py-3 text-center whitespace-nowrap">执教/正式</th>
+                       <th className="px-2 md:px-4 py-3 text-center whitespace-nowrap">战绩 (胜/平/负)</th>
+                       <th className="px-2 md:px-4 py-3 text-center whitespace-nowrap">胜率</th>
+                       <th className="px-2 md:px-4 py-3 text-center whitespace-nowrap">进/失球</th>
+                       <th className="px-2 md:px-4 py-3 text-center whitespace-nowrap">场均净胜</th>
                     </tr>
                  </thead>
                  <tbody className="divide-y divide-slate-100">
                     {coachStats.map((coach, idx) => (
                        <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                          <td className="px-6 py-4 font-bold text-slate-900 text-sm">{coach.name}</td>
-                          <td className="px-4 py-4 text-center text-xs text-slate-500 font-mono">
+                          <td className="px-3 md:px-6 py-3 font-bold text-slate-900 sticky left-0 bg-white z-10 border-r border-slate-100 md:border-none shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] md:shadow-none">{coach.name}</td>
+                          <td className="px-2 md:px-4 py-3 text-center text-xs text-slate-500 font-mono whitespace-nowrap">
                              {coach.lastMatchDate}
                           </td>
-                          <td className="px-4 py-4 text-center font-medium text-sm">{coach.games}</td>
-                          <td className="px-4 py-4 text-center font-medium text-sm">{coach.formalGames}</td>
-                          <td className="px-4 py-4 text-center text-sm">
+                          <td className="px-2 md:px-4 py-3 text-center font-medium">
+                             {coach.games} <span className="text-slate-300">/</span> <span className="text-indigo-600">{coach.formalGames}</span>
+                          </td>
+                          <td className="px-2 md:px-4 py-3 text-center whitespace-nowrap">
                              <span className="text-emerald-600 font-bold">{coach.wins}</span> - <span className="text-amber-500 font-bold">{coach.draws}</span> - <span className="text-red-500 font-bold">{coach.losses}</span>
                           </td>
-                          <td className="px-4 py-4 text-center">
+                          <td className="px-2 md:px-4 py-3 text-center">
                              <div className="flex items-center justify-center gap-2">
-                                <span className="font-bold text-slate-800 text-sm">{coach.winRate.toFixed(0)}%</span>
-                                <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                <span className="font-bold text-slate-800">{coach.winRate.toFixed(0)}%</span>
+                                <div className="w-12 md:w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden hidden sm:block">
                                    <div className="h-full bg-emerald-500" style={{ width: `${coach.winRate}%` }}></div>
                                 </div>
                              </div>
                           </td>
-                          <td className="px-4 py-4 text-center text-sm">
+                          <td className="px-2 md:px-4 py-3 text-center whitespace-nowrap">
                              {coach.goalsFor} : {coach.goalsAgainst}
                           </td>
-                          <td className="px-4 py-4 text-center font-mono text-sm">
+                          <td className="px-2 md:px-4 py-3 text-center font-mono">
                              {((coach.goalsFor - coach.goalsAgainst) / coach.games).toFixed(1)}
                           </td>
                        </tr>
@@ -594,27 +594,27 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
 
       {/* Recent Matches Table */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-           <h3 className="text-lg font-bold text-slate-800">近期比赛记录</h3>
+        <div className="px-4 md:px-6 py-3 md:py-4 border-b border-slate-100 bg-slate-50/50">
+           <h3 className="text-base md:text-lg font-bold text-slate-800">近期比赛记录</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left text-slate-600">
-            <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
+          <table className="w-full text-xs md:text-sm text-left text-slate-600">
+            <thead className="text-[10px] md:text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
               <tr>
-                <th className="px-6 py-3 font-bold text-sm">日期</th>
-                <th className="px-4 py-3 text-center text-sm">类型</th>
-                <th className="px-6 py-3 text-sm">对手</th>
-                <th className="px-6 py-3 text-center text-sm">结果</th>
-                <th className="px-6 py-3 text-center text-sm">比分</th>
+                <th className="px-3 md:px-6 py-3 font-bold whitespace-nowrap">日期</th>
+                <th className="px-2 md:px-4 py-3 text-center whitespace-nowrap">类型</th>
+                <th className="px-3 md:px-6 py-3 whitespace-nowrap">对手</th>
+                <th className="px-2 md:px-6 py-3 text-center whitespace-nowrap">结果</th>
+                <th className="px-3 md:px-6 py-3 text-center whitespace-nowrap">比分</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {/* Reverse history to show newest first */}
               {history.slice().reverse().slice(0, 10).map((match, idx) => (
                 <tr key={idx} className="bg-white hover:bg-slate-50 transition-colors">
-                  <td className="px-6 py-4 font-medium text-slate-900 text-sm">{match.date}</td>
-                  <td className="px-4 py-4 text-center">
-                     <span className={`text-xs px-2.5 py-1 rounded border font-medium ${
+                  <td className="px-3 md:px-6 py-3 font-medium text-slate-900 whitespace-nowrap">{match.date}</td>
+                  <td className="px-2 md:px-4 py-3 text-center">
+                     <span className={`text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5 md:py-1 rounded border font-medium ${
                         match.type === '联赛' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' :
                         match.type === '友谊赛' ? 'bg-sky-50 text-sky-600 border-sky-100' :
                         match.type === '杯赛' ? 'bg-amber-50 text-amber-600 border-amber-100' :
@@ -623,9 +623,9 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                         {match.type || '友谊赛'}
                      </span>
                   </td>
-                  <td className="px-6 py-4 text-slate-900 text-sm">{match.name}</td>
-                  <td className="px-6 py-4 text-center">
-                    <span className={`px-3 py-1 rounded text-sm font-bold ${
+                  <td className="px-3 md:px-6 py-3 text-slate-900 font-bold whitespace-nowrap max-w-[120px] truncate">{match.name}</td>
+                  <td className="px-2 md:px-6 py-3 text-center">
+                    <span className={`px-2 md:px-3 py-0.5 md:py-1 rounded text-xs font-bold ${
                       match.result === 'Win' ? 'bg-emerald-100 text-emerald-700' :
                       match.result === 'Loss' ? 'bg-red-100 text-red-700' :
                       'bg-amber-100 text-amber-700'
@@ -633,7 +633,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                       {match.result === 'Win' ? '胜' : match.result === 'Loss' ? '负' : '平'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-center font-mono font-bold text-slate-700 text-sm">
+                  <td className="px-3 md:px-6 py-3 text-center font-mono font-bold text-slate-700 whitespace-nowrap">
                     {match.进球} : {match.失球}
                   </td>
                 </tr>

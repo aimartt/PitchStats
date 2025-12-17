@@ -300,49 +300,49 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
       </div>
 
       {/* Hero Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 md:gap-4">
          {/* Count */}
-         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center">
-            <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 mr-3 shrink-0">
-               <Shield className="w-5 h-5" />
+         <div className="bg-white p-3 md:p-4 rounded-xl border border-slate-200 shadow-sm flex items-center">
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 mr-3 shrink-0">
+               <Shield className="w-4 h-4 md:w-5 md:h-5" />
             </div>
             <div>
                <p className="text-[10px] text-slate-500 font-bold uppercase">在册对手</p>
-               <h3 className="text-xl font-bold text-slate-800">{opponents.filter(o => o.name !== '队内对抗').length} <span className="text-xs font-normal text-slate-400">支</span></h3>
+               <h3 className="text-lg md:text-xl font-bold text-slate-800">{opponents.filter(o => o.name !== '队内对抗').length} <span className="text-xs font-normal text-slate-400">支</span></h3>
             </div>
          </div>
 
          {/* Total Matches */}
-         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center">
-            <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 mr-3 shrink-0">
-               <Swords className="w-5 h-5" />
+         <div className="bg-white p-3 md:p-4 rounded-xl border border-slate-200 shadow-sm flex items-center">
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 mr-3 shrink-0">
+               <Swords className="w-4 h-4 md:w-5 md:h-5" />
             </div>
             <div>
                <p className="text-[10px] text-slate-500 font-bold uppercase">已记录交手</p>
-               <h3 className="text-xl font-bold text-slate-800">{totalMatchesAgainst} <span className="text-xs font-normal text-slate-400">场</span></h3>
+               <h3 className="text-lg md:text-xl font-bold text-slate-800">{totalMatchesAgainst} <span className="text-xs font-normal text-slate-400">场</span></h3>
             </div>
          </div>
 
          {/* Frequent Opponent */}
-         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center">
-            <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-600 mr-3 shrink-0">
-               <TrendingUp className="w-5 h-5" />
+         <div className="bg-white p-3 md:p-4 rounded-xl border border-slate-200 shadow-sm flex items-center">
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-600 mr-3 shrink-0">
+               <TrendingUp className="w-4 h-4 md:w-5 md:h-5" />
             </div>
             <div className="overflow-hidden">
                <p className="text-[10px] text-slate-500 font-bold uppercase">老对手</p>
-               <h3 className="text-lg font-bold text-slate-800 truncate">{mostFrequentOpponent ? mostFrequentOpponent.name : '-'}</h3>
+               <h3 className="text-base md:text-lg font-bold text-slate-800 truncate">{mostFrequentOpponent ? mostFrequentOpponent.name : '-'}</h3>
                <p className="text-[10px] text-slate-400">{mostFrequentOpponent ? `交手 ${mostFrequentOpponent.matchesPlayed} 次` : '暂无数据'}</p>
             </div>
          </div>
 
          {/* Nemesis (苦主) */}
-         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center">
-            <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 mr-3 shrink-0">
-               <Ghost className="w-5 h-5" />
+         <div className="bg-white p-3 md:p-4 rounded-xl border border-slate-200 shadow-sm flex items-center">
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 mr-3 shrink-0">
+               <Ghost className="w-4 h-4 md:w-5 md:h-5" />
             </div>
             <div className="overflow-hidden">
                <p className="text-[10px] text-slate-500 font-bold uppercase">苦主</p>
-               <h3 className="text-lg font-bold text-slate-800 truncate">{nemesis ? nemesis.name : '-'}</h3>
+               <h3 className="text-base md:text-lg font-bold text-slate-800 truncate">{nemesis ? nemesis.name : '-'}</h3>
                <p className="text-[10px] text-slate-400">
                   {nemesis ? `净负 ${Math.abs(nemesis.goalsFor - nemesis.goalsAgainst)} 球` : '暂无数据'}
                </p>
@@ -350,13 +350,13 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
          </div>
 
          {/* Favorite Opponent (最喜欢的对手) */}
-         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center">
-            <div className="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center text-rose-600 mr-3 shrink-0">
-               <Heart className="w-5 h-5" />
+         <div className="bg-white p-3 md:p-4 rounded-xl border border-slate-200 shadow-sm flex items-center">
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-rose-50 flex items-center justify-center text-rose-600 mr-3 shrink-0">
+               <Heart className="w-4 h-4 md:w-5 md:h-5" />
             </div>
             <div className="overflow-hidden">
                <p className="text-[10px] text-slate-500 font-bold uppercase">软柿子</p>
-               <h3 className="text-lg font-bold text-slate-800 truncate">{favoriteOpponent ? favoriteOpponent.name : '-'}</h3>
+               <h3 className="text-base md:text-lg font-bold text-slate-800 truncate">{favoriteOpponent ? favoriteOpponent.name : '-'}</h3>
                <p className="text-[10px] text-slate-400">
                   {favoriteOpponent ? `净胜 ${Math.abs(favoriteOpponent.goalsFor - favoriteOpponent.goalsAgainst)} 球` : '暂无数据'}
                </p>
@@ -541,14 +541,14 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
              onClick={(e) => e.stopPropagation()}
            >
               {/* Modal Header */}
-              <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center shrink-0">
+              <div className="bg-slate-50 px-4 py-3 md:px-6 md:py-4 border-b border-slate-200 flex justify-between items-center shrink-0">
                  <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-sm overflow-hidden border-2 border-white"
                           style={{ backgroundColor: 'var(--primary)' }}>
                         {viewingOpponent.logo ? <img src={viewingOpponent.logo} className="w-full h-full object-cover" /> : viewingOpponent.name.charAt(0)}
                     </div>
                     <div>
-                       <h3 className="font-bold text-lg text-slate-800">{viewingOpponent.name}</h3>
+                       <h3 className="font-bold text-lg text-slate-800 leading-tight">{viewingOpponent.name}</h3>
                        <p className="text-xs text-slate-500">交战历史详情</p>
                     </div>
                  </div>
@@ -558,15 +558,15 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
               </div>
 
               {/* Modal Content - Scrollable */}
-              <div className="overflow-y-auto p-6">
+              <div className="overflow-y-auto p-4 md:p-6 pb-8">
                  {/* Summary Cards */}
                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
                     <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
-                       <div className="text-xs text-slate-400 font-bold uppercase mb-1">交手次数</div>
+                       <div className="text-[10px] md:text-xs text-slate-400 font-bold uppercase mb-1">交手次数</div>
                        <div className="text-xl font-black text-slate-800">{viewingOpponent.matchesPlayed}</div>
                     </div>
                     <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
-                       <div className="text-xs text-slate-400 font-bold uppercase mb-1">胜/平/负</div>
+                       <div className="text-[10px] md:text-xs text-slate-400 font-bold uppercase mb-1">胜/平/负</div>
                        <div className="text-xl font-black text-slate-800 flex items-center justify-center gap-1">
                           <span className="text-emerald-600">{viewingOpponent.wins}</span>/
                           <span className="text-amber-500">{viewingOpponent.draws}</span>/
@@ -574,52 +574,42 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
                        </div>
                     </div>
                     <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
-                       <div className="text-xs text-slate-400 font-bold uppercase mb-1">胜率</div>
+                       <div className="text-[10px] md:text-xs text-slate-400 font-bold uppercase mb-1">胜率</div>
                        <div className="text-xl font-black text-slate-800">
                           {viewingOpponent.matchesPlayed > 0 ? Math.round((viewingOpponent.wins / viewingOpponent.matchesPlayed) * 100) : 0}%
                        </div>
                     </div>
                     <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
-                       <div className="text-xs text-slate-400 font-bold uppercase mb-1">进/失球</div>
+                       <div className="text-[10px] md:text-xs text-slate-400 font-bold uppercase mb-1">进/失球</div>
                        <div className="text-xl font-black text-slate-800">
                           {viewingOpponent.goalsFor} <span className="text-slate-300 mx-0.5">/</span> {viewingOpponent.goalsAgainst}
                        </div>
                     </div>
                  </div>
 
-                 {/* Match List */}
+                 {/* Match List - Mobile Optimized */}
                  <div>
                     <h4 className="text-sm font-bold text-slate-700 mb-3 flex items-center">
                        <History className="w-4 h-4 mr-2" />
                        比赛记录
                     </h4>
                     {viewingMatches.length > 0 ? (
-                       <div className="space-y-4">
+                       <div className="space-y-3">
                           {viewingMatches.map(match => (
                              <div key={match.id} className={`relative overflow-hidden rounded-xl border shadow-sm transition-all hover:shadow-md ${getMatchBackgroundStyle(match.matchType)}`}>
                                 {/* Watermark */}
                                 {getWatermarkIcon(match.matchType)}
                                 
-                                <div className="relative z-10 p-4">
+                                <div className="relative z-10 px-3 py-3 md:p-4">
                                    {/* Header: Meta */}
-                                   <div className="flex items-center justify-between text-xs text-slate-500 mb-3 pb-2 border-b border-black/5">
+                                   <div className="flex flex-wrap items-center justify-between text-[10px] md:text-xs text-slate-500 mb-2 pb-2 border-b border-black/5 gap-y-1">
                                       <div className="flex items-center gap-2">
-                                         <span className="flex items-center bg-white/60 px-2 py-0.5 rounded backdrop-blur-sm">
+                                         <span className="flex items-center bg-white/60 px-1.5 py-0.5 rounded backdrop-blur-sm">
                                             <Calendar className="w-3 h-3 mr-1" /> {match.date}
                                          </span>
-                                         <span className="flex items-center bg-white/60 px-2 py-0.5 rounded backdrop-blur-sm font-bold">
+                                         <span className="flex items-center bg-white/60 px-1.5 py-0.5 rounded backdrop-blur-sm font-bold">
                                             {match.matchType}
                                          </span>
-                                         {match.round && (
-                                            <span className="flex items-center bg-white/60 px-2 py-0.5 rounded backdrop-blur-sm text-slate-600">
-                                               第{match.round}轮
-                                            </span>
-                                         )}
-                                         {match.format && (
-                                            <span className="flex items-center bg-white/60 px-2 py-0.5 rounded backdrop-blur-sm text-slate-500">
-                                               {match.format}
-                                            </span>
-                                         )}
                                       </div>
                                       <span className="font-mono text-slate-400">{match.season}</span>
                                    </div>
@@ -627,18 +617,18 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
                                    {/* Body: Scoreboard */}
                                    <div className="flex items-center justify-between">
                                       {/* Our Team */}
-                                      <div className="flex items-center gap-3">
-                                         <span className="text-sm font-bold text-slate-800" style={{ color: 'var(--primary-text)' }}>
+                                      <div className="flex items-center gap-2 md:gap-3 flex-1 justify-end text-right">
+                                         <span className="text-xs md:text-sm font-bold text-slate-800 truncate" style={{ color: 'var(--primary-text)' }}>
                                             {currentTeamName || '我方'}
                                          </span>
-                                         <div className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-500 shadow-sm">
+                                         <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-[10px] md:text-xs font-bold text-slate-500 shadow-sm shrink-0">
                                             H
                                          </div>
                                       </div>
 
                                       {/* Score */}
-                                      <div className={`mx-2 px-3 py-1 rounded-lg border flex flex-col items-center min-w-[80px] bg-white shadow-sm ${getResultColorClass(match.result)}`}>
-                                          <div className="text-xl font-black font-mono leading-none tracking-tight">
+                                      <div className={`mx-1.5 md:mx-2 px-2 md:px-3 py-0.5 md:py-1 rounded-lg border flex flex-col items-center min-w-[60px] md:min-w-[80px] bg-white shadow-sm ${getResultColorClass(match.result)}`}>
+                                          <div className="text-base md:text-xl font-black font-mono leading-none tracking-tight">
                                               {match.ourScore} : {match.opponentScore}
                                           </div>
                                           <span className="text-[8px] font-bold uppercase mt-0.5 opacity-90 tracking-widest border-t border-white/20 pt-0.5 w-full text-center">
@@ -647,21 +637,13 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
                                       </div>
 
                                       {/* Opponent */}
-                                      <div className="flex items-center gap-3">
-                                         <div className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-500 shadow-sm overflow-hidden">
+                                      <div className="flex items-center gap-2 md:gap-3 flex-1 justify-start text-left">
+                                         <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-[10px] md:text-xs font-bold text-slate-500 shadow-sm overflow-hidden shrink-0">
                                             {viewingOpponent.logo ? <img src={viewingOpponent.logo} className="w-full h-full object-cover" /> : viewingOpponent.name.charAt(0)}
                                          </div>
-                                         <span className="text-sm font-bold text-slate-800 truncate max-w-[80px]">
+                                         <span className="text-xs md:text-sm font-bold text-slate-800 truncate">
                                             {match.opponent}
                                          </span>
-                                      </div>
-                                   </div>
-
-                                   {/* Footer: Venue */}
-                                   <div className="mt-3 pt-2 border-t border-black/5 flex justify-center">
-                                      <div className="flex items-center text-xs text-slate-500">
-                                         <MapPin className="w-3 h-3 mr-1 text-slate-400" />
-                                         {match.venue || (match.location === 'Home' ? '主场' : match.location === 'Away' ? '客场' : '中立场地')}
                                       </div>
                                    </div>
                                 </div>
@@ -669,7 +651,7 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
                           ))}
                        </div>
                     ) : (
-                       <div className="text-center py-10 text-slate-400 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                       <div className="text-center py-8 text-slate-400 bg-slate-50 rounded-xl border border-dashed border-slate-200">
                           暂无正式比赛记录
                        </div>
                     )}
