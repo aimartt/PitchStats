@@ -2456,6 +2456,54 @@ export const defaultDb: FullDatabase = {
       "countForStats": true,
       "coach": "张龑瀚",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1766021902230",
+      "date": "2025-12-17",
+      "season": "华侨城2025年冬",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "寸滩体育中心足球场",
+      "opponent": "元通电竞",
+      "ourScore": 7,
+      "opponentScore": 3,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "车驰",
+        "陈春",
+        "胡勇",
+        "康鑫",
+        "李单",
+        "李扬",
+        "秦坤",
+        "文云波",
+        "申相峰",
+        "杨涛",
+        "朱峰",
+        "张龑瀚"
+      ],
+      "starters": [
+        "车驰",
+        "胡勇",
+        "李扬",
+        "秦坤",
+        "文云波",
+        "申相峰",
+        "杨涛",
+        "朱峰"
+      ],
+      "goalkeepers": [],
+      "goalkeeperStats": [],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": false,
+      "coach": "车驰",
+      "teamId": "team-default-001"
     }
   ],
   "opponents": [
@@ -2667,6 +2715,11 @@ export const defaultDb: FullDatabase = {
     {
       "id": "mj2i1q2e",
       "name": "玉棠竞技",
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "mjarrz3m",
+      "name": "元通电竞",
       "teamId": "team-default-001"
     }
   ],
@@ -2957,5 +3010,5 @@ export const defaultDb: FullDatabase = {
       "teamId": "team-default-001"
     }
   ],
-  "theme": "emerald"
+  "theme": "indigo"
 };
