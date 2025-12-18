@@ -99,6 +99,12 @@ export const defaultDb: FullDatabase = {
       "goalkeepers": [
         "唐涛"
       ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 2
+        }
+      ],
       "goalsDetails": [
         {
           "scorer": "何星谕",
@@ -111,6 +117,7 @@ export const defaultDb: FullDatabase = {
       "ownGoals": [],
       "notes": "",
       "countForStats": true,
+      "coach": "",
       "teamId": "team-default-001"
     },
     {
@@ -155,6 +162,12 @@ export const defaultDb: FullDatabase = {
       "goalkeepers": [
         "王海斌"
       ],
+      "goalkeeperStats": [
+        {
+          "player": "王海斌",
+          "conceded": 3
+        }
+      ],
       "goalsDetails": [],
       "yellowCards": [],
       "redCards": [],
@@ -162,6 +175,7 @@ export const defaultDb: FullDatabase = {
       "ownGoals": [],
       "notes": "",
       "countForStats": true,
+      "coach": "",
       "teamId": "team-default-001"
     },
     {
@@ -204,6 +218,12 @@ export const defaultDb: FullDatabase = {
       "goalkeepers": [
         "王海斌"
       ],
+      "goalkeeperStats": [
+        {
+          "player": "王海斌",
+          "conceded": 4
+        }
+      ],
       "goalsDetails": [
         {
           "scorer": "柴陆俊夫",
@@ -227,6 +247,7 @@ export const defaultDb: FullDatabase = {
       "ownGoals": [],
       "notes": "联赛对手弃权，3-0判胜\n外援2个",
       "countForStats": true,
+      "coach": "",
       "teamId": "team-default-001"
     },
     {
@@ -271,6 +292,12 @@ export const defaultDb: FullDatabase = {
       "goalkeepers": [
         "唐涛"
       ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 4
+        }
+      ],
       "goalsDetails": [
         {
           "scorer": "陈启晅"
@@ -288,6 +315,7 @@ export const defaultDb: FullDatabase = {
       "ownGoals": [],
       "notes": "",
       "countForStats": true,
+      "coach": "",
       "teamId": "team-default-001"
     },
     {
@@ -334,6 +362,12 @@ export const defaultDb: FullDatabase = {
       "goalkeepers": [
         "唐涛"
       ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 1
+        }
+      ],
       "goalsDetails": [
         {
           "scorer": "胡勇"
@@ -345,6 +379,7 @@ export const defaultDb: FullDatabase = {
       "ownGoals": [],
       "notes": "柴陆俊夫受伤",
       "countForStats": true,
+      "coach": "",
       "teamId": "team-default-001"
     },
     {
@@ -389,6 +424,12 @@ export const defaultDb: FullDatabase = {
       "goalkeepers": [
         "唐涛"
       ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 3
+        }
+      ],
       "goalsDetails": [
         {
           "scorer": "林浩",
@@ -410,6 +451,7 @@ export const defaultDb: FullDatabase = {
       "ownGoals": [],
       "notes": "",
       "countForStats": true,
+      "coach": "",
       "teamId": "team-default-001"
     },
     {
@@ -456,6 +498,12 @@ export const defaultDb: FullDatabase = {
       "goalkeepers": [
         "唐涛"
       ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 7
+        }
+      ],
       "goalsDetails": [
         {
           "scorer": "陈启晅"
@@ -473,6 +521,7 @@ export const defaultDb: FullDatabase = {
       "ownGoals": [],
       "notes": "",
       "countForStats": true,
+      "coach": "",
       "teamId": "team-default-001"
     },
     {
@@ -517,6 +566,12 @@ export const defaultDb: FullDatabase = {
       "goalkeepers": [
         "唐涛"
       ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 5
+        }
+      ],
       "goalsDetails": [
         {
           "scorer": "陈启晅"
@@ -537,6 +592,7 @@ export const defaultDb: FullDatabase = {
       ],
       "notes": "",
       "countForStats": true,
+      "coach": "",
       "teamId": "team-default-001"
     },
     {
@@ -577,6 +633,12 @@ export const defaultDb: FullDatabase = {
       "goalkeepers": [
         "唐涛"
       ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 3
+        }
+      ],
       "goalsDetails": [
         {
           "scorer": "钱星宇",
@@ -593,6 +655,7 @@ export const defaultDb: FullDatabase = {
       "ownGoals": [],
       "notes": "",
       "countForStats": true,
+      "coach": "",
       "teamId": "team-default-001"
     },
     {
@@ -636,6 +699,12 @@ export const defaultDb: FullDatabase = {
       "goalkeepers": [
         "唐涛"
       ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 6
+        }
+      ],
       "goalsDetails": [
         {
           "scorer": "何星谕",
@@ -654,6 +723,7 @@ export const defaultDb: FullDatabase = {
       "ownGoals": [],
       "notes": "对手违规，3-0判胜",
       "countForStats": true,
+      "coach": "",
       "teamId": "team-default-001"
     },
     {
@@ -696,6 +766,12 @@ export const defaultDb: FullDatabase = {
       "goalkeepers": [
         "唐涛"
       ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 3
+        }
+      ],
       "goalsDetails": [
         {
           "scorer": "何星谕",
@@ -710,6 +786,7 @@ export const defaultDb: FullDatabase = {
       "ownGoals": [],
       "notes": "",
       "countForStats": true,
+      "coach": "",
       "teamId": "team-default-001"
     },
     {
@@ -810,6 +887,12 @@ export const defaultDb: FullDatabase = {
       "goalkeepers": [
         "闫志伟"
       ],
+      "goalkeeperStats": [
+        {
+          "player": "闫志伟",
+          "conceded": 3
+        }
+      ],
       "goalsDetails": [
         {
           "scorer": "李单",
@@ -824,6 +907,7 @@ export const defaultDb: FullDatabase = {
       "ownGoals": [],
       "notes": "郭佳东受伤",
       "countForStats": true,
+      "coach": "",
       "teamId": "team-default-001"
     },
     {
@@ -866,6 +950,12 @@ export const defaultDb: FullDatabase = {
       "goalkeepers": [
         "唐涛"
       ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 6
+        }
+      ],
       "goalsDetails": [
         {
           "scorer": "陈启晅",
@@ -886,6 +976,7 @@ export const defaultDb: FullDatabase = {
       "ownGoals": [],
       "notes": "",
       "countForStats": true,
+      "coach": "",
       "teamId": "team-default-001"
     },
     {
@@ -1681,15 +1772,8 @@ export const defaultDb: FullDatabase = {
         "杨涛",
         "申相峰"
       ],
-      "goalkeepers": [
-        "孙张力"
-      ],
-      "goalkeeperStats": [
-        {
-          "player": "孙张力",
-          "conceded": 4
-        }
-      ],
+      "goalkeepers": [],
+      "goalkeeperStats": [],
       "goalsDetails": [],
       "yellowCards": [],
       "redCards": [],
@@ -2493,15 +2577,56 @@ export const defaultDb: FullDatabase = {
         "杨涛",
         "朱峰"
       ],
-      "goalkeepers": [],
-      "goalkeeperStats": [],
-      "goalsDetails": [],
+      "goalkeepers": [
+        "张龑瀚"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "张龑瀚",
+          "conceded": 3
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "杨涛",
+          "assist": "文云波",
+          "isPenalty": false
+        },
+        {
+          "scorer": "申相峰",
+          "assist": "胡勇",
+          "isPenalty": false
+        },
+        {
+          "scorer": "李扬",
+          "assist": "申相峰",
+          "isPenalty": false
+        },
+        {
+          "scorer": "申相峰",
+          "assist": "李扬",
+          "isPenalty": false
+        },
+        {
+          "scorer": "申相峰",
+          "isPenalty": false
+        },
+        {
+          "scorer": "李扬",
+          "isPenalty": false
+        },
+        {
+          "scorer": "朱峰",
+          "assist": "李扬",
+          "isPenalty": false
+        }
+      ],
       "yellowCards": [],
       "redCards": [],
       "penaltiesWon": [],
       "ownGoals": [],
       "notes": "",
-      "countForStats": false,
+      "countForStats": true,
       "coach": "车驰",
       "teamId": "team-default-001"
     }

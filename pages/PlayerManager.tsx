@@ -24,7 +24,9 @@ interface PlayerStats {
   redCards: number;
   conceded: number;
   matchesPlayed: number;
+  matchesCounted: number; // 计入统计的场次
   matchesAsGK: number;
+  matchesAsGKCounted: number; // 计入统计的守门员场次
   
   // League Stats (matchType === '联赛')
   leagueGoals: number;
@@ -35,7 +37,9 @@ interface PlayerStats {
   leagueRedCards: number;
   leagueConceded: number;
   leagueMatchesPlayed: number;
+  leagueMatchesCounted: number; // 计入统计的联赛场次
   leagueMatchesAsGK: number;
+  leagueMatchesAsGKCounted: number; // 计入统计的联赛守门员场次
 
   // Averages (Format to 2 decimal places)
   goalsAvg: string;
@@ -50,7 +54,7 @@ interface PlayerStats {
 
 // Formatting helper
 const formatAvg = (val: number, matches: number) => {
-   if (matches === 0) return '-';
+   if (matches <= 0) return '-';
    const avg = val / matches;
    return avg.toFixed(2);
 };
@@ -127,16 +131,17 @@ const PlayerDetailView: React.FC<{
 
   const allTimeAggregate = useMemo(() => {
     let played = 0;
-    let leaguePlayed = 0;
+    let playedCounted = 0;
     let goals = 0;
     let assists = 0;
     let redCards = 0;
     let yellowCards = 0;
 
     matches.forEach(m => {
+       const isCounted = m.countForStats !== false;
        if (m.squad?.includes(player.name)) {
           played++;
-          if (m.matchType === '联赛') leaguePlayed++;
+          if (isCounted) playedCounted++;
        }
        m.goalsDetails?.forEach(g => {
           if (g.scorer === player.name) goals++;
@@ -148,14 +153,13 @@ const PlayerDetailView: React.FC<{
 
     return {
       played,
-      leaguePlayed,
       goals,
       assists,
       redCards,
       yellowCards,
       disciplineScore: (redCards * 3) + yellowCards,
-      goalsAvg: formatAvg(goals, played),
-      assistsAvg: formatAvg(assists, played)
+      goalsAvg: formatAvg(goals, playedCounted),
+      assistsAvg: formatAvg(assists, playedCounted)
     };
   }, [matches, player.name]);
 
@@ -178,20 +182,29 @@ const PlayerDetailView: React.FC<{
           stats[m.season] = { 
             season: m.season, 
             matchesPlayed: 0, leagueMatchesPlayed: 0,
+            matchesCounted: 0, leagueMatchesCounted: 0,
             starts: 0, leagueStarts: 0,
             goals: 0, leagueGoals: 0,
             assists: 0, leagueAssists: 0,
             yellowCards: 0, leagueYellowCards: 0,
             redCards: 0, leagueRedCards: 0,
             conceded: 0, leagueConceded: 0,
-            matchesAsGK: 0, leagueMatchesAsGK: 0,
+            matchesAsGK: 0, matchesAsGKCounted: 0,
+            leagueMatchesAsGK: 0, leagueMatchesAsGKCounted: 0,
             ownGoals: 0, leagueOwnGoals: 0
           };
        }
        const s = stats[m.season];
        const isLeague = m.matchType === '联赛';
+       const isCounted = m.countForStats !== false;
+
        s.matchesPlayed++;
-       if (isLeague) s.leagueMatchesPlayed++;
+       if (isCounted) s.matchesCounted++;
+       if (isLeague) {
+          s.leagueMatchesPlayed++;
+          if (isCounted) s.leagueMatchesCounted++;
+       }
+       
        if (m.starters?.includes(player.name)) { s.starts++; if (isLeague) s.leagueStarts++; }
        m.goalsDetails?.forEach(goal => {
           if (goal.scorer === player.name) { s.goals++; if (isLeague) s.leagueGoals++; }
@@ -200,17 +213,28 @@ const PlayerDetailView: React.FC<{
        if (m.ownGoals?.includes(player.name)) { s.ownGoals++; if (isLeague) s.leagueOwnGoals++; }
        if (m.yellowCards?.includes(player.name)) { s.yellowCards++; if (isLeague) s.leagueYellowCards++; }
        if (m.redCards?.includes(player.name)) { s.redCards++; if (isLeague) s.leagueRedCards++; }
+       
        const specificGkStat = m.goalkeeperStats?.find(gk => gk.player === player.name);
        const isInLegacyGkList = m.goalkeepers?.includes(player.name);
        if (specificGkStat) {
           s.matchesAsGK++;
+          if (isCounted) s.matchesAsGKCounted++;
           s.conceded += specificGkStat.conceded;
-          if (isLeague) { s.leagueMatchesAsGK++; s.leagueConceded += specificGkStat.conceded; }
+          if (isLeague) { 
+            s.leagueMatchesAsGK++; 
+            if (isCounted) s.leagueMatchesAsGKCounted++;
+            s.leagueConceded += specificGkStat.conceded; 
+          }
        } else if (isInLegacyGkList) {
           const matchConceded = m.opponentScore || 0;
           s.matchesAsGK++;
+          if (isCounted) s.matchesAsGKCounted++;
           s.conceded += matchConceded;
-          if (isLeague) { s.leagueMatchesAsGK++; s.leagueConceded += matchConceded; }
+          if (isLeague) { 
+            s.leagueMatchesAsGK++; 
+            if (isCounted) s.leagueMatchesAsGKCounted++;
+            s.leagueConceded += matchConceded; 
+          }
        }
     });
     return Object.values(stats).sort((a, b) => seasons.indexOf(a.season) - seasons.indexOf(b.season));
@@ -275,18 +299,18 @@ const PlayerDetailView: React.FC<{
             <div className="space-y-1">
                <h4 className="text-xs font-bold text-slate-400 mb-1">生涯出场</h4>
                <p className="text-4xl font-black text-slate-800">{allTimeAggregate.played}</p>
-               <p className="text-xs text-slate-500 font-bold">联赛占比: <span className="text-indigo-600">{allTimeAggregate.leaguePlayed}</span> 场</p>
+               <p className="text-xs text-slate-500 font-bold">总进球: <span className="text-emerald-600 font-black">{allTimeAggregate.goals}</span></p>
             </div>
          </div>
          <div className="bg-white p-7 rounded-[2rem] border border-slate-200 shadow-sm hover:border-emerald-400 transition-all hover:shadow-lg group">
             <div className="flex items-center justify-between mb-4">
                <span className="p-3 rounded-2xl bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-colors"><Target className="w-7 h-7" /></span>
-               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Attacking</span>
+               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Efficiency</span>
             </div>
             <div className="space-y-1">
-               <h4 className="text-xs font-bold text-slate-400 mb-1">进攻火力</h4>
-               <p className="text-4xl font-black text-slate-800">{allTimeAggregate.goals} <span className="text-sm font-bold text-slate-400 ml-1">球</span></p>
-               <p className="text-xs text-slate-500 font-bold">场均进球: <span className="text-emerald-600">{allTimeAggregate.goalsAvg}</span></p>
+               <h4 className="text-xs font-bold text-slate-400 mb-1">场均火力 (计入统计)</h4>
+               <p className="text-4xl font-black text-slate-800">{allTimeAggregate.goalsAvg}</p>
+               <p className="text-xs text-slate-500 font-bold">场均助攻: <span className="text-blue-600">{allTimeAggregate.assistsAvg}</span></p>
             </div>
          </div>
          <div className="bg-white p-7 rounded-[2rem] border border-slate-200 shadow-sm hover:border-blue-400 transition-all hover:shadow-lg group">
@@ -297,7 +321,7 @@ const PlayerDetailView: React.FC<{
             <div className="space-y-1">
                <h4 className="text-xs font-bold text-slate-400 mb-1">组织贡献</h4>
                <p className="text-4xl font-black text-slate-800">{allTimeAggregate.assists} <span className="text-sm font-bold text-slate-400 ml-1">助</span></p>
-               <p className="text-xs text-slate-500 font-bold">场均助攻: <span className="text-blue-600">{allTimeAggregate.assistsAvg}</span></p>
+               <p className="text-xs text-slate-500 font-bold">有效场次占比见下方列表</p>
             </div>
          </div>
          <div className="bg-white p-7 rounded-[2rem] border border-slate-200 shadow-sm hover:border-rose-400 transition-all hover:shadow-lg group">
@@ -319,8 +343,8 @@ const PlayerDetailView: React.FC<{
             <div className="flex items-center gap-4">
                <div className="p-3 bg-white rounded-2xl shadow-sm"><Calendar className="w-7 h-7 text-slate-400" /></div>
                <div>
-                  <h3 className="text-2xl font-black text-slate-800 tracking-tight">各赛季全维度表现明细</h3>
-                  <p className="text-xs text-slate-400 mt-0.5">点击赛季行查看详细比赛战报</p>
+                  <h3 className="text-2xl font-black text-slate-800 tracking-tight">各赛季明细</h3>
+                  <p className="text-xs text-slate-400 mt-0.5">场均数据基于该赛季“计入统计”的场次计算</p>
                </div>
             </div>
             <div className="text-xs font-black text-slate-400 bg-white px-5 py-2.5 rounded-2xl border border-slate-200 shadow-sm">
@@ -332,8 +356,8 @@ const PlayerDetailView: React.FC<{
                <thead className="text-[10px] text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
                   <tr className="border-b border-slate-100">
                      <th rowSpan={2} className="pl-10 pr-4 py-5 sticky left-0 bg-slate-50 z-30 font-black text-slate-900 text-xs">赛季信息</th>
-                     <th colSpan={2} className="px-4 py-3 text-center border-l border-slate-100 bg-indigo-50/30">参与活动</th>
-                     <th colSpan={2} className="px-4 py-3 text-center border-l border-slate-100 bg-amber-50/30">首发</th>
+                     <th colSpan={2} className="px-4 py-3 text-center border-l border-slate-100 bg-indigo-50/30">参与活动 (总)</th>
+                     <th colSpan={2} className="px-4 py-3 text-center border-l border-slate-100 bg-amber-50/30">首发率</th>
                      <th colSpan={2} className="px-4 py-3 text-center border-l border-slate-100 bg-emerald-50/30 text-emerald-700">进球 (场均)</th>
                      <th colSpan={2} className="px-4 py-3 text-center border-l border-slate-100 bg-blue-50/30 text-blue-700">助攻 (场均)</th>
                      <th colSpan={2} className="px-4 py-3 text-center border-l border-slate-100 bg-rose-50/30 text-rose-700">乌龙球</th>
@@ -390,16 +414,16 @@ const PlayerDetailView: React.FC<{
                               </td>
                               
                               <td className="px-2 py-6 text-center border-l border-slate-100 bg-emerald-50/10">
-                                 <StatWithAvgCell val={s.goals} avg={formatAvg(s.goals, s.matchesPlayed)} color="text-slate-800" />
+                                 <StatWithAvgCell val={s.goals} avg={formatAvg(s.goals, s.matchesCounted)} color="text-slate-800" />
                               </td>
                               <td className="px-2 py-6 text-center bg-emerald-50/10">
-                                 <StatWithAvgCell val={s.leagueGoals} avg={formatAvg(s.leagueGoals, s.leagueMatchesPlayed)} color="text-emerald-600" />
+                                 <StatWithAvgCell val={s.leagueGoals} avg={formatAvg(s.leagueGoals, s.leagueMatchesCounted)} color="text-emerald-600" />
                               </td>
                               <td className="px-2 py-6 text-center border-l border-slate-100 bg-blue-50/10">
-                                 <StatWithAvgCell val={s.assists} avg={formatAvg(s.assists, s.matchesPlayed)} color="text-slate-800" />
+                                 <StatWithAvgCell val={s.assists} avg={formatAvg(s.assists, s.matchesCounted)} color="text-slate-800" />
                               </td>
                               <td className="px-2 py-6 text-center bg-blue-50/10">
-                                 <StatWithAvgCell val={s.leagueAssists} avg={formatAvg(s.leagueAssists, s.leagueMatchesPlayed)} color="text-blue-600" />
+                                 <StatWithAvgCell val={s.leagueAssists} avg={formatAvg(s.leagueAssists, s.leagueMatchesCounted)} color="text-blue-600" />
                               </td>
                               
                               <td className="px-2 py-6 text-center border-l border-slate-100 bg-rose-50/10">
@@ -425,10 +449,10 @@ const PlayerDetailView: React.FC<{
                               </td>
                               
                               <td className="px-2 py-6 text-center border-l border-slate-100 bg-slate-100/30">
-                                 {s.matchesAsGK > 0 ? <StatWithAvgCell val={s.conceded} avg={formatAvg(s.conceded, s.matchesAsGK)} color="text-slate-500" /> : <span className="text-slate-200">-</span>}
+                                 {s.matchesAsGK > 0 ? <StatWithAvgCell val={s.conceded} avg={formatAvg(s.conceded, s.matchesAsGKCounted)} color="text-slate-500" /> : <span className="text-slate-200">-</span>}
                               </td>
                               <td className="pr-10 pl-2 py-6 text-center bg-slate-100/30">
-                                 {s.leagueMatchesAsGK > 0 ? <StatWithAvgCell val={s.leagueConceded} avg={formatAvg(s.leagueConceded, s.leagueMatchesAsGK)} color="text-slate-400" /> : <span className="text-slate-200">-</span>}
+                                 {s.leagueMatchesAsGK > 0 ? <StatWithAvgCell val={s.leagueConceded} avg={formatAvg(s.leagueConceded, s.leagueMatchesAsGKCounted)} color="text-slate-400" /> : <span className="text-slate-200">-</span>}
                               </td>
                            </tr>
 
@@ -462,6 +486,7 @@ const PlayerDetailView: React.FC<{
                                                            {match.matchType}
                                                            {match.round && ` · 第${match.round}轮`}
                                                         </span>
+                                                        {!match.countForStats && <span className="px-1 py-0.5 rounded bg-rose-50 text-rose-400 text-[8px]">未统</span>}
                                                      </div>
                                                      <div className="font-black text-slate-800 truncate text-sm">vs {match.opponent}</div>
                                                      <div className="flex items-center gap-2 mt-1">
@@ -581,21 +606,39 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
 
   const totalMatchesCount = seasonFilteredMatches.length;
   const totalLeagueMatchesCount = seasonFilteredMatches.filter(m => m.matchType === '联赛').length;
+  // 计入统计的总场次数（用于看板参考）
+  const totalCountedMatches = seasonFilteredMatches.filter(m => m.countForStats !== false).length;
 
   const playerStats = useMemo(() => {
     const statsMap: Record<string, PlayerStats> = {};
     players.forEach(p => {
       statsMap[p.name] = { 
         name: p.name, number: p.number, avatar: p.avatar, birthday: p.birthday, age: calculateAge(p.birthday),
-        goals: 0, assists: 0, starts: 0, ownGoals: 0, yellowCards: 0, redCards: 0, conceded: 0, matchesPlayed: 0, matchesAsGK: 0,
-        leagueGoals: 0, leagueAssists: 0, leagueStarts: 0, leagueOwnGoals: 0, leagueYellowCards: 0, leagueRedCards: 0, leagueConceded: 0, leagueMatchesPlayed: 0, leagueMatchesAsGK: 0,
+        goals: 0, assists: 0, starts: 0, ownGoals: 0, yellowCards: 0, redCards: 0, conceded: 0, 
+        matchesPlayed: 0, matchesCounted: 0, 
+        matchesAsGK: 0, matchesAsGKCounted: 0,
+        leagueGoals: 0, leagueAssists: 0, leagueStarts: 0, leagueOwnGoals: 0, leagueYellowCards: 0, leagueRedCards: 0, leagueConceded: 0, 
+        leagueMatchesPlayed: 0, leagueMatchesCounted: 0, 
+        leagueMatchesAsGK: 0, leagueMatchesAsGKCounted: 0,
         goalsAvg: '-', leagueGoalsAvg: '-', assistsAvg: '-', leagueAssistsAvg: '-', concededAvg: '-', leagueConcededAvg: '-', disciplineScore: 0
       };
     });
 
     seasonFilteredMatches.forEach(m => {
       const isLeague = m.matchType === '联赛';
-      m.squad?.forEach(p => { if (statsMap[p]) { statsMap[p].matchesPlayed++; if (isLeague) statsMap[p].leagueMatchesPlayed++; } });
+      const isCounted = m.countForStats !== false;
+      
+      m.squad?.forEach(p => { 
+        if (statsMap[p]) { 
+            statsMap[p].matchesPlayed++; 
+            if (isCounted) statsMap[p].matchesCounted++;
+            if (isLeague) {
+                statsMap[p].leagueMatchesPlayed++;
+                if (isCounted) statsMap[p].leagueMatchesCounted++;
+            }
+        } 
+      });
+
       m.starters?.forEach(p => { if (statsMap[p]) { statsMap[p].starts++; if (isLeague) statsMap[p].leagueStarts++; } });
       m.goalsDetails?.forEach(g => {
         if (statsMap[g.scorer]) { statsMap[g.scorer].goals++; if (isLeague) statsMap[g.scorer].leagueGoals++; }
@@ -611,24 +654,34 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
          if (!stats) return;
          if (specificGkStat) {
             stats.matchesAsGK++;
+            if (isCounted) stats.matchesAsGKCounted++;
             stats.conceded += specificGkStat.conceded;
-            if (isLeague) { stats.leagueMatchesAsGK++; stats.leagueConceded += specificGkStat.conceded; }
+            if (isLeague) { 
+                stats.leagueMatchesAsGK++; 
+                if (isCounted) stats.leagueMatchesAsGKCounted++;
+                stats.leagueConceded += specificGkStat.conceded; 
+            }
          } else if (isInLegacyGkList) {
             const val = m.opponentScore || 0;
             stats.matchesAsGK++;
+            if (isCounted) stats.matchesAsGKCounted++;
             stats.conceded += val;
-            if (isLeague) { stats.leagueMatchesAsGK++; stats.leagueConceded += val; }
+            if (isLeague) { 
+                stats.leagueMatchesAsGK++; 
+                if (isCounted) stats.leagueMatchesAsGKCounted++;
+                stats.leagueConceded += val; 
+            }
          }
       });
     });
 
     Object.values(statsMap).forEach(s => {
-      s.goalsAvg = formatAvg(s.goals, s.matchesPlayed);
-      s.leagueGoalsAvg = formatAvg(s.leagueGoals, s.leagueMatchesPlayed);
-      s.assistsAvg = formatAvg(s.assists, s.matchesPlayed);
-      s.leagueAssistsAvg = formatAvg(s.leagueAssists, s.leagueMatchesPlayed);
-      s.concededAvg = formatAvg(s.conceded, s.matchesAsGK);
-      s.leagueConcededAvg = formatAvg(s.leagueConceded, s.leagueMatchesAsGK);
+      s.goalsAvg = formatAvg(s.goals, s.matchesCounted);
+      s.leagueGoalsAvg = formatAvg(s.leagueGoals, s.leagueMatchesCounted);
+      s.assistsAvg = formatAvg(s.assists, s.matchesCounted);
+      s.leagueAssistsAvg = formatAvg(s.leagueAssists, s.leagueMatchesCounted);
+      s.concededAvg = formatAvg(s.conceded, s.matchesAsGKCounted);
+      s.leagueConcededAvg = formatAvg(s.leagueConceded, s.leagueMatchesAsGKCounted);
       s.disciplineScore = (s.redCards * 3) + s.yellowCards;
     });
     return Object.values(statsMap);
@@ -641,11 +694,11 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
      const topAssist = [...playerStats].sort((a, b) => b.assists - a.assists || a.matchesPlayed - b.matchesPlayed)[0];
      const topLeagueAssist = [...playerStats].sort((a, b) => b.leagueAssists - a.leagueAssists || a.leagueMatchesPlayed - b.leagueMatchesPlayed)[0];
      const topGK = [...playerStats]
-        .filter(p => p.matchesAsGK > 0)
-        .sort((a, b) => (a.conceded / a.matchesAsGK) - (b.conceded / b.matchesAsGK) || b.matchesAsGK - a.matchesAsGK)[0];
+        .filter(p => p.matchesAsGKCounted > 0)
+        .sort((a, b) => (a.conceded / a.matchesAsGKCounted) - (b.conceded / b.matchesAsGKCounted) || b.matchesAsGKCounted - a.matchesAsGKCounted)[0];
      const topLeagueGK = [...playerStats]
-        .filter(p => p.leagueMatchesAsGK > 0)
-        .sort((a, b) => (a.leagueConceded / a.leagueMatchesAsGK) - (b.leagueConceded / b.leagueMatchesAsGK) || b.leagueMatchesAsGK - a.matchesAsGK)[0];
+        .filter(p => p.leagueMatchesAsGKCounted > 0)
+        .sort((a, b) => (a.leagueConceded / a.leagueMatchesAsGKCounted) - (b.leagueConceded / b.leagueMatchesAsGKCounted) || b.leagueMatchesAsGKCounted - a.matchesAsGKCounted)[0];
      const unluckyGuy = [...playerStats].sort((a, b) => b.ownGoals - a.ownGoals)[0];
      return { topScorer, topLeagueScorer, topAssist, topLeagueAssist, topGK, topLeagueGK, unluckyGuy };
   }, [playerStats]);
@@ -743,10 +796,10 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
         <div>
           <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
             <Shirt className="w-8 h-8" style={{ color: 'var(--primary)' }} />
-            球员详细统计库
+            球员详细信息
           </h2>
           <p className="text-slate-500 mt-1">
-             本赛季: 总 {totalMatchesCount} 场 / 联赛 {totalLeagueMatchesCount} 场
+             本赛季: 总 {totalMatchesCount} 场 / 联赛 {totalLeagueMatchesCount} 场 (均值基于计入统计的场次)
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -813,7 +866,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
             <HonorSection title="防守榜">
                <PlayerHonorCard 
                   title="最佳守门员" 
-                  stat={honors.topGK ? `${(honors.topGK.conceded / honors.topGK.matchesAsGK).toFixed(2)} 场均` : '无数据'}
+                  stat={honors.topGK ? `${(honors.topGK.conceded / honors.topGK.matchesAsGKCounted).toFixed(2)} 场均` : '无数据'}
                   player={honors.topGK}
                   icon={Shield}
                   colorClass="bg-indigo-400"
@@ -821,7 +874,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                />
                <PlayerHonorCard 
                   title="联赛最佳守门员" 
-                  stat={honors.topLeagueGK ? `${(honors.topLeagueGK.leagueConceded / honors.topLeagueGK.leagueMatchesAsGK).toFixed(2)} 场均` : '无数据'}
+                  stat={honors.topLeagueGK ? `${(honors.topLeagueGK.leagueConceded / honors.topLeagueGK.leagueMatchesAsGKCounted).toFixed(2)} 场均` : '无数据'}
                   player={honors.topLeagueGK}
                   icon={Award}
                   colorClass="bg-violet-400"
@@ -851,7 +904,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
               <tr className="border-b border-slate-100">
                 <th rowSpan={2} className="px-2 py-4 sticky left-0 bg-slate-50 z-30 min-w-[90px] shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">球员</th>
                 <th rowSpan={2} className="px-1 py-4 text-center">年龄</th>
-                <th colSpan={2} className="px-4 py-2 text-center border-l border-slate-100 bg-indigo-50/30">参与活动</th>
+                <th colSpan={2} className="px-4 py-2 text-center border-l border-slate-100 bg-indigo-50/30">参与活动 (总)</th>
                 <th colSpan={2} className="px-4 py-2 text-center border-l border-slate-100 bg-amber-50/30">首发</th>
                 <th colSpan={2} className="px-4 py-2 text-center border-l border-slate-100 bg-emerald-50/30 text-emerald-700">进球 (场均)</th>
                 <th colSpan={2} className="px-4 py-2 text-center border-l border-slate-100 bg-blue-50/30 text-blue-700">助攻 (场均)</th>
