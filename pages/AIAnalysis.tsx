@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { DataItem, AnalysisResponse } from '../types';
 import { analyzeDataset } from '../services/gemini';
 import { Sparkles, BrainCircuit, Lightbulb, AlertTriangle, RefreshCw, TrendingUp, ClipboardList, Trophy } from 'lucide-react';
@@ -12,7 +12,6 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ data }) => {
   const [analysis, setAnalysis] = useState<AnalysisResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [hasApiKey, setHasApiKey] = useState<boolean>(!!process.env.API_KEY);
 
   const runAnalysis = async () => {
     if (!data || data.length === 0) return;
@@ -28,24 +27,8 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ data }) => {
     }
   };
 
-  useEffect(() => {
-    // Check if key exists
-    setHasApiKey(!!process.env.API_KEY);
-  }, []);
-
-  if (!hasApiKey) {
-     return (
-        <div className="flex flex-col items-center justify-center h-96 text-center px-4 animate-fade-in">
-           <div className="bg-amber-100 p-4 rounded-full mb-4">
-              <AlertTriangle className="w-8 h-8 text-amber-600" />
-           </div>
-           <h3 className="text-lg font-bold text-slate-800 mb-2">未配置 API Key</h3>
-           <p className="text-slate-500 max-w-md">
-             为了使用 AI 教练功能，请在环境中配置 Gemini API Key。
-           </p>
-        </div>
-     );
-  }
+  // Environment variables like process.env.API_KEY are assumed pre-configured and accessible.
+  // The app should not inform the user about key status or ask for keys.
 
   if (!data || data.length === 0) {
     return (

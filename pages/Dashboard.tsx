@@ -16,7 +16,7 @@ const RESULT_COLORS = {
 interface CoachStat {
   name: string;
   games: number;
-  formalGames: number;
+  leagueGames: number;
   wins: number;
   draws: number;
   losses: number;
@@ -66,13 +66,13 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
     let goalsFor = 0;
     let goalsAgainst = 0;
     
-    // Formal Stats
-    let formalWins = 0;
-    let formalDraws = 0;
-    let formalLosses = 0;
-    let formalGoalsFor = 0;
-    let formalGoalsAgainst = 0;
-    let formalMatchesPlayed = 0;
+    // League Stats (Previously Formal)
+    let leagueWins = 0;
+    let leagueDraws = 0;
+    let leagueLosses = 0;
+    let leagueGoalsFor = 0;
+    let leagueGoalsAgainst = 0;
+    let leagueMatchesPlayed = 0;
 
     const history: any[] = [];
     
@@ -85,8 +85,9 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
       const opponent = match['opponent'] || match['team'] || `Match ${index + 1}`;
       const date = match['date'] || index;
       const coachName = match['coach'];
-      const isFormal = match['countforstats'] === true;
       const matchType = match['originalMatchType'] || match['matchtype'];
+      // Logic Update: League stats now strictly count '联赛' type
+      const isLeague = matchType === '联赛';
       
       let result = match['result'];
       if (!result) {
@@ -103,14 +104,14 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
       goalsFor += gf;
       goalsAgainst += ga;
 
-      // Formal Stats
-      if (isFormal) {
-        formalMatchesPlayed++;
-        formalGoalsFor += gf;
-        formalGoalsAgainst += ga;
-        if (result === 'Win') formalWins++;
-        else if (result === 'Draw') formalDraws++;
-        else if (result === 'Loss') formalLosses++;
+      // League Stats
+      if (isLeague) {
+        leagueMatchesPlayed++;
+        leagueGoalsFor += gf;
+        leagueGoalsAgainst += ga;
+        if (result === 'Win') leagueWins++;
+        else if (result === 'Draw') leagueDraws++;
+        else if (result === 'Loss') leagueLosses++;
       }
 
       history.push({
@@ -128,7 +129,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
             coachMap[coachName] = { 
                 name: coachName, 
                 games: 0, 
-                formalGames: 0,
+                leagueGames: 0,
                 wins: 0, 
                 draws: 0, 
                 losses: 0, 
@@ -140,7 +141,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
          }
          const c = coachMap[coachName];
          c.games++;
-         if (isFormal) c.formalGames++;
+         if (isLeague) c.leagueGames++;
          c.goalsFor += gf;
          c.goalsAgainst += ga;
          c.lastMatchDate = date; // Update to latest match date
@@ -169,16 +170,16 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
     const undefeatedRate = matchesPlayed ? ((wins + draws) / matchesPlayed * 100).toFixed(0) : "0";
     const goalDiff = goalsFor - goalsAgainst;
 
-    // Formal Derived Stats
-    const formalWinRate = formalMatchesPlayed ? ((formalWins / formalMatchesPlayed) * 100).toFixed(0) : "0";
-    const formalUndefeatedRate = formalMatchesPlayed ? ((formalWins + formalDraws) / formalMatchesPlayed * 100).toFixed(0) : "0";
-    const formalGoalDiff = formalGoalsFor - formalGoalsAgainst;
+    // League Derived Stats
+    const leagueWinRate = leagueMatchesPlayed ? ((leagueWins / leagueMatchesPlayed) * 100).toFixed(0) : "0";
+    const leagueUndefeatedRate = leagueMatchesPlayed ? ((leagueWins + leagueDraws) / leagueMatchesPlayed * 100).toFixed(0) : "0";
+    const leagueGoalDiff = leagueGoalsFor - leagueGoalsAgainst;
 
     // Per Game Averages
     const avgGoalsFor = matchesPlayed ? (goalsFor / matchesPlayed).toFixed(1) : "0.0";
     const avgGoalsAgainst = matchesPlayed ? (goalsAgainst / matchesPlayed).toFixed(1) : "0.0";
-    const avgFormalGoalsFor = formalMatchesPlayed ? (formalGoalsFor / formalMatchesPlayed).toFixed(1) : "0.0";
-    const avgFormalGoalsAgainst = formalMatchesPlayed ? (formalGoalsAgainst / formalMatchesPlayed).toFixed(1) : "0.0";
+    const avgLeagueGoalsFor = leagueMatchesPlayed ? (leagueGoalsFor / leagueMatchesPlayed).toFixed(1) : "0.0";
+    const avgLeagueGoalsAgainst = leagueMatchesPlayed ? (leagueGoalsAgainst / leagueMatchesPlayed).toFixed(1) : "0.0";
 
     const resultData = [
       { name: '胜', value: wins, color: RESULT_COLORS.Win },
@@ -186,16 +187,16 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
       { name: '负', value: losses, color: RESULT_COLORS.Loss },
     ].filter(d => d.value > 0);
 
-    const formalResultData = [
-      { name: '胜', value: formalWins, color: RESULT_COLORS.Win },
-      { name: '平', value: formalDraws, color: RESULT_COLORS.Draw },
-      { name: '负', value: formalLosses, color: RESULT_COLORS.Loss },
+    const leagueResultData = [
+      { name: '胜', value: leagueWins, color: RESULT_COLORS.Win },
+      { name: '平', value: leagueDraws, color: RESULT_COLORS.Draw },
+      { name: '负', value: leagueLosses, color: RESULT_COLORS.Loss },
     ].filter(d => d.value > 0);
 
     return {
       wins, draws, losses, goalsFor, goalsAgainst, matchesPlayed, winRate, undefeatedRate, goalDiff, history, resultData, coachStats,
-      formalMatchesPlayed, formalWins, formalDraws, formalLosses, formalGoalsFor, formalGoalsAgainst, formalWinRate, formalUndefeatedRate, formalGoalDiff, formalResultData,
-      avgGoalsFor, avgGoalsAgainst, avgFormalGoalsFor, avgFormalGoalsAgainst
+      leagueMatchesPlayed, leagueWins, leagueDraws, leagueLosses, leagueGoalsFor, leagueGoalsAgainst, leagueWinRate, leagueUndefeatedRate, leagueGoalDiff, leagueResultData,
+      avgGoalsFor, avgGoalsAgainst, avgLeagueGoalsFor, avgLeagueGoalsAgainst
     };
   }, [data, selectedSeason]);
 
@@ -236,8 +237,8 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
 
   const { 
     wins, draws, losses, goalsFor, goalsAgainst, matchesPlayed, winRate, undefeatedRate, goalDiff, history, resultData, coachStats,
-    formalMatchesPlayed, formalWins, formalDraws, formalLosses, formalGoalsFor, formalGoalsAgainst, formalWinRate, formalUndefeatedRate, formalGoalDiff, formalResultData,
-    avgGoalsFor, avgGoalsAgainst, avgFormalGoalsFor, avgFormalGoalsAgainst
+    leagueMatchesPlayed, leagueWins, leagueDraws, leagueLosses, leagueGoalsFor, leagueGoalsAgainst, leagueWinRate, leagueUndefeatedRate, leagueGoalDiff, leagueResultData,
+    avgGoalsFor, avgGoalsAgainst, avgLeagueGoalsFor, avgLeagueGoalsAgainst
   } = stats;
 
   return (
@@ -287,19 +288,19 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
            
            <div className="h-px bg-slate-100 mx-3"></div>
 
-           {/* Bottom: Formal */}
+           {/* Bottom: League */}
            <div className="p-3 md:p-4 flex-1 flex flex-col justify-center bg-slate-50/50">
               <div className="flex justify-between items-start mb-1">
-                 <span className="text-[10px] md:text-xs font-bold text-indigo-500 uppercase tracking-wider">正式比赛</span>
+                 <span className="text-[10px] md:text-xs font-bold text-indigo-500 uppercase tracking-wider">联赛</span>
               </div>
               <div className="flex flex-col md:flex-row md:justify-between md:items-end">
-                 <span className="text-2xl md:text-3xl font-black text-slate-800 leading-none mb-1 md:mb-0">{formalMatchesPlayed}</span>
+                 <span className="text-2xl md:text-3xl font-black text-slate-800 leading-none mb-1 md:mb-0">{leagueMatchesPlayed}</span>
                  <div className="md:text-right">
                     <span className="text-[10px] text-slate-400 hidden md:block mb-0.5 uppercase tracking-wide">胜-平-负</span>
                     <span className="text-xs md:text-sm font-bold text-slate-600 font-mono block">
-                       <span className="text-emerald-500">{formalWins}</span>-
-                       <span className="text-amber-500">{formalDraws}</span>-
-                       <span className="text-red-500">{formalLosses}</span>
+                       <span className="text-emerald-500">{leagueWins}</span>-
+                       <span className="text-amber-500">{leagueDraws}</span>-
+                       <span className="text-red-500">{leagueLosses}</span>
                     </span>
                  </div>
               </div>
@@ -324,16 +325,16 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
 
            <div className="h-px bg-slate-100 mx-3"></div>
 
-           {/* Bottom: Formal */}
+           {/* Bottom: League */}
            <div className="p-3 md:p-4 flex-1 flex flex-col justify-center bg-slate-50/50">
               <div className="flex justify-between items-start mb-1">
-                 <span className="text-[10px] md:text-xs font-bold text-indigo-500 uppercase tracking-wider">正式胜率</span>
+                 <span className="text-[10px] md:text-xs font-bold text-indigo-500 uppercase tracking-wider">联赛胜率</span>
               </div>
               <div className="flex flex-col md:flex-row md:justify-between md:items-end">
-                 <span className="text-2xl md:text-3xl font-black text-blue-600 leading-none mb-1 md:mb-0">{formalWinRate}<span className="text-sm md:text-lg text-blue-400 ml-0.5">%</span></span>
+                 <span className="text-2xl md:text-3xl font-black text-blue-600 leading-none mb-1 md:mb-0">{leagueWinRate}<span className="text-sm md:text-lg text-blue-400 ml-0.5">%</span></span>
                  <div className="md:text-right">
                     <span className="text-[10px] text-slate-400 hidden md:block mb-0.5 uppercase tracking-wide">不败率</span>
-                    <span className="text-xs md:text-sm font-bold text-slate-600 font-mono block">{formalUndefeatedRate}%</span>
+                    <span className="text-xs md:text-sm font-bold text-slate-600 font-mono block">{leagueUndefeatedRate}%</span>
                  </div>
               </div>
            </div>
@@ -357,16 +358,16 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
 
            <div className="h-px bg-slate-100 mx-3"></div>
 
-           {/* Bottom: Formal */}
+           {/* Bottom: League */}
            <div className="p-3 md:p-4 flex-1 flex flex-col justify-center bg-slate-50/50">
               <div className="flex justify-between items-start mb-1">
-                 <span className="text-[10px] md:text-xs font-bold text-indigo-500 uppercase tracking-wider">正式进球</span>
+                 <span className="text-[10px] md:text-xs font-bold text-indigo-500 uppercase tracking-wider">联赛进球</span>
               </div>
               <div className="flex flex-col md:flex-row md:justify-between md:items-end">
-                 <span className="text-2xl md:text-3xl font-black text-emerald-600 leading-none mb-1 md:mb-0">{formalGoalsFor}</span>
+                 <span className="text-2xl md:text-3xl font-black text-emerald-600 leading-none mb-1 md:mb-0">{leagueGoalsFor}</span>
                  <div className="md:text-right">
                     <span className="text-[10px] text-slate-400 hidden md:block mb-0.5 uppercase tracking-wide">场均进球</span>
-                    <span className="text-xs md:text-sm font-bold text-slate-600 font-mono block">{avgFormalGoalsFor}</span>
+                    <span className="text-xs md:text-sm font-bold text-slate-600 font-mono block">{avgLeagueGoalsFor}</span>
                  </div>
               </div>
            </div>
@@ -395,20 +396,20 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
 
            <div className="h-px bg-slate-100 mx-3"></div>
 
-           {/* Bottom: Formal */}
+           {/* Bottom: League */}
            <div className="p-3 md:p-4 flex-1 flex flex-col justify-center bg-slate-50/50">
               <div className="flex justify-between items-start mb-1">
-                 <span className="text-[10px] md:text-xs font-bold text-indigo-500 uppercase tracking-wider">正式净胜</span>
+                 <span className="text-[10px] md:text-xs font-bold text-indigo-500 uppercase tracking-wider">联赛净胜</span>
               </div>
               <div className="flex flex-col md:flex-row md:justify-between md:items-end">
-                 <span className={`text-2xl md:text-3xl font-black leading-none mb-1 md:mb-0 ${formalGoalDiff >= 0 ? 'text-slate-800' : 'text-rose-600'}`}>
-                    {formalGoalDiff > 0 ? '+' : ''}{formalGoalDiff}
+                 <span className={`text-2xl md:text-3xl font-black leading-none mb-1 md:mb-0 ${leagueGoalDiff >= 0 ? 'text-slate-800' : 'text-rose-600'}`}>
+                    {leagueGoalDiff > 0 ? '+' : ''}{leagueGoalDiff}
                  </span>
                  <div className="md:text-right">
                     <span className="text-[10px] text-slate-400 hidden md:block mb-0.5 uppercase tracking-wide">场均失球</span>
                     <span className="text-xs md:text-sm font-bold text-rose-500 font-mono flex items-center md:justify-end">
                        <Shield className="w-3 h-3 mr-1" />
-                       {avgFormalGoalsAgainst}
+                       {avgLeagueGoalsAgainst}
                     </span>
                  </div>
               </div>
@@ -485,25 +486,25 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                 </div>
              </div>
 
-             {/* Chart 2: Formal Matches */}
+             {/* Chart 2: League Matches */}
              <div className="flex flex-col items-center justify-center sm:border-l border-slate-100 pt-4 sm:pt-0 border-t sm:border-t-0">
                 {/* Label above chart */}
                 <div className="mb-2">
-                   <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">正式</span>
+                   <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">联赛</span>
                 </div>
 
                 <div className="relative h-40 w-full">
                     {/* Center Text */}
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
                        <p className="text-2xl font-black text-slate-800">
-                          {formalMatchesPlayed}<span className="text-xs font-bold text-slate-400 ml-0.5">场</span>
+                          {leagueMatchesPlayed}<span className="text-xs font-bold text-slate-400 ml-0.5">场</span>
                        </p>
                     </div>
 
                     <ResponsiveContainer width="100%" height="100%" className="relative z-10">
                       <PieChart>
                         <Pie
-                          data={formalResultData}
+                          data={leagueResultData}
                           cx="50%"
                           cy="50%"
                           innerRadius={50}
@@ -512,7 +513,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                           dataKey="value"
                           stroke="none"
                         >
-                          {formalResultData.map((entry, index) => (
+                          {leagueResultData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.color} />
                           ))}
                         </Pie>
@@ -550,7 +551,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                     <tr>
                        <th className="px-3 md:px-6 py-3 font-bold whitespace-nowrap sticky left-0 bg-slate-50 z-10">主教练</th>
                        <th className="px-2 md:px-4 py-3 text-center whitespace-nowrap">最近执教</th>
-                       <th className="px-2 md:px-4 py-3 text-center whitespace-nowrap">执教/正式</th>
+                       <th className="px-2 md:px-4 py-3 text-center whitespace-nowrap">执教/联赛</th>
                        <th className="px-2 md:px-4 py-3 text-center whitespace-nowrap">战绩 (胜/平/负)</th>
                        <th className="px-2 md:px-4 py-3 text-center whitespace-nowrap">胜率</th>
                        <th className="px-2 md:px-4 py-3 text-center whitespace-nowrap">进/失球</th>
@@ -565,7 +566,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                              {coach.lastMatchDate}
                           </td>
                           <td className="px-2 md:px-4 py-3 text-center font-medium">
-                             {coach.games} <span className="text-slate-300">/</span> <span className="text-indigo-600">{coach.formalGames}</span>
+                             {coach.games} <span className="text-slate-300">/</span> <span className="text-indigo-600">{coach.leagueGames}</span>
                           </td>
                           <td className="px-2 md:px-4 py-3 text-center whitespace-nowrap">
                              <span className="text-emerald-600 font-bold">{coach.wins}</span> - <span className="text-amber-500 font-bold">{coach.draws}</span> - <span className="text-red-500 font-bold">{coach.losses}</span>

@@ -1,13 +1,13 @@
+
 import { GoogleGenAI, Type } from "@google/genai";
 import { DataItem, AnalysisResponse } from "../types";
 
-const apiKey = process.env.API_KEY || '';
-const ai = new GoogleGenAI({ apiKey });
+// The Google GenAI SDK always requires direct use of process.env.API_KEY
+// and creating a new instance before making an API call ensures the latest configuration is used.
 
 export const analyzeDataset = async (data: DataItem[]): Promise<AnalysisResponse> => {
-  if (!apiKey) {
-    throw new Error("API Key is missing. Please configure process.env.API_KEY.");
-  }
+  // Initialize GoogleGenAI right before the call as per coding guidelines
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
   // Limit data sample to avoid token limits if dataset is huge
   const dataSample = data.slice(0, 50); 
@@ -28,7 +28,8 @@ export const analyzeDataset = async (data: DataItem[]): Promise<AnalysisResponse
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      // Use 'gemini-3-flash-preview' for basic text/analysis tasks
+      model: "gemini-3-flash-preview",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -52,6 +53,7 @@ export const analyzeDataset = async (data: DataItem[]): Promise<AnalysisResponse
       }
     });
 
+    // Access the text property directly (not as a method)
     const text = response.text;
     if (!text) throw new Error("No response from Gemini");
     
@@ -63,7 +65,8 @@ export const analyzeDataset = async (data: DataItem[]): Promise<AnalysisResponse
 };
 
 export const askFollowUpQuestion = async (data: DataItem[], question: string, previousContext: string): Promise<string> => {
-   if (!apiKey) throw new Error("API Key missing");
+   // Initialize GoogleGenAI right before the call
+   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
    
    const dataSample = data.slice(0, 50);
    const context = `
@@ -72,9 +75,10 @@ export const askFollowUpQuestion = async (data: DataItem[], question: string, pr
    `;
 
    const response = await ai.models.generateContent({
-     model: "gemini-2.5-flash",
+     model: "gemini-3-flash-preview",
      contents: `角色：足球教练。语境：${context}\n\n教练提问：${question}\n\n请根据统计数据简洁地用中文回答。`
    });
 
+   // Access the text property directly
    return response.text || "我无法生成具体的回答。";
 };
