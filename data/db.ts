@@ -2629,6 +2629,104 @@ export const defaultDb: FullDatabase = {
       "countForStats": true,
       "coach": "车驰",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1766382745298",
+      "date": "2025-12-19",
+      "season": "华侨城2025年冬",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "洋人街国际社区足球公园",
+      "opponent": "黑米军团",
+      "ourScore": 1,
+      "opponentScore": 8,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "孙张力",
+        "车驰",
+        "钱星宇",
+        "胡勇",
+        "刘豪",
+        "张龑瀚",
+        "王薪炎",
+        "刘盛"
+      ],
+      "starters": [
+        "孙张力",
+        "车驰",
+        "钱星宇",
+        "胡勇",
+        "刘豪",
+        "王薪炎"
+      ],
+      "goalkeepers": [
+        "孙张力",
+        "张龑瀚"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "孙张力",
+          "conceded": 6
+        },
+        {
+          "player": "张龑瀚",
+          "conceded": 2
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "钱星宇",
+          "assist": "胡勇",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "外援3个",
+      "countForStats": true,
+      "coach": "车驰",
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1766383208278",
+      "date": "2025-12-19",
+      "season": "2026平顶山健康杯",
+      "round": 15,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "双龙七",
+      "ourScore": 4,
+      "opponentScore": 2,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "唐涛"
+      ],
+      "starters": [
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 2
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "",
+      "teamId": "1764057295948"
     }
   ],
   "opponents": [
@@ -2846,6 +2944,11 @@ export const defaultDb: FullDatabase = {
       "id": "mjarrz3m",
       "name": "元通电竞",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "mjgq75xl",
+      "name": "黑米军团",
+      "teamId": "team-default-001"
     }
   ],
   "seasons": [
@@ -2910,6 +3013,12 @@ export const defaultDb: FullDatabase = {
       "name": "平顶山足球乐园",
       "teamId": "1764057295948",
       "sortOrder": 1
+    },
+    {
+      "id": "ven-1766381925761",
+      "name": "洋人街国际社区足球公园",
+      "teamId": "team-default-001",
+      "sortOrder": 5
     }
   ],
   "players": [
@@ -3133,7 +3242,14 @@ export const defaultDb: FullDatabase = {
       "number": "7",
       "birthday": "1992-11-02",
       "teamId": "team-default-001"
+    },
+    {
+      "name": "刘盛",
+      "number": "",
+      "birthday": "",
+      "avatar": "",
+      "teamId": "team-default-001"
     }
   ],
-  "theme": "indigo"
+  "theme": "orange"
 };
