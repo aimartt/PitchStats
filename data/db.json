@@ -2724,6 +2724,63 @@
       "countForStats": true,
       "coach": "",
       "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1766459252084",
+      "date": "2025-12-22",
+      "season": "华侨城2025年冬",
+      "round": 5,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "华侨城足球公园",
+      "opponent": "尹氏08之星",
+      "ourScore": 0,
+      "opponentScore": 3,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "曹晓霖",
+        "车驰",
+        "陈春",
+        "陈启晅",
+        "郭佳东",
+        "胡勇",
+        "李单",
+        "刘豪",
+        "钱星宇",
+        "唐涛",
+        "杨涛",
+        "张龑瀚",
+        "朱峰"
+      ],
+      "starters": [
+        "车驰",
+        "陈春",
+        "陈启晅",
+        "郭佳东",
+        "胡勇",
+        "李单",
+        "刘豪",
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 3
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "胡勇",
+      "teamId": "team-default-001"
     }
   ],
   "opponents": [
@@ -3248,5 +3305,5 @@
       "teamId": "team-default-001"
     }
   ],
-  "theme": "orange"
+  "theme": "blue"
 }

@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useRef } from 'react';
 import { Users, Plus, Trash2, Search, Shield, Pencil, X, Check, Swords, TrendingUp, History, Camera, Eye, Calendar, MapPin, Trophy, Crown, Handshake, Shirt, Ghost, Heart } from 'lucide-react';
 import { OpponentManagerProps, OpponentTeam, MatchRecord } from '../types';
@@ -611,7 +610,9 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
                                             {match.matchType}
                                          </span>
                                       </div>
-                                      <span className="font-mono text-slate-400">{match.season}</span>
+                                      <span className="font-mono text-slate-400">
+                                         {match.season} {match.round && `· 第${match.round}轮`}
+                                      </span>
                                    </div>
 
                                    {/* Body: Scoreboard */}
