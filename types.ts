@@ -182,6 +182,7 @@ export interface PlayerManagerProps {
   onAddPlayer: (player: PlayerProfile) => void;
   onRemovePlayer: (name: string) => void;
   onEditPlayer: (oldName: string, newProfile: PlayerProfile) => void;
+  onViewMatch?: (match: MatchRecord) => void; // New: View match detail from player stats
   currentUserRole?: UserRole; // Added to control view/edit permissions
 }
 

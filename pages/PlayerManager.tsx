@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { 
   Shirt, Plus, Trash2, Search, Pencil, X, Check, Trophy, Zap, 
@@ -125,13 +126,15 @@ const PlayerDetailView: React.FC<{
   player: PlayerStats; 
   matches: MatchRecord[]; 
   seasons: string[]; 
-  onBack: () => void 
-}> = ({ player, matches, seasons, onBack }) => {
+  onBack: () => void;
+  onViewMatch?: (match: MatchRecord) => void; 
+}> = ({ player, matches, seasons, onBack, onViewMatch }) => {
   const [expandedSeason, setExpandedSeason] = useState<string | null>(null);
 
   const allTimeAggregate = useMemo(() => {
     let played = 0;
     let playedCounted = 0;
+    let leaguePlayed = 0;
     let goals = 0;
     let assists = 0;
     let redCards = 0;
@@ -139,9 +142,11 @@ const PlayerDetailView: React.FC<{
 
     matches.forEach(m => {
        const isCounted = m.countForStats !== false;
+       const isLeague = m.matchType === '联赛';
        if (m.squad?.includes(player.name)) {
           played++;
           if (isCounted) playedCounted++;
+          if (isLeague) leaguePlayed++;
        }
        m.goalsDetails?.forEach(g => {
           if (g.scorer === player.name) goals++;
@@ -153,6 +158,7 @@ const PlayerDetailView: React.FC<{
 
     return {
       played,
+      leaguePlayed,
       goals,
       assists,
       redCards,
@@ -298,8 +304,8 @@ const PlayerDetailView: React.FC<{
             </div>
             <div className="space-y-1">
                <h4 className="text-xs font-bold text-slate-400 mb-1">生涯出场</h4>
-               <p className="text-4xl font-black text-slate-800">{allTimeAggregate.played}</p>
-               <p className="text-xs text-slate-500 font-bold">总进球: <span className="text-emerald-600 font-black">{allTimeAggregate.goals}</span></p>
+               <p className="text-4xl font-black text-slate-800">{allTimeAggregate.played} <span className="text-sm font-bold text-slate-400 ml-1">场</span></p>
+               <p className="text-xs text-slate-500 font-bold">联赛出场: <span className="text-indigo-600">{allTimeAggregate.leaguePlayed}</span> 场</p>
             </div>
          </div>
          <div className="bg-white p-7 rounded-[2rem] border border-slate-200 shadow-sm hover:border-emerald-400 transition-all hover:shadow-lg group">
@@ -308,9 +314,9 @@ const PlayerDetailView: React.FC<{
                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Efficiency</span>
             </div>
             <div className="space-y-1">
-               <h4 className="text-xs font-bold text-slate-400 mb-1">场均火力 (计入统计)</h4>
-               <p className="text-4xl font-black text-slate-800">{allTimeAggregate.goalsAvg}</p>
-               <p className="text-xs text-slate-500 font-bold">场均助攻: <span className="text-blue-600">{allTimeAggregate.assistsAvg}</span></p>
+               <h4 className="text-xs font-bold text-slate-400 mb-1">进球火力</h4>
+               <p className="text-4xl font-black text-slate-800">{allTimeAggregate.goals} <span className="text-sm font-bold text-slate-400 ml-1">球</span></p>
+               <p className="text-xs text-slate-500 font-bold">场均进球: <span className="text-emerald-600">{allTimeAggregate.goalsAvg}</span></p>
             </div>
          </div>
          <div className="bg-white p-7 rounded-[2rem] border border-slate-200 shadow-sm hover:border-blue-400 transition-all hover:shadow-lg group">
@@ -321,7 +327,7 @@ const PlayerDetailView: React.FC<{
             <div className="space-y-1">
                <h4 className="text-xs font-bold text-slate-400 mb-1">组织贡献</h4>
                <p className="text-4xl font-black text-slate-800">{allTimeAggregate.assists} <span className="text-sm font-bold text-slate-400 ml-1">助</span></p>
-               <p className="text-xs text-slate-500 font-bold">有效场次占比见下方列表</p>
+               <p className="text-xs text-slate-500 font-bold">场均助攻: <span className="text-blue-600">{allTimeAggregate.assistsAvg}</span></p>
             </div>
          </div>
          <div className="bg-white p-7 rounded-[2rem] border border-slate-200 shadow-sm hover:border-rose-400 transition-all hover:shadow-lg group">
@@ -478,7 +484,11 @@ const PlayerDetailView: React.FC<{
                                             const gkStat = match.goalkeeperStats?.find(g => g.player === player.name);
 
                                             return (
-                                               <div key={match.id} className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between hover:border-slate-300 transition-colors">
+                                               <div 
+                                                  key={match.id} 
+                                                  onClick={() => onViewMatch && onViewMatch(match)}
+                                                  className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between hover:border-slate-300 transition-colors cursor-pointer group/match"
+                                               >
                                                   <div className="flex flex-col gap-1 min-w-0">
                                                      <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase">
                                                         <span>{match.date}</span>
@@ -488,7 +498,7 @@ const PlayerDetailView: React.FC<{
                                                         </span>
                                                         {!match.countForStats && <span className="px-1 py-0.5 rounded bg-rose-50 text-rose-400 text-[8px]">未统</span>}
                                                      </div>
-                                                     <div className="font-black text-slate-800 truncate text-sm">vs {match.opponent}</div>
+                                                     <div className="font-black text-slate-800 truncate text-sm group-hover/match:text-indigo-600 transition-colors">vs {match.opponent}</div>
                                                      <div className="flex items-center gap-2 mt-1">
                                                         <span className={`text-xs font-mono font-black ${isWin ? 'text-emerald-500' : isLoss ? 'text-rose-500' : 'text-amber-500'}`}>
                                                            {match.ourScore}:{match.opponentScore}
@@ -577,7 +587,7 @@ const HonorSection: React.FC<{ title: string; children?: React.ReactNode }> = ({
    </div>
 );
 
-const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons, onAddPlayer, onRemovePlayer, onEditPlayer, currentUserRole }) => {
+const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons, onAddPlayer, onRemovePlayer, onEditPlayer, onViewMatch, currentUserRole }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSeason, setSelectedSeason] = useState<string>('');
   const [viewingPlayer, setViewingPlayer] = useState<PlayerStats | null>(null);
@@ -787,7 +797,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
   };
 
   if (viewingPlayer) {
-    return <PlayerDetailView player={viewingPlayer} matches={matches} seasons={seasons} onBack={() => setViewingPlayer(null)} />;
+    return <PlayerDetailView player={viewingPlayer} matches={matches} seasons={seasons} onBack={() => setViewingPlayer(null)} onViewMatch={onViewMatch} />;
   }
 
   return (

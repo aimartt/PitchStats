@@ -659,6 +659,7 @@ const AppContent: React.FC = () => {
                        onAddPlayer={handleAddPlayer}
                        onRemovePlayer={handleRemovePlayer}
                        onEditPlayer={handleEditPlayer}
+                       onViewMatch={handleViewMatch}
                        currentUserRole={authState.user?.role}
                      />
                   } />
