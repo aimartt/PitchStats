@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { 
   Shirt, Plus, Trash2, Search, Pencil, X, Check, Trophy, Zap, 
@@ -366,9 +365,9 @@ const PlayerDetailView: React.FC<{
                      <th colSpan={2} className="px-4 py-3 text-center border-l border-slate-100 bg-amber-50/30">首发率</th>
                      <th colSpan={2} className="px-4 py-3 text-center border-l border-slate-100 bg-emerald-50/30 text-emerald-700">进球 (场均)</th>
                      <th colSpan={2} className="px-4 py-3 text-center border-l border-slate-100 bg-blue-50/30 text-blue-700">助攻 (场均)</th>
-                     <th colSpan={2} className="px-4 py-3 text-center border-l border-slate-100 bg-rose-50/30 text-rose-700">乌龙球</th>
+                     <th colSpan={2} className="px-4 py-3 text-center border-l border-slate-100 bg-slate-100/50 text-slate-700">失球 (场均)</th>
                      <th colSpan={2} className="px-4 py-3 text-center border-l border-slate-100">红黄牌</th>
-                     <th colSpan={2} className="pr-10 pl-4 py-3 text-center border-l border-slate-100 bg-slate-100/50 text-slate-700">失球 (场均)</th>
+                     <th colSpan={2} className="pr-10 pl-4 py-3 text-center border-l border-slate-100 bg-rose-50/30 text-rose-700">乌龙球</th>
                   </tr>
                   <tr className="bg-white/50 font-black">
                      <th className="px-2 py-3 text-center border-l border-slate-100">总计</th>
@@ -380,11 +379,11 @@ const PlayerDetailView: React.FC<{
                      <th className="px-2 py-3 text-center border-l border-slate-100">总计</th>
                      <th className="px-2 py-3 text-center text-blue-600">联赛</th>
                      <th className="px-2 py-3 text-center border-l border-slate-100">总计</th>
-                     <th className="px-2 py-3 text-center text-rose-600">联赛</th>
+                     <th className="px-2 py-3 text-center">联赛</th>
                      <th className="px-2 py-3 text-center border-l border-slate-100">总计</th>
                      <th className="px-2 py-3 text-center">联赛</th>
                      <th className="px-2 py-3 text-center border-l border-slate-100">总计</th>
-                     <th className="pr-10 pl-2 py-3 text-center">联赛</th>
+                     <th className="pr-10 pl-2 py-3 text-center text-rose-600">联赛</th>
                   </tr>
                </thead>
                <tbody className="divide-y divide-slate-100">
@@ -431,12 +430,12 @@ const PlayerDetailView: React.FC<{
                               <td className="px-2 py-6 text-center bg-blue-50/10">
                                  <StatWithAvgCell val={s.leagueAssists} avg={formatAvg(s.leagueAssists, s.leagueMatchesCounted)} color="text-blue-600" />
                               </td>
-                              
-                              <td className="px-2 py-6 text-center border-l border-slate-100 bg-rose-50/10">
-                                 {s.ownGoals > 0 ? <span className="font-bold text-slate-700">{s.ownGoals}</span> : <span className="text-slate-200">-</span>}
+
+                              <td className="px-2 py-6 text-center border-l border-slate-100 bg-slate-100/30">
+                                 {s.matchesAsGK > 0 ? <StatWithAvgCell val={s.conceded} avg={formatAvg(s.conceded, s.matchesAsGKCounted)} color="text-slate-500" /> : <span className="text-slate-200">-</span>}
                               </td>
-                              <td className="px-2 py-6 text-center bg-rose-50/10">
-                                 {s.leagueOwnGoals > 0 ? <span className="font-bold text-rose-600">{s.leagueOwnGoals}</span> : <span className="text-slate-200">-</span>}
+                              <td className="px-2 py-6 text-center bg-slate-100/30">
+                                 {s.leagueMatchesAsGK > 0 ? <StatWithAvgCell val={s.leagueConceded} avg={formatAvg(s.leagueConceded, s.leagueMatchesAsGKCounted)} color="text-slate-400" /> : <span className="text-slate-200">-</span>}
                               </td>
                               
                               <td className="px-2 py-6 text-center border-l border-slate-100 text-slate-800">
@@ -453,12 +452,12 @@ const PlayerDetailView: React.FC<{
                                     {!(s.leagueYellowCards || s.leagueRedCards) && <span className="text-slate-200">-</span>}
                                  </div>
                               </td>
-                              
-                              <td className="px-2 py-6 text-center border-l border-slate-100 bg-slate-100/30">
-                                 {s.matchesAsGK > 0 ? <StatWithAvgCell val={s.conceded} avg={formatAvg(s.conceded, s.matchesAsGKCounted)} color="text-slate-500" /> : <span className="text-slate-200">-</span>}
+
+                              <td className="px-2 py-6 text-center border-l border-slate-100 bg-rose-50/10">
+                                 {s.ownGoals > 0 ? <span className="font-bold text-slate-700">{s.ownGoals}</span> : <span className="text-slate-200">-</span>}
                               </td>
-                              <td className="pr-10 pl-2 py-6 text-center bg-slate-100/30">
-                                 {s.leagueMatchesAsGK > 0 ? <StatWithAvgCell val={s.leagueConceded} avg={formatAvg(s.leagueConceded, s.leagueMatchesAsGKCounted)} color="text-slate-400" /> : <span className="text-slate-200">-</span>}
+                              <td className="pr-10 pl-2 py-6 text-center bg-rose-50/10">
+                                 {s.leagueOwnGoals > 0 ? <span className="font-bold text-rose-600">{s.leagueOwnGoals}</span> : <span className="text-slate-200">-</span>}
                               </td>
                            </tr>
 
@@ -918,9 +917,9 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                 <th colSpan={2} className="px-4 py-2 text-center border-l border-slate-100 bg-amber-50/30">首发</th>
                 <th colSpan={2} className="px-4 py-2 text-center border-l border-slate-100 bg-emerald-50/30 text-emerald-700">进球 (场均)</th>
                 <th colSpan={2} className="px-4 py-2 text-center border-l border-slate-100 bg-blue-50/30 text-blue-700">助攻 (场均)</th>
-                <th colSpan={2} className="px-4 py-2 text-center border-l border-slate-100 bg-rose-50/30 text-rose-700">乌龙球</th>
-                <th colSpan={2} className="px-4 py-2 text-center border-l border-slate-100">红黄牌</th>
                 <th colSpan={2} className="px-4 py-2 text-center border-l border-slate-100 bg-slate-100/50 text-slate-700">失球 (场均)</th>
+                <th colSpan={2} className="px-4 py-2 text-center border-l border-slate-100">红黄牌</th>
+                <th colSpan={2} className="px-4 py-2 text-center border-l border-slate-100 bg-rose-50/30 text-rose-700">乌龙球</th>
                 <th rowSpan={2} className="px-4 py-4 text-center">操作</th>
               </tr>
               <tr>
@@ -932,12 +931,12 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                 <th className="px-2 py-2 text-center cursor-pointer hover:bg-slate-100 font-bold text-emerald-600" onClick={() => handleSort('leagueGoals')}>联赛</th>
                 <th className="px-2 py-2 text-center border-l border-slate-100 cursor-pointer hover:bg-slate-100" onClick={() => handleSort('assists')}>总计</th>
                 <th className="px-2 py-2 text-center cursor-pointer hover:bg-slate-100 font-bold text-blue-600" onClick={() => handleSort('leagueAssists')}>联赛</th>
+                <th className="px-2 py-2 text-center border-l border-slate-100 cursor-pointer hover:bg-slate-100" onClick={() => handleSort('conceded')}>总计</th>
+                <th className="px-2 py-2 text-center cursor-pointer hover:bg-slate-100" onClick={() => handleSort('leagueConceded')}>联赛</th>
+                <th className="px-2 py-2 text-center border-l border-slate-100">总计</th>
+                <th className="px-2 py-2 text-center">联赛</th>
                 <th className="px-2 py-2 text-center border-l border-slate-100 cursor-pointer hover:bg-slate-100" onClick={() => handleSort('ownGoals')}>总计</th>
                 <th className="px-2 py-2 text-center cursor-pointer hover:bg-slate-100 text-rose-600" onClick={() => handleSort('leagueOwnGoals')}>联赛</th>
-                <th className="px-2 py-2 text-center border-l border-slate-100">总计</th>
-                <th className="px-2 py-2 text-center">联赛</th>
-                <th className="px-2 py-2 text-center border-l border-slate-100">总计</th>
-                <th className="px-2 py-2 text-center">联赛</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -979,11 +978,11 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                     <td className="px-2 py-3 text-center bg-blue-50/10">
                        <StatWithAvgCell val={player.leagueAssists} avg={player.leagueAssistsAvg} color="text-blue-600" />
                     </td>
-                    <td className="px-2 py-3 text-center border-l border-slate-100 bg-rose-50/10">
-                       {player.ownGoals > 0 ? <span className="font-bold text-slate-700">{player.ownGoals}</span> : <span className="text-slate-200">-</span>}
+                    <td className="px-2 py-3 text-center border-l border-slate-100 bg-slate-100/30">
+                       {player.matchesAsGK > 0 ? <StatWithAvgCell val={player.conceded} avg={player.concededAvg} color="text-slate-500" /> : <span className="text-slate-200">-</span>}
                     </td>
-                    <td className="px-2 py-3 text-center bg-rose-50/10">
-                       {player.leagueOwnGoals > 0 ? <span className="font-bold text-rose-600">{player.leagueOwnGoals}</span> : <span className="text-slate-200">-</span>}
+                    <td className="px-2 py-3 text-center bg-slate-100/30">
+                       {player.leagueMatchesAsGK > 0 ? <StatWithAvgCell val={player.leagueConceded} avg={player.leagueConcededAvg} color="text-slate-400" /> : <span className="text-slate-200">-</span>}
                     </td>
                     <td className="px-2 py-3 text-center border-l border-slate-100">
                        {(player.yellowCards > 0 || player.redCards > 0) ? (
@@ -1001,11 +1000,11 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                           </div>
                        ) : <span className="text-slate-200">-</span>}
                     </td>
-                    <td className="px-2 py-3 text-center border-l border-slate-100 bg-slate-100/30">
-                       {player.matchesAsGK > 0 ? <StatWithAvgCell val={player.conceded} avg={player.concededAvg} color="text-slate-500" /> : <span className="text-slate-200">-</span>}
+                    <td className="px-2 py-3 text-center border-l border-slate-100 bg-rose-50/10">
+                       {player.ownGoals > 0 ? <span className="font-bold text-slate-700">{player.ownGoals}</span> : <span className="text-slate-200">-</span>}
                     </td>
-                    <td className="px-2 py-3 text-center bg-slate-100/30">
-                       {player.leagueMatchesAsGK > 0 ? <StatWithAvgCell val={player.leagueConceded} avg={player.leagueConcededAvg} color="text-slate-400" /> : <span className="text-slate-200">-</span>}
+                    <td className="px-2 py-3 text-center bg-rose-50/10">
+                       {player.leagueOwnGoals > 0 ? <span className="font-bold text-rose-600">{player.leagueOwnGoals}</span> : <span className="text-slate-200">-</span>}
                     </td>
                     <td className="px-4 py-3 text-center">
                        <div className="flex items-center justify-center gap-1">
