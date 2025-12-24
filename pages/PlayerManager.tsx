@@ -361,7 +361,7 @@ const PlayerDetailView: React.FC<{
                <thead className="text-[10px] text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
                   <tr className="border-b border-slate-100">
                      <th rowSpan={2} className="pl-10 pr-4 py-5 sticky left-0 bg-slate-50 z-30 font-black text-slate-900 text-xs">赛季信息</th>
-                     <th colSpan={2} className="px-4 py-3 text-center border-l border-slate-100 bg-indigo-50/30">参与活动 (总)</th>
+                     <th colSpan={2} className="px-4 py-3 text-center border-l border-slate-100 bg-indigo-50/30">参与活动</th>
                      <th colSpan={2} className="px-4 py-3 text-center border-l border-slate-100 bg-amber-50/30">首发率</th>
                      <th colSpan={2} className="px-4 py-3 text-center border-l border-slate-100 bg-emerald-50/30 text-emerald-700">进球 (场均)</th>
                      <th colSpan={2} className="px-4 py-3 text-center border-l border-slate-100 bg-blue-50/30 text-blue-700">助攻 (场均)</th>
@@ -913,7 +913,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
               <tr className="border-b border-slate-100">
                 <th rowSpan={2} className="px-2 py-4 sticky left-0 bg-slate-50 z-30 min-w-[90px] shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">球员</th>
                 <th rowSpan={2} className="px-1 py-4 text-center">年龄</th>
-                <th colSpan={2} className="px-4 py-2 text-center border-l border-slate-100 bg-indigo-50/30">参与活动 (总)</th>
+                <th colSpan={2} className="px-4 py-2 text-center border-l border-slate-100 bg-indigo-50/30">参与活动</th>
                 <th colSpan={2} className="px-4 py-2 text-center border-l border-slate-100 bg-amber-50/30">首发</th>
                 <th colSpan={2} className="px-4 py-2 text-center border-l border-slate-100 bg-emerald-50/30 text-emerald-700">进球 (场均)</th>
                 <th colSpan={2} className="px-4 py-2 text-center border-l border-slate-100 bg-blue-50/30 text-blue-700">助攻 (场均)</th>
