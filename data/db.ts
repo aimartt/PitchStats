@@ -1067,15 +1067,35 @@ export const defaultDb: FullDatabase = {
         "杨涛",
         "朱峰"
       ],
-      "goalkeepers": [],
-      "goalkeeperStats": [],
-      "goalsDetails": [],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 2
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "刘豪",
+          "isPenalty": false
+        },
+        {
+          "scorer": "陈启晅",
+          "isPenalty": false
+        },
+        {
+          "scorer": "陈启晅",
+          "isPenalty": false
+        }
+      ],
       "yellowCards": [],
       "redCards": [],
       "penaltiesWon": [],
       "ownGoals": [],
       "notes": "",
-      "countForStats": false,
+      "countForStats": true,
       "coach": "车驰",
       "teamId": "team-default-001"
     },
