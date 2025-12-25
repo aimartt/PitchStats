@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useRef } from 'react';
 import { Users, Plus, Trash2, Search, Shield, Pencil, X, Check, Swords, TrendingUp, History, Camera, Eye, Calendar, MapPin, Trophy, Crown, Handshake, Shirt, Ghost, Heart } from 'lucide-react';
 import { OpponentManagerProps, OpponentTeam, MatchRecord } from '../types';
@@ -16,7 +17,7 @@ interface OpponentStats {
   history: string[];
 }
 
-const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, onAddOpponent, onRemoveOpponent, onEditOpponent, currentTeamName, currentUserRole }) => {
+const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, onAddOpponent, onRemoveOpponent, onEditOpponent, onViewMatch, currentTeamName, currentUserRole }) => {
   const [newTeamName, setNewTeamName] = useState('');
   const [newTeamLogo, setNewTeamLogo] = useState<string | undefined>(undefined);
   const [searchTerm, setSearchTerm] = useState('');
@@ -595,7 +596,11 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
                     {viewingMatches.length > 0 ? (
                        <div className="space-y-3">
                           {viewingMatches.map(match => (
-                             <div key={match.id} className={`relative overflow-hidden rounded-xl border shadow-sm transition-all hover:shadow-md ${getMatchBackgroundStyle(match.matchType)}`}>
+                             <div 
+                               key={match.id} 
+                               onClick={() => onViewMatch && onViewMatch(match)}
+                               className={`relative overflow-hidden rounded-xl border shadow-sm transition-all hover:shadow-md cursor-pointer group/match ${getMatchBackgroundStyle(match.matchType)}`}
+                             >
                                 {/* Watermark */}
                                 {getWatermarkIcon(match.matchType)}
                                 

@@ -75,6 +75,7 @@ export interface MatchRecord extends DataItem {
   yellowCards?: string[]; // List of player names
   redCards?: string[];    // List of player names
   penaltiesWon?: string[]; // List of player names (who won the penalty)
+  penaltiesMissed?: string[]; // New: List of player names (who missed the penalty)
   ownGoals?: string[];    // List of player names (who scored own goal)
   
   notes?: string;
@@ -192,6 +193,7 @@ export interface OpponentManagerProps {
   onAddOpponent: (team: OpponentTeam) => void;
   onRemoveOpponent: (id: string) => void;
   onEditOpponent: (id: string, name: string, logo?: string) => void;
+  onViewMatch?: (match: MatchRecord) => void; // New: Support deep dive into matches
   currentTeamName?: string;
   currentUserRole?: UserRole; // Added for read-only check
 }

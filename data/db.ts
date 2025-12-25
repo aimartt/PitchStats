@@ -973,6 +973,9 @@ export const defaultDb: FullDatabase = {
       "penaltiesWon": [
         "陈启晅"
       ],
+      "penaltiesMissed": [
+        "陈启晅"
+      ],
       "ownGoals": [],
       "notes": "",
       "countForStats": true,
@@ -2804,6 +2807,69 @@ export const defaultDb: FullDatabase = {
       "countForStats": true,
       "coach": "胡勇",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1766623926288",
+      "date": "2025-12-24",
+      "season": "华侨城2025年冬",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "华侨城足球公园",
+      "opponent": "炽江",
+      "ourScore": 5,
+      "opponentScore": 6,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "车驰",
+        "郭佳东",
+        "康鑫",
+        "李单",
+        "文云波",
+        "杨皓宇",
+        "张龑瀚",
+        "朱峰"
+      ],
+      "starters": [
+        "郭佳东",
+        "康鑫",
+        "李单",
+        "文云波",
+        "杨皓宇",
+        "张龑瀚",
+        "朱峰"
+      ],
+      "goalkeepers": [
+        "张龑瀚",
+        "车驰"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "张龑瀚",
+          "conceded": 1
+        },
+        {
+          "player": "车驰",
+          "conceded": 5
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "朱峰",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [
+        "郭佳东"
+      ],
+      "ownGoals": [],
+      "notes": "外援3个",
+      "countForStats": true,
+      "coach": "车驰",
+      "teamId": "team-default-001"
     }
   ],
   "opponents": [
@@ -3026,6 +3092,11 @@ export const defaultDb: FullDatabase = {
       "id": "mjgq75xl",
       "name": "黑米军团",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "mjkq4460",
+      "name": "炽江",
+      "teamId": "team-default-001"
     }
   ],
   "seasons": [
@@ -3178,7 +3249,7 @@ export const defaultDb: FullDatabase = {
     {
       "name": "李扬",
       "number": "3",
-      "birthday": "1999-12-19",
+      "birthday": "1988-12-19",
       "teamId": "team-default-001"
     },
     {
@@ -3311,7 +3382,7 @@ export const defaultDb: FullDatabase = {
     {
       "name": "申相峰",
       "number": "",
-      "birthday": "",
+      "birthday": "1996-08-16",
       "teamId": "team-default-001"
     },
     {
@@ -3328,5 +3399,5 @@ export const defaultDb: FullDatabase = {
       "teamId": "team-default-001"
     }
   ],
-  "theme": "blue"
+  "theme": "red"
 };

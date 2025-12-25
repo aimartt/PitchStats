@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { DataItem, MatchRecord, GoalDetail, PlayerProfile, OpponentTeam, DataInputProps, GoalkeeperStat } from '../types';
 import { Plus, CheckCircle, AlertCircle, Save, ChevronDown, Users, Hash, MapPin, Flag, X, ArrowLeft, Shirt, Check, Search, Info, Shield, Crosshair, UserCog } from 'lucide-react';
@@ -123,6 +122,7 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
   const [yellowCards, setYellowCards] = useState<string[]>([]);
   const [redCards, setRedCards] = useState<string[]>([]);
   const [penaltiesWon, setPenaltiesWon] = useState<string[]>([]);
+  const [penaltiesMissed, setPenaltiesMissed] = useState<string[]>([]);
   const [ownGoals, setOwnGoals] = useState<string[]>([]);
 
   useEffect(() => {
@@ -164,10 +164,10 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
       setYellowCards(initialData.yellowCards || []);
       setRedCards(initialData.redCards || []);
       setPenaltiesWon(initialData.penaltiesWon || []);
+      setPenaltiesMissed(initialData.penaltiesMissed || []);
       setOwnGoals(initialData.ownGoals || []);
     } else {
       // Only set default season/venue if they are currently empty
-      // This check prevents resetting the user's selection on re-renders when prop references change
       setFormData(prev => {
         const updates: any = {};
         if (!prev.season && seasonList.length > 0) updates.season = seasonList[0];
@@ -258,10 +258,6 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
     setFormData(prev => {
         const newData = { ...prev, [name]: type === 'checkbox' ? checked : value };
         
-        // Smart default for matchType:
-        // Only automatically disable stats if switching TO '队内赛'.
-        // DO NOT automatically re-enable stats if switching AWAY from '队内赛', 
-        // as this overrides user intent if they manually unchecked it.
         if (name === 'matchType') {
             if (value === '队内赛') {
                newData.countForStats = false;
@@ -302,12 +298,6 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
     const our = formData.ourScore ? parseInt(formData.ourScore) : 0;
     const opp = formData.opponentScore ? parseInt(formData.opponentScore) : 0;
     
-    // Warn if GK conceded sum != opp score
-    const totalGkConceded = gkStats.reduce((sum, g) => sum + g.conceded, 0);
-    if (formData.countForStats && gkStats.length > 0 && totalGkConceded !== opp) {
-       // Just a check, maybe not block, but good to ensure data quality.
-    }
-
     let result = 'Draw';
     if (our > opp) result = 'Win';
     if (our < opp) result = 'Loss';
@@ -333,10 +323,11 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
       yellowCards: yellowCards,
       redCards: redCards,
       penaltiesWon: penaltiesWon,
+      penaltiesMissed: penaltiesMissed,
       ownGoals: ownGoals,
       notes: formData.notes,
       countForStats: formData.countForStats,
-      coach: formData.coach // New Field
+      coach: formData.coach
     };
 
     onDataLoaded([newMatch], true); 
@@ -811,6 +802,26 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
                     value=""
                     onChange={(val) => addEvent(penaltiesWon, setPenaltiesWon, val)}
                     placeholder="+ 添加造点"
+                 />
+              </div>
+
+              <div>
+                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block flex items-center text-rose-600">
+                    <div className="w-3 h-3 rounded-full border-2 border-rose-400 mr-2"></div> 失点
+                 </label>
+                 <div className="flex flex-wrap gap-2 mb-2">
+                    {penaltiesMissed.map((p, i) => (
+                      <div key={i} className="bg-rose-50 text-rose-700 border border-rose-200 px-2 py-1 rounded-md text-xs font-bold flex items-center">
+                         {p}
+                         <button onClick={() => removeEvent(penaltiesMissed, setPenaltiesMissed, i)} className="ml-1 text-rose-400 hover:text-rose-600"><X className="w-3 h-3"/></button>
+                      </div>
+                    ))}
+                 </div>
+                 <SearchablePlayerSelect 
+                    options={statsPlayerOptions}
+                    value=""
+                    onChange={(val) => addEvent(penaltiesMissed, setPenaltiesMissed, val)}
+                    placeholder="+ 添加失点"
                  />
               </div>
 

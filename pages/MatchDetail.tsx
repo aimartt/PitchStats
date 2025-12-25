@@ -1,4 +1,3 @@
-
 import React, { useMemo } from 'react';
 import { MatchRecord, PlayerProfile, OpponentTeam } from '../types';
 import { ArrowLeft, MapPin, Calendar, Trophy, Flag, Users, Info, Shirt, UserCog } from 'lucide-react';
@@ -31,7 +30,7 @@ const MatchDetail: React.FC<MatchDetailProps> = ({ match, onBack, currentTeamNam
 
   const isInternalMatch = match.matchType === '队内赛';
 
-  const hasDisciplineEvents = ((match.yellowCards?.length || 0) + (match.redCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.ownGoals?.length || 0)) > 0;
+  const hasDisciplineEvents = ((match.yellowCards?.length || 0) + (match.redCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.penaltiesMissed?.length || 0) + (match.ownGoals?.length || 0)) > 0;
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 animate-fade-in pb-20">
@@ -236,6 +235,12 @@ const MatchDetail: React.FC<MatchDetailProps> = ({ match, onBack, currentTeamNam
                            <div key={`pw-${i}`} className="flex items-center bg-slate-100 text-slate-600 px-2 py-1 rounded-md text-xs font-bold border border-slate-200">
                                <div className="w-2 h-2 rounded-full border-2 border-slate-400 mr-1.5"></div>
                                {p} (造点)
+                           </div>
+                       ))}
+                       {match.penaltiesMissed?.map((p, i) => (
+                           <div key={`pm-${i}`} className="flex items-center bg-rose-50 text-rose-700 px-2 py-1 rounded-md text-xs font-bold border border-rose-200">
+                               <div className="w-2 h-2 rounded-full border-2 border-rose-400 mr-1.5"></div>
+                               {p} (失点)
                            </div>
                        ))}
                        {match.ownGoals?.map((p, i) => (

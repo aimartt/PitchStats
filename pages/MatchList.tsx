@@ -214,7 +214,7 @@ const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserR
 
                   {/* Combined Stats: Goals, Assists, Cards, Events */}
                   {( (match.goalsDetails && match.goalsDetails.length > 0) || 
-                     (((match.redCards?.length || 0) + (match.yellowCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.ownGoals?.length || 0)) > 0)
+                     (((match.redCards?.length || 0) + (match.yellowCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.penaltiesMissed?.length || 0) + (match.ownGoals?.length || 0)) > 0)
                    ) && (
                      <div className="mt-3 pt-2 border-t border-dashed border-slate-200/60 space-y-1.5">
                         {/* Goals */}
@@ -239,7 +239,7 @@ const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserR
                         )}
 
                         {/* Cards & Events */}
-                        {((match.redCards?.length || 0) + (match.yellowCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.ownGoals?.length || 0)) > 0 && (
+                        {((match.redCards?.length || 0) + (match.yellowCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.penaltiesMissed?.length || 0) + (match.ownGoals?.length || 0)) > 0 && (
                            <div className="flex flex-wrap gap-1.5 md:gap-2 text-[10px] md:text-xs">
                               {match.redCards?.map((p, i) => (
                                  <span key={`rc-${i}`} className="inline-flex items-center px-1.5 py-0.5 rounded bg-red-50 text-red-700 border border-red-100 font-bold" title="红牌">
@@ -257,6 +257,12 @@ const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserR
                                  <span key={`pw-${i}`} className="inline-flex items-center px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200 font-bold" title="造点">
                                     <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full border-2 border-slate-400 mr-1"></div>
                                     {p}(造点)
+                                 </span>
+                              ))}
+                              {match.penaltiesMissed?.map((p, i) => (
+                                 <span key={`pm-${i}`} className="inline-flex items-center px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-100 font-bold" title="失点">
+                                    <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full border-2 border-rose-400 mr-1"></div>
+                                    {p}(失点)
                                  </span>
                               ))}
                               {match.ownGoals?.map((p, i) => (
