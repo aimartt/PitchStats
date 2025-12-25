@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { 
   Shirt, Plus, Trash2, Search, Pencil, X, Check, Trophy, Zap, 
@@ -142,6 +141,85 @@ const PlayerDetailView: React.FC<{
 }> = ({ player, matches, seasons, onBack, onViewMatch }) => {
   const [expandedSeason, setExpandedSeason] = useState<string | null>(null);
 
+  // 核心改动：计算“生涯总计”数据，不随外部筛选变化
+  const lifetimeStats = useMemo(() => {
+    const s = {
+       matchesPlayed: 0, leagueMatchesPlayed: 0,
+       matchesCounted: 0, leagueMatchesCounted: 0,
+       starts: 0, leagueStarts: 0,
+       goals: 0, leagueGoals: 0,
+       penaltyGoals: 0, leaguePenaltyGoals: 0,
+       assists: 0, leagueAssists: 0,
+       penaltiesWon: 0, leaguePenaltiesWon: 0,
+       yellowCards: 0, leagueYellowCards: 0,
+       redCards: 0, leagueRedCards: 0,
+       penaltiesMissed: 0, leaguePenaltiesMissed: 0,
+       conceded: 0, leagueConceded: 0,
+       matchesAsGK: 0, matchesAsGKCounted: 0,
+       leagueMatchesAsGK: 0, leagueMatchesAsGKCounted: 0,
+       ownGoals: 0, leagueOwnGoals: 0
+    };
+
+    matches.forEach(m => {
+       const inSquad = m.squad?.includes(player.name);
+       if (!inSquad) return;
+       
+       const isLeague = m.matchType === '联赛';
+       const isCounted = m.countForStats !== false;
+
+       s.matchesPlayed++;
+       if (isCounted) s.matchesCounted++;
+       if (isLeague) {
+          s.leagueMatchesPlayed++;
+          if (isCounted) s.leagueMatchesCounted++;
+       }
+       
+       if (m.starters?.includes(player.name)) { s.starts++; if (isLeague) s.leagueStarts++; }
+       
+       m.goalsDetails?.forEach(goal => {
+          if (goal.scorer === player.name) { 
+             s.goals++; 
+             if (isLeague) s.leagueGoals++; 
+             if (goal.isPenalty) {
+                s.penaltyGoals++;
+                if (isLeague) s.leaguePenaltyGoals++;
+             }
+          }
+          if (goal.assist === player.name) { s.assists++; if (isLeague) s.leagueAssists++; }
+       });
+
+       if (m.penaltiesWon?.includes(player.name)) { s.penaltiesWon++; if (isLeague) s.leaguePenaltiesWon++; }
+       if (m.penaltiesMissed?.includes(player.name)) { s.penaltiesMissed++; if (isLeague) s.leaguePenaltiesMissed++; }
+       if (m.ownGoals?.includes(player.name)) { s.ownGoals++; if (isLeague) s.leagueOwnGoals++; }
+       if (m.yellowCards?.includes(player.name)) { s.yellowCards++; if (isLeague) s.leagueYellowCards++; }
+       if (m.redCards?.includes(player.name)) { s.redCards++; if (isLeague) s.leagueRedCards++; }
+       
+       const specificGkStat = m.goalkeeperStats?.find(gk => gk.player === player.name);
+       const isInLegacyGkList = m.goalkeepers?.includes(player.name);
+       if (specificGkStat) {
+          s.matchesAsGK++;
+          if (isCounted) s.matchesAsGKCounted++;
+          s.conceded += specificGkStat.conceded;
+          if (isLeague) { 
+            s.leagueMatchesAsGK++; 
+            if (isCounted) s.leagueMatchesAsGKCounted++;
+            s.leagueConceded += specificGkStat.conceded; 
+          }
+       } else if (isInLegacyGkList) {
+          const matchConceded = m.opponentScore || 0;
+          s.matchesAsGK++;
+          if (isCounted) s.matchesAsGKCounted++;
+          s.conceded += matchConceded;
+          if (isLeague) { 
+            s.leagueMatchesAsGK++; 
+            if (isCounted) s.leagueMatchesAsGKCounted++;
+            s.leagueConceded += matchConceded; 
+          }
+       }
+    });
+    return s;
+  }, [matches, player.name]);
+
   const seasonTotals = useMemo(() => {
      const totals: Record<string, { total: number, league: number }> = {};
      matches.forEach(m => {
@@ -281,7 +359,92 @@ const PlayerDetailView: React.FC<{
         <div className="h-28"></div>
       </div>
 
-      {/* 赛季表现明细列表 */}
+      {/* 生涯核心数据面板 - 始终计算全量数据 */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 px-2">
+         {/* 1. 出场专栏 */}
+         <div className="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col relative overflow-hidden group">
+            <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500 mb-4 shadow-inner">
+               <Activity className="w-6 h-6" />
+            </div>
+            <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">生涯出场 (总/联赛)</div>
+            <div className="text-2xl font-black text-slate-800 flex items-baseline gap-1">
+               {lifetimeStats.matchesPlayed} <span className="text-sm text-slate-300 font-bold">/</span> <span className="text-indigo-600">{lifetimeStats.leagueMatchesPlayed}</span>
+            </div>
+            <div className="flex items-center gap-2 mt-2">
+               <div className="text-[10px] font-bold text-slate-500 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-100/50">
+                  生涯首发率: {lifetimeStats.matchesPlayed > 0 ? Math.round((lifetimeStats.starts / lifetimeStats.matchesPlayed) * 100) : 0}%
+               </div>
+            </div>
+            <div className="absolute -right-2 -bottom-2 opacity-[0.03] transform rotate-12 group-hover:rotate-0 transition-transform">
+               <Activity className="w-20 h-20" />
+            </div>
+         </div>
+
+         {/* 2. 进攻专栏 */}
+         <div className="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col relative overflow-hidden group">
+            <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-500 mb-4 shadow-inner">
+               <Trophy className="w-6 h-6" />
+            </div>
+            <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">进攻贡献 (球/助)</div>
+            <div className="text-2xl font-black text-slate-800 flex items-baseline gap-1">
+               <span className="text-emerald-600">{lifetimeStats.goals}</span> <span className="text-sm text-slate-300 font-bold">/</span> <span className="text-blue-600">{lifetimeStats.assists}</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-1.5 mt-2">
+               <div className="text-[10px] font-bold text-slate-500 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100/50">
+                  场均制造: {formatAvg(lifetimeStats.goals + lifetimeStats.assists, lifetimeStats.matchesCounted)}
+               </div>
+               <div className="text-[10px] font-bold text-slate-500 bg-cyan-50 px-2 py-0.5 rounded-full border border-cyan-100/50">
+                  造点: {lifetimeStats.penaltiesWon}
+               </div>
+            </div>
+            <div className="absolute -right-2 -bottom-2 opacity-[0.03] transform rotate-12 group-hover:rotate-0 transition-transform">
+               <Zap className="w-20 h-20" />
+            </div>
+         </div>
+
+         {/* 3. 防守专栏 */}
+         <div className="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col relative overflow-hidden group">
+            <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-500 mb-4 shadow-inner">
+               <Shield className="w-6 h-6" />
+            </div>
+            <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">失球统计 (总/联赛)</div>
+            <div className="text-2xl font-black text-slate-800 flex items-baseline gap-1">
+               {lifetimeStats.conceded} <span className="text-sm text-slate-300 font-bold">/</span> <span className="text-slate-500">{lifetimeStats.leagueConceded}</span>
+            </div>
+            <div className="flex items-center gap-2 mt-2">
+               <div className="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200/50">
+                  生涯场均失球: {formatAvg(lifetimeStats.conceded, lifetimeStats.matchesAsGKCounted)}
+               </div>
+            </div>
+            <div className="absolute -right-2 -bottom-2 opacity-[0.03] transform rotate-12 group-hover:rotate-0 transition-transform">
+               <Shield className="w-20 h-20" />
+            </div>
+         </div>
+
+         {/* 4. 纪律专栏 */}
+         <div className="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col relative overflow-hidden group">
+            <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-500 mb-4 shadow-inner">
+               <Award className="w-6 h-6" />
+            </div>
+            <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">纪律与失误 (黄/红)</div>
+            <div className="text-2xl font-black text-slate-800 flex items-baseline gap-1">
+               <span className="text-amber-500">{lifetimeStats.yellowCards}</span> <span className="text-sm text-slate-300 font-bold">/</span> <span className="text-rose-600">{lifetimeStats.redCards}</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-1.5 mt-2">
+               <div className="text-[10px] font-bold text-slate-500 bg-orange-50 px-2 py-0.5 rounded-full border border-orange-100/50">
+                  失点: {lifetimeStats.penaltiesMissed}
+               </div>
+               <div className="text-[10px] font-bold text-slate-500 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-100/50">
+                  乌龙: {lifetimeStats.ownGoals}
+               </div>
+            </div>
+            <div className="absolute -right-2 -bottom-2 opacity-[0.03] transform rotate-12 group-hover:rotate-0 transition-transform">
+               <HeartCrack className="w-20 h-20" />
+            </div>
+         </div>
+      </div>
+
+      {/* Season Detail Table */}
       <div className="bg-white rounded-[2.5rem] shadow-xl border border-slate-200 overflow-hidden">
          <div className="px-10 py-8 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -396,8 +559,8 @@ const PlayerDetailView: React.FC<{
                               <td className="px-2 py-6 text-center">
                                  <div className="flex justify-center gap-1.5">
                                     <CardIcon type="yellow" count={s.leagueYellowCards} />
-                                    <CardIcon type="red" count={s.leagueRedCards} />
-                                    {!(s.leagueYellowCards || s.leagueRedCards) && <span className="text-slate-200">-</span>}
+                                    <CardIcon type="red" count={s.redCards} />
+                                    {!(s.leagueYellowCards || s.redCards) && <span className="text-slate-200">-</span>}
                                  </div>
                               </td>
                               <td className="px-2 py-6 text-center border-l border-slate-100 bg-orange-50/10">
@@ -985,7 +1148,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                     <td className="px-2 py-3 text-center bg-emerald-50/10">
                        <StatWithAvgCell val={player.leagueGoals} pVal={player.leaguePenaltyGoals} avg={player.leagueGoalsAvg} color="text-emerald-600" />
                     </td>
-                    <td className="px-2 py-3 text-center border-l border-slate-100 bg-blue-50/10">
+                    <td className="px-2 py-3 text-center bg-blue-50/10">
                        <StatWithAvgCell val={player.assists} avg={player.assistsAvg} />
                     </td>
                     <td className="px-2 py-3 text-center bg-blue-50/10">
