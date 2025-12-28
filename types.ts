@@ -195,6 +195,7 @@ export interface OpponentManagerProps {
   onEditOpponent: (id: string, name: string, logo?: string) => void;
   onViewMatch?: (match: MatchRecord) => void; // New: Support deep dive into matches
   currentTeamName?: string;
+  currentTeamLogo?: string; // Added Logo
   currentUserRole?: UserRole; // Added for read-only check
 }
 
@@ -233,4 +234,24 @@ export interface DataInputProps {
   onBack: () => void;
   initialData?: MatchRecord; 
   currentTeamName?: string;
+}
+
+export interface MatchListProps {
+  matches: MatchRecord[];
+  onNavigate: (route: AppRoute) => void;
+  currentUserRole?: UserRole;
+  seasons: string[];
+  onEditMatch?: (match: MatchRecord) => void;
+  onViewMatch?: (match: MatchRecord) => void; 
+  currentTeamName?: string;
+  currentTeamLogo?: string; // Added Logo
+}
+
+export interface MatchDetailProps {
+  match: MatchRecord;
+  onBack: () => void;
+  currentTeamName?: string;
+  currentTeamLogo?: string; // Added Logo
+  opponentList: OpponentTeam[];
+  playerList: PlayerProfile[];
 }

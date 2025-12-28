@@ -1,16 +1,9 @@
+
 import React, { useMemo } from 'react';
-import { MatchRecord, PlayerProfile, OpponentTeam } from '../types';
+import { MatchRecord, PlayerProfile, OpponentTeam, MatchDetailProps } from '../types';
 import { ArrowLeft, MapPin, Calendar, Trophy, Flag, Users, Info, Shirt, UserCog } from 'lucide-react';
 
-interface MatchDetailProps {
-  match: MatchRecord;
-  onBack: () => void;
-  currentTeamName?: string;
-  opponentList: OpponentTeam[];
-  playerList: PlayerProfile[];
-}
-
-const MatchDetail: React.FC<MatchDetailProps> = ({ match, onBack, currentTeamName, opponentList, playerList }) => {
+const MatchDetail: React.FC<MatchDetailProps> = ({ match, onBack, currentTeamName, currentTeamLogo, opponentList, playerList }) => {
   
   const currentOpponent = useMemo(() => 
     opponentList.find(o => o.name === match.opponent), 
@@ -68,8 +61,12 @@ const MatchDetail: React.FC<MatchDetailProps> = ({ match, onBack, currentTeamNam
               
               {/* Home Team */}
               <div className="flex-1 flex flex-col items-center">
-                 <div className="w-14 h-14 md:w-24 md:h-24 rounded-full bg-white border-4 border-slate-100 shadow-xl flex items-center justify-center mb-2 md:mb-4 text-xl md:text-3xl font-bold text-slate-700">
-                    H
+                 <div className="w-14 h-14 md:w-24 md:h-24 rounded-full bg-white border-4 border-slate-100 shadow-xl flex items-center justify-center mb-2 md:mb-4 text-xl md:text-3xl font-bold text-slate-700 overflow-hidden">
+                    {currentTeamLogo ? (
+                       <img src={currentTeamLogo} alt="logo" className="w-full h-full object-cover" />
+                    ) : (
+                       'H'
+                    )}
                  </div>
                  <h3 className="text-sm md:text-xl font-black text-slate-800 leading-tight">
                     {currentTeamName || '我方'}

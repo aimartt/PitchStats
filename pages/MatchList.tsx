@@ -1,19 +1,9 @@
 
 import React, { useState } from 'react';
-import { MatchRecord, AppRoute, UserRole } from '../types';
+import { MatchRecord, AppRoute, UserRole, MatchListProps } from '../types';
 import { Plus, Calendar, MapPin, Search, Filter, Pencil, Trophy, Flag, Handshake, Shirt, ChevronRight, Crown, Users } from 'lucide-react';
 
-interface MatchListProps {
-  matches: MatchRecord[];
-  onNavigate: (route: AppRoute) => void;
-  currentUserRole?: UserRole;
-  seasons: string[];
-  onEditMatch?: (match: MatchRecord) => void;
-  onViewMatch?: (match: MatchRecord) => void; 
-  currentTeamName?: string;
-}
-
-const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserRole, seasons, onEditMatch, onViewMatch, currentTeamName }) => {
+const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserRole, seasons, onEditMatch, onViewMatch, currentTeamName, currentTeamLogo }) => {
   const [selectedSeason, setSelectedSeason] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -180,8 +170,12 @@ const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserR
                          <span className="font-bold text-slate-900 text-sm md:text-lg truncate max-w-[80px] sm:max-w-none" style={{ color: 'var(--primary-text)' }}>
                            {currentTeamName || '我方'}
                          </span>
-                         <div className="w-8 h-8 md:w-12 md:h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center font-bold text-xs md:text-base text-slate-500 shrink-0 shadow-sm">
-                            H
+                         <div className="w-8 h-8 md:w-12 md:h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center font-bold text-xs md:text-base text-slate-500 shrink-0 shadow-sm overflow-hidden">
+                            {currentTeamLogo ? (
+                               <img src={currentTeamLogo} alt="logo" className="w-full h-full object-cover" />
+                            ) : (
+                               'H'
+                            )}
                          </div>
                       </div>
 

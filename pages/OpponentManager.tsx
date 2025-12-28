@@ -17,7 +17,7 @@ interface OpponentStats {
   history: string[];
 }
 
-const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, onAddOpponent, onRemoveOpponent, onEditOpponent, onViewMatch, currentTeamName, currentUserRole }) => {
+const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, onAddOpponent, onRemoveOpponent, onEditOpponent, onViewMatch, currentTeamName, currentTeamLogo, currentUserRole }) => {
   const [newTeamName, setNewTeamName] = useState('');
   const [newTeamLogo, setNewTeamLogo] = useState<string | undefined>(undefined);
   const [searchTerm, setSearchTerm] = useState('');
@@ -627,8 +627,12 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
                                          <span className="text-xs md:text-sm font-bold text-slate-800 truncate" style={{ color: 'var(--primary-text)' }}>
                                             {currentTeamName || '我方'}
                                          </span>
-                                         <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-[10px] md:text-xs font-bold text-slate-500 shadow-sm shrink-0">
-                                            H
+                                         <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-[10px] md:text-xs font-bold text-slate-500 shadow-sm shrink-0 overflow-hidden">
+                                            {currentTeamLogo ? (
+                                               <img src={currentTeamLogo} alt="logo" className="w-full h-full object-cover" />
+                                            ) : (
+                                               'H'
+                                            )}
                                          </div>
                                       </div>
 
