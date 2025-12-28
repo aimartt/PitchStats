@@ -1395,7 +1395,7 @@ export const defaultDb: FullDatabase = {
       "penaltiesWon": [],
       "ownGoals": [],
       "notes": "",
-      "countForStats": false,
+      "countForStats": true,
       "coach": "",
       "teamId": "1764057295948"
     },
