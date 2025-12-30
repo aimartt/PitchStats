@@ -2910,6 +2910,72 @@ export const defaultDb: FullDatabase = {
       "countForStats": true,
       "coach": "",
       "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1767062895098",
+      "date": "2025-12-29",
+      "season": "华侨城2025年冬",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "高科体育中心足球场",
+      "opponent": "铁脑壳FC",
+      "ourScore": 2,
+      "opponentScore": 7,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "曹晓霖",
+        "车驰",
+        "陈启晅",
+        "李单",
+        "林浩",
+        "钱星宇",
+        "唐涛",
+        "王薪炎",
+        "杨皓宇",
+        "张龑瀚",
+        "肖欣"
+      ],
+      "starters": [
+        "曹晓霖",
+        "车驰",
+        "陈启晅",
+        "李单",
+        "林浩",
+        "钱星宇",
+        "唐涛",
+        "张龑瀚"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 7
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "陈启晅",
+          "assist": "钱星宇",
+          "isPenalty": false
+        },
+        {
+          "scorer": "钱星宇",
+          "assist": "王薪炎",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "外援1个",
+      "countForStats": true,
+      "coach": "杨皓宇",
+      "teamId": "team-default-001"
     }
   ],
   "opponents": [
@@ -3207,6 +3273,12 @@ export const defaultDb: FullDatabase = {
       "name": "洋人街国际社区足球公园",
       "teamId": "team-default-001",
       "sortOrder": 5
+    },
+    {
+      "id": "ven-1767062802751",
+      "name": "高科体育中心足球场",
+      "teamId": "team-default-001",
+      "sortOrder": 6
     }
   ],
   "players": [
@@ -3437,7 +3509,14 @@ export const defaultDb: FullDatabase = {
       "birthday": "",
       "avatar": "",
       "teamId": "team-default-001"
+    },
+    {
+      "name": "肖欣",
+      "number": "",
+      "birthday": "",
+      "avatar": "",
+      "teamId": "team-default-001"
     }
   ],
-  "theme": "amber"
+  "theme": "slate"
 };

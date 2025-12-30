@@ -617,6 +617,11 @@ const PlayerDetailView: React.FC<{
                                                            {match.round && ` · 第${match.round}轮`}
                                                         </span>
                                                         {isStarter && <span className="bg-amber-50 text-amber-600 px-1 py-0.5 rounded flex items-center gap-0.5"><Star className="w-2.5 h-2.5 fill-current" /> 首发</span>}
+                                                        {match.countForStats === false && (
+                                                           <span className="bg-rose-50 text-rose-500 px-1.5 py-0.5 rounded border border-rose-100/50">
+                                                              未统
+                                                           </span>
+                                                        )}
                                                      </div>
                                                      <div className="font-black text-slate-800 truncate text-sm group-hover/match:text-indigo-600 transition-colors">vs {match.opponent}</div>
                                                      <div className="flex items-center gap-2 mt-1">
