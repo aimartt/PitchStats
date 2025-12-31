@@ -323,46 +323,54 @@ const PlayerDetailView: React.FC<{
 
   return (
     <div className="animate-fade-in space-y-6 max-w-6xl mx-auto pb-16">
-      <div className="bg-white rounded-[2.5rem] shadow-xl border border-slate-200 overflow-hidden">
-        <div className="h-56 bg-slate-900 relative">
-           <div className="absolute inset-0 opacity-15" style={{ backgroundImage: 'radial-gradient(#ffffff 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }}></div>
-           <div className="absolute top-0 right-0 p-6 opacity-10 pointer-events-none">
-              <span className="text-[15rem] font-black leading-none text-white italic tracking-tighter select-none">{player.number || 'PS'}</span>
+      {/* 优化后的顶部卡片：采用响应式布局，解决移动端错位 */}
+      <div className="bg-white rounded-2xl md:rounded-[2.5rem] shadow-xl border border-slate-200 overflow-hidden">
+        <div className="bg-slate-900 relative p-6 md:p-8 flex flex-col md:flex-row items-center md:items-end gap-6 md:gap-10 min-h-[220px] md:h-64">
+           {/* 背景装饰：移动端隐藏大数字 */}
+           <div className="absolute top-0 right-0 p-6 opacity-10 pointer-events-none hidden md:block">
+              <span className="text-[12rem] lg:text-[15rem] font-black leading-none text-white italic tracking-tighter select-none">
+                {player.number || 'PS'}
+              </span>
            </div>
-           <button onClick={onBack} className="absolute top-8 left-8 p-3 rounded-2xl bg-white/10 hover:bg-white/20 transition-all text-white backdrop-blur-md border border-white/20 shadow-xl group">
-              <ArrowLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
+           
+           <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#ffffff 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }}></div>
+           
+           {/* 返回按钮 */}
+           <button onClick={onBack} className="absolute top-4 left-4 md:top-8 md:left-8 p-2 md:p-3 rounded-xl md:rounded-2xl bg-white/10 hover:bg-white/20 transition-all text-white backdrop-blur-md border border-white/20 shadow-xl group z-20">
+              <ArrowLeft className="w-5 h-5 md:w-6 md:h-6 group-hover:-translate-x-1 transition-transform" />
            </button>
-           <div className="absolute -bottom-20 left-12 flex items-end gap-10">
-              <div className="w-40 h-40 rounded-[2.5rem] bg-white p-2 shadow-2xl ring-4 ring-slate-900">
-                 <div className="w-full h-full rounded-[2.1rem] bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-50 font-black text-slate-300 text-6xl">
-                    {player.avatar ? <img src={player.avatar} className="w-full h-full object-cover" /> : player.number || '#'}
-                 </div>
+
+           {/* 头像 - 响应式尺寸 */}
+           <div className="w-32 h-32 md:w-44 md:h-44 rounded-3xl md:rounded-[2.5rem] bg-white p-1.5 md:p-2 shadow-2xl ring-4 ring-slate-800 shrink-0 z-10 relative">
+              <div className="w-full h-full rounded-[1.8rem] md:rounded-[2.1rem] bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-50 font-black text-slate-300 text-4xl md:text-6xl">
+                 {player.avatar ? <img src={player.avatar} className="w-full h-full object-cover" /> : player.number || '#'}
               </div>
-              <div className="pb-28"> 
-                 <div className="flex items-center gap-5">
-                    <h1 className="text-6xl font-black text-white tracking-tight drop-shadow-2xl">{player.name}</h1>
-                    {player.number && (
-                      <div className="relative">
-                         <div className="absolute inset-0 bg-emerald-500 blur-xl opacity-40"></div>
-                         <span className="relative bg-emerald-500 text-white px-5 py-1.5 rounded-2xl text-2xl font-black shadow-2xl">#{player.number}</span>
-                      </div>
-                    )}
-                 </div>
-                 <div className="flex items-center gap-4 mt-4">
-                    <span className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-5 py-2 rounded-full text-slate-100 font-bold text-sm border border-white/10">
-                       <Cake className="w-4 h-4 text-emerald-400" /> {player.birthday || '未设生日'} {player.age ? `(${player.age}岁)` : ''}
-                    </span>
-                 </div>
+           </div>
+
+           {/* 球员信息 - 响应式对齐方式 */}
+           <div className="flex flex-col items-center md:items-start text-center md:text-left z-10 w-full md:pb-4"> 
+              <div className="flex flex-col md:flex-row items-center gap-2 md:gap-5">
+                 <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white tracking-tight drop-shadow-lg">{player.name}</h1>
+                 {player.number && (
+                   <div className="relative">
+                      <div className="absolute inset-0 bg-emerald-500 blur-xl opacity-40"></div>
+                      <span className="relative bg-emerald-500 text-white px-4 py-1 md:px-5 md:py-1.5 rounded-xl md:rounded-2xl text-lg md:text-2xl font-black shadow-2xl">#{player.number}</span>
+                   </div>
+                 )}
+              </div>
+              <div className="flex flex-wrap justify-center md:justify-start items-center gap-3 mt-4 w-full">
+                 <span className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-1.5 md:px-5 md:py-2 rounded-full text-slate-100 font-bold text-xs md:text-sm border border-white/10">
+                    <Cake className="w-4 h-4 text-emerald-400" /> {player.birthday || '未设生日'} {player.age ? `(${player.age}岁)` : ''}
+                 </span>
               </div>
            </div>
         </div>
-        <div className="h-28"></div>
       </div>
 
       {/* 生涯核心数据面板 - 始终计算全量数据 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 px-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-2">
          {/* 1. 出场专栏 */}
-         <div className="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col relative overflow-hidden group">
+         <div className="bg-white p-5 rounded-3xl md:rounded-[2rem] border border-slate-100 shadow-sm flex flex-col relative overflow-hidden group">
             <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500 mb-4 shadow-inner">
                <Activity className="w-6 h-6" />
             </div>
@@ -381,7 +389,7 @@ const PlayerDetailView: React.FC<{
          </div>
 
          {/* 2. 进攻专栏 */}
-         <div className="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col relative overflow-hidden group">
+         <div className="bg-white p-5 rounded-3xl md:rounded-[2rem] border border-slate-100 shadow-sm flex flex-col relative overflow-hidden group">
             <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-500 mb-4 shadow-inner">
                <Trophy className="w-6 h-6" />
             </div>
@@ -403,7 +411,7 @@ const PlayerDetailView: React.FC<{
          </div>
 
          {/* 3. 防守专栏 */}
-         <div className="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col relative overflow-hidden group">
+         <div className="bg-white p-5 rounded-3xl md:rounded-[2rem] border border-slate-100 shadow-sm flex flex-col relative overflow-hidden group">
             <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-500 mb-4 shadow-inner">
                <Shield className="w-6 h-6" />
             </div>
@@ -422,7 +430,7 @@ const PlayerDetailView: React.FC<{
          </div>
 
          {/* 4. 纪律专栏 */}
-         <div className="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col relative overflow-hidden group">
+         <div className="bg-white p-5 rounded-3xl md:rounded-[2rem] border border-slate-100 shadow-sm flex flex-col relative overflow-hidden group">
             <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-500 mb-4 shadow-inner">
                <Award className="w-6 h-6" />
             </div>
@@ -444,18 +452,20 @@ const PlayerDetailView: React.FC<{
          </div>
       </div>
 
-      {/* Season Detail Table */}
-      <div className="bg-white rounded-[2.5rem] shadow-xl border border-slate-200 overflow-hidden">
-         <div className="px-10 py-8 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-               <div className="p-3 bg-white rounded-2xl shadow-sm"><Calendar className="w-7 h-7 text-slate-400" /></div>
+      {/* 优化后的生涯数据明细 - 移动端卡片化，消除滚动条 */}
+      <div className="bg-white rounded-2xl md:rounded-[2.5rem] shadow-xl border border-slate-200 overflow-hidden">
+         <div className="px-6 py-6 md:px-10 md:py-8 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+            <div className="flex items-center gap-3 md:gap-4">
+               <div className="p-2 md:p-3 bg-white rounded-xl md:rounded-2xl shadow-sm"><Calendar className="w-5 h-5 md:w-7 md:h-7 text-slate-400" /></div>
                <div>
-                  <h3 className="text-2xl font-black text-slate-800 tracking-tight">生涯数据明细</h3>
-                  <p className="text-xs text-slate-400 mt-0.5">点球进球以(n)形式展示；场均数据基于计入统计的场次计算</p>
+                  <h3 className="text-lg md:text-2xl font-black text-slate-800 tracking-tight">生涯数据明细</h3>
+                  <p className="text-[10px] md:text-xs text-slate-400 mt-0.5">点击赛季展开单场详情</p>
                </div>
             </div>
          </div>
-         <div className="overflow-x-auto">
+
+         {/* 桌面端：保持原有表格结构 */}
+         <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-sm text-left border-collapse">
                <thead className="text-[10px] text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
                   <tr className="border-b border-slate-100">
@@ -656,6 +666,114 @@ const PlayerDetailView: React.FC<{
                   })}
                </tbody>
             </table>
+         </div>
+
+         {/* 移动端：显示卡片布局，彻底消除横向滚动 */}
+         <div className="md:hidden divide-y divide-slate-100">
+            {seasonStats.map((s) => {
+               const isExpanded = expandedSeason === s.season;
+               const seasonMatches = getSeasonMatchHistory(s.season);
+               
+               return (
+                  <div key={s.season} className="flex flex-col">
+                     <div 
+                        onClick={() => toggleSeason(s.season)}
+                        className={`p-5 flex items-center justify-between transition-colors ${isExpanded ? 'bg-indigo-50/40' : 'bg-white'}`}
+                     >
+                        <div className="flex items-center gap-3">
+                           <ChevronRight className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-90 text-indigo-500' : 'text-slate-300'}`} />
+                           <span className="font-black text-slate-800">{s.season}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                           <div className="text-right">
+                              <div className="text-[10px] font-bold text-slate-400 uppercase leading-none mb-1">进/助</div>
+                              <div className="text-sm font-black text-slate-700 leading-none">{s.goals}/{s.assists}</div>
+                           </div>
+                           <div className="w-px h-6 bg-slate-100"></div>
+                           <div className="text-right">
+                              <div className="text-[10px] font-bold text-slate-400 uppercase leading-none mb-1">出场</div>
+                              <div className="text-sm font-black text-slate-700 leading-none">{s.matchesPlayed}</div>
+                           </div>
+                        </div>
+                     </div>
+
+                     {isExpanded && (
+                        <div className="bg-slate-50 px-4 py-6 space-y-6 animate-fade-in shadow-inner">
+                           {/* 移动端展开后的数据网格 */}
+                           <div className="grid grid-cols-2 gap-3">
+                              <div className="bg-white p-3 rounded-2xl border border-slate-200/60 shadow-sm">
+                                 <div className="text-[9px] font-bold text-slate-400 uppercase mb-2">出场/联赛/首发</div>
+                                 <div className="flex justify-between items-end">
+                                    <div className="text-lg font-black text-indigo-600">{s.matchesPlayed}<span className="text-[10px] text-slate-300 font-bold ml-1">/{s.leagueMatchesPlayed}</span></div>
+                                    <div className="text-[10px] font-bold text-slate-400">首发 {Math.round((s.starts/s.matchesPlayed)*100)}%</div>
+                                 </div>
+                              </div>
+                              <div className="bg-white p-3 rounded-2xl border border-slate-200/60 shadow-sm">
+                                 <div className="text-[9px] font-bold text-slate-400 uppercase mb-2">进球 (点球)</div>
+                                 <div className="flex justify-between items-end">
+                                    <div className="text-lg font-black text-emerald-600">{s.goals}<span className="text-[10px] text-slate-300 font-bold ml-1">{s.penaltyGoals > 0 ? `(${s.penaltyGoals}P)` : ''}</span></div>
+                                    <div className="text-[10px] font-bold text-slate-400">均 {formatAvg(s.goals, s.matchesCounted)}</div>
+                                 </div>
+                              </div>
+                              <div className="bg-white p-3 rounded-2xl border border-slate-200/60 shadow-sm">
+                                 <div className="text-[9px] font-bold text-slate-400 uppercase mb-2">助攻 / 造点</div>
+                                 <div className="flex justify-between items-end">
+                                    <div className="text-lg font-black text-blue-600">{s.assists}</div>
+                                    <div className="text-[10px] font-bold text-cyan-600">{s.penaltiesWon} 造点</div>
+                                 </div>
+                              </div>
+                              <div className="bg-white p-3 rounded-2xl border border-slate-200/60 shadow-sm">
+                                 <div className="text-[9px] font-bold text-slate-400 uppercase mb-2">红黄牌 / 失点</div>
+                                 <div className="flex justify-between items-end">
+                                    <div className="flex gap-1">
+                                       <CardIcon type="yellow" count={s.yellowCards} />
+                                       <CardIcon type="red" count={s.redCards} />
+                                    </div>
+                                    <div className="text-[10px] font-bold text-orange-600">{s.penaltiesMissed} 失点</div>
+                                 </div>
+                              </div>
+                           </div>
+
+                           {/* 单场记录列表 */}
+                           <div className="space-y-2 pt-2">
+                              <div className="flex items-center gap-2 mb-2 pl-1">
+                                 <div className="w-1 h-3 bg-indigo-500 rounded-full"></div>
+                                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">赛季单场详情</span>
+                              </div>
+                              {seasonMatches.map(match => {
+                                 const isStarter = match.starters?.includes(player.name);
+                                 const mGoals = match.goalsDetails?.filter(g => g.scorer === player.name).length || 0;
+                                 const mAssists = match.goalsDetails?.filter(g => g.assist === player.name).length || 0;
+
+                                 return (
+                                    <div 
+                                       key={match.id}
+                                       onClick={() => onViewMatch && onViewMatch(match)}
+                                       className="bg-white p-3 rounded-xl border border-slate-200 flex justify-between items-center"
+                                    >
+                                       <div className="min-w-0 flex-1">
+                                          <div className="flex items-center gap-2 mb-0.5">
+                                             <span className="text-[8px] font-bold text-slate-300 uppercase">{match.date}</span>
+                                             {isStarter && <span className="bg-amber-50 text-amber-600 px-1 rounded text-[8px] font-bold">首发</span>}
+                                          </div>
+                                          <div className="text-xs font-black text-slate-700 truncate">vs {match.opponent}</div>
+                                       </div>
+                                       <div className="flex items-center gap-3 pl-4 shrink-0 border-l border-slate-50">
+                                          <div className="text-[10px] font-mono font-black text-slate-800">{match.ourScore}:{match.opponentScore}</div>
+                                          <div className="flex gap-1">
+                                             {mGoals > 0 && <span className="text-[9px] font-black text-emerald-500">⚽{mGoals}</span>}
+                                             {mAssists > 0 && <span className="text-[9px] font-black text-blue-500">👟{mAssists}</span>}
+                                          </div>
+                                       </div>
+                                    </div>
+                                 );
+                              })}
+                           </div>
+                        </div>
+                     )}
+                  </div>
+               );
+            })}
          </div>
       </div>
     </div>
