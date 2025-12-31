@@ -1152,7 +1152,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                  {honors.topGK && (
                    <PlayerHonorCard 
                       title="最佳守门员" 
-                      stat={`${(honors.topGK.conceded / honors.topGK.matchesAsGKCounted).toFixed(2)} 失球率`}
+                      stat={`场均失球 ${(honors.topGK.conceded / honors.topGK.matchesAsGKCounted).toFixed(2)}`}
                       player={honors.topGK}
                       icon={Shield}
                       colorClass="bg-indigo-400"
@@ -1162,7 +1162,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                  {honors.topLeagueGK && (
                    <PlayerHonorCard 
                       title="联赛最佳守门员" 
-                      stat={`${(honors.topLeagueGK.leagueConceded / honors.topLeagueGK.leagueMatchesAsGKCounted).toFixed(2)} 失球率`}
+                      stat={`场均失球 ${(honors.topLeagueGK.leagueConceded / honors.topLeagueGK.leagueMatchesAsGKCounted).toFixed(2)}`}
                       player={honors.topLeagueGK}
                       icon={Award}
                       colorClass="bg-cyan-400"

@@ -154,7 +154,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
 
       {/* Footer / Copyright */}
       <div className="absolute bottom-6 text-slate-500 text-xs text-center w-full opacity-60">
-        © {new Date().getFullYear()} PitchStats. All rights reserved.
+        © {new Date().getFullYear()} Tangtao. All rights reserved.
       </div>
     </div>
   );
