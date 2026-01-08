@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { HashRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
@@ -196,9 +195,9 @@ const AppContent: React.FC = () => {
     localStorage.setItem(STORAGE_KEYS.OPPONENTS, JSON.stringify(updated));
   };
 
-  const handleAddSeason = (name: string, sortOrder: number = 0) => {
+  const handleAddSeason = (name: string, sortOrder: number = 0, result?: string) => {
     if (!currentTeam) return;
-    const updated = [...allSeasons, { id: `sea-${Date.now()}`, name, teamId: currentTeam.id, sortOrder }];
+    const updated = [...allSeasons, { id: `sea-${Date.now()}`, name, teamId: currentTeam.id, sortOrder, result }];
     setAllSeasons(updated);
     localStorage.setItem(STORAGE_KEYS.SEASONS, JSON.stringify(updated));
   };
@@ -209,8 +208,8 @@ const AppContent: React.FC = () => {
     localStorage.setItem(STORAGE_KEYS.SEASONS, JSON.stringify(updated));
   };
 
-  const handleEditSeason = (id: string, name: string, sortOrder: number = 0) => {
-    const updated = allSeasons.map(s => s.id === id ? { ...s, name, sortOrder } : s);
+  const handleEditSeason = (id: string, name: string, sortOrder: number = 0, result?: string) => {
+    const updated = allSeasons.map(s => s.id === id ? { ...s, name, sortOrder, result } : s);
     setAllSeasons(updated);
     localStorage.setItem(STORAGE_KEYS.SEASONS, JSON.stringify(updated));
   };
@@ -320,7 +319,7 @@ const AppContent: React.FC = () => {
               </div>
               <main className="flex-1 overflow-auto p-4 md:p-8 scroll-smooth">
                 <Routes>
-                  <Route path={AppRoute.DASHBOARD} element={<Dashboard data={filteredMatches} seasons={filteredSeasons.map(s => s.name)} />} />
+                  <Route path={AppRoute.DASHBOARD} element={<Dashboard data={filteredMatches} seasons={filteredSeasons} />} />
                   <Route path={AppRoute.MATCH_LIST} element={<MatchList matches={filteredMatches} onNavigate={handleNavigate} currentUserRole={authState.user?.role} seasons={filteredSeasons.map(s => s.name)} onEditMatch={handleEditMatch} onViewMatch={(m) => handleViewMatch(m, AppRoute.MATCH_LIST)} currentTeamName={currentTeam?.name} currentTeamLogo={currentTeam?.logo} />} />
                   <Route path={AppRoute.MATCH_DETAIL} element={ viewingMatch ? <MatchDetail match={viewingMatch} onBack={() => navigate(matchDetailOrigin)} currentTeamName={currentTeam?.name} currentTeamLogo={currentTeam?.logo} opponentList={filteredOpponents} playerList={filteredPlayers} /> : <Navigate to={AppRoute.MATCH_LIST} /> } />
                   <Route path={AppRoute.DATA_ENTRY} element={<DataInput onDataLoaded={handleDataLoaded} opponentList={filteredOpponents} seasonList={filteredSeasons.map(s => s.name)} venueList={filteredVenues.map(v => v.name)} playerList={filteredPlayers} onBack={() => handleNavigate(AppRoute.MATCH_LIST)} initialData={editingMatch} currentTeamName={currentTeam?.name} /> } />

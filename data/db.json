@@ -2973,6 +2973,74 @@
       "countForStats": true,
       "coach": "杨皓宇",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1767843051384",
+      "date": "2026-01-07",
+      "season": "华侨城2025年冬",
+      "round": 6,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "华侨城足球公园",
+      "opponent": "蔡碚都",
+      "ourScore": 1,
+      "opponentScore": 2,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "曹晓霖",
+        "车驰",
+        "陈春",
+        "陈启晅",
+        "郭佳东",
+        "何星谕",
+        "胡勇",
+        "李扬",
+        "林浩",
+        "刘豪",
+        "钱星宇",
+        "唐涛",
+        "杨皓宇",
+        "张龑瀚",
+        "朱峰",
+        "赵建宇",
+        "肖欣"
+      ],
+      "starters": [
+        "车驰",
+        "陈启晅",
+        "何星谕",
+        "胡勇",
+        "李扬",
+        "刘豪",
+        "唐涛",
+        "张龑瀚"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 2
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "胡勇",
+          "assist": "何星谕",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "杨皓宇",
+      "teamId": "team-default-001"
     }
   ],
   "opponents": [
@@ -3213,7 +3281,8 @@
       "id": "legacy-season-mieaz0frf7pd4zt5vv",
       "name": "华侨城2025年夏",
       "teamId": "team-default-001",
-      "sortOrder": 2
+      "sortOrder": 2,
+      "result": "排名第12，共15只队伍"
     },
     {
       "id": "sea-1764382546941",
@@ -3225,13 +3294,15 @@
       "id": "sea-1765519570609",
       "name": "华侨城2025年春",
       "teamId": "team-default-001",
-      "sortOrder": 3
+      "sortOrder": 3,
+      "result": "排名第16，共18只队伍"
     },
     {
       "id": "sea-1765521210334",
       "name": "华侨城2024年夏",
       "teamId": "team-default-001",
-      "sortOrder": 4
+      "sortOrder": 4,
+      "result": "赛季中加入，不计成绩"
     }
   ],
   "venues": [
@@ -3515,5 +3586,5 @@
       "teamId": "team-default-001"
     }
   ],
-  "theme": "slate"
+  "theme": "emerald"
 }

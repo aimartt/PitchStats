@@ -1,4 +1,3 @@
-
 export interface DataItem {
   [key: string]: string | number | boolean | null | undefined | any;
 }
@@ -23,6 +22,7 @@ export interface TeamAsset {
   name: string;
   teamId: string;
   sortOrder?: number; // Added for sorting
+  result?: string;    // New: Season result or achievement
 }
 
 export interface PlayerProfile {
@@ -173,7 +173,7 @@ export interface FullDatabase {
 
 export interface DashboardProps {
   data: DataItem[];
-  seasons: string[]; // Added sorted seasons
+  seasons: TeamAsset[]; // Updated to full objects
 }
 
 export interface PlayerManagerProps {
@@ -208,9 +208,9 @@ export interface TeamManagerProps {
 // Updated Manager Props for Seasons/Venues
 export interface SeasonManagerProps {
   seasons: TeamAsset[];
-  onAddSeason: (name: string, sortOrder?: number) => void;
+  onAddSeason: (name: string, sortOrder?: number, result?: string) => void;
   onRemoveSeason: (id: string) => void;
-  onEditSeason: (id: string, newName: string, sortOrder?: number) => void;
+  onEditSeason: (id: string, newName: string, sortOrder?: number, result?: string) => void;
 }
 
 export interface VenueManagerProps {

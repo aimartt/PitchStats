@@ -3,7 +3,7 @@ import {
   Shirt, Plus, Trash2, Search, Pencil, X, Check, Trophy, Zap, 
   Camera, ArrowUp, ArrowDown, Shield, Filter, HeartCrack, Cake, 
   Eye, ArrowLeft, Calendar, Info, Star, Activity, Target, Award, 
-  ChevronRight, Crown, ChevronDown 
+  ChevronRight, Crown, ChevronDown, Gift
 } from 'lucide-react';
 import { PlayerManagerProps, PlayerProfile, MatchRecord } from '../types';
 
@@ -14,6 +14,7 @@ interface PlayerStats {
   avatar?: string;
   birthday?: string;
   age?: number;
+  isBirthdayToday?: boolean; // 新增：是否今天生日
   
   // Total Stats
   goals: number;
@@ -74,6 +75,13 @@ const calculateAge = (birthday?: string): number | undefined => {
     age--;
   }
   return age;
+};
+
+const checkIsBirthdayToday = (birthday?: string): boolean => {
+  if (!birthday) return false;
+  const birthDate = new Date(birthday);
+  const today = new Date();
+  return birthDate.getMonth() === today.getMonth() && birthDate.getDate() === today.getDate();
 };
 
 // --- Shared Helper Components ---
@@ -323,9 +331,9 @@ const PlayerDetailView: React.FC<{
 
   return (
     <div className="animate-fade-in space-y-6 max-w-6xl mx-auto pb-16">
-      {/* 优化后的顶部卡片：采用响应式布局，解决移动端错位 */}
+      {/* 优化后的顶部卡片：采用响应式布局，解决移动端错位，并为 PC 端增加左边距避开返回按钮 */}
       <div className="bg-white rounded-2xl md:rounded-[2.5rem] shadow-xl border border-slate-200 overflow-hidden">
-        <div className="bg-slate-900 relative p-6 md:p-8 flex flex-col md:flex-row items-center md:items-end gap-6 md:gap-10 min-h-[220px] md:h-64">
+        <div className="bg-slate-900 relative p-6 md:p-8 md:pl-32 flex flex-col md:flex-row items-center md:items-end gap-6 md:gap-10 min-h-[220px] md:h-64 transition-all duration-300">
            {/* 背景装饰：移动端隐藏大数字 */}
            <div className="absolute top-0 right-0 p-6 opacity-10 pointer-events-none hidden md:block">
               <span className="text-[12rem] lg:text-[15rem] font-black leading-none text-white italic tracking-tighter select-none">
@@ -350,7 +358,14 @@ const PlayerDetailView: React.FC<{
            {/* 球员信息 - 响应式对齐方式 */}
            <div className="flex flex-col items-center md:items-start text-center md:text-left z-10 w-full md:pb-4"> 
               <div className="flex flex-col md:flex-row items-center gap-2 md:gap-5">
-                 <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white tracking-tight drop-shadow-lg">{player.name}</h1>
+                 <div className="flex items-center gap-3">
+                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white tracking-tight drop-shadow-lg">{player.name}</h1>
+                    {player.isBirthdayToday && (
+                       <div className="bg-rose-500 text-white p-1.5 rounded-full shadow-lg animate-bounce border-2 border-white" title="今天是球员生日！">
+                          <Cake className="w-4 h-4 md:w-6 md:h-6" />
+                       </div>
+                    )}
+                 </div>
                  {player.number && (
                    <div className="relative">
                       <div className="absolute inset-0 bg-emerald-500 blur-xl opacity-40"></div>
@@ -420,7 +435,7 @@ const PlayerDetailView: React.FC<{
                {lifetimeStats.conceded} <span className="text-sm text-slate-300 font-bold">/</span> <span className="text-slate-500">{lifetimeStats.leagueConceded}</span>
             </div>
             <div className="flex items-center gap-2 mt-2">
-               <div className="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200/50">
+               <div className="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-100/50">
                   生涯场均失球: {formatAvg(lifetimeStats.conceded, lifetimeStats.matchesAsGKCounted)}
                </div>
             </div>
@@ -798,9 +813,12 @@ const PlayerHonorCard = ({ title, stat, player, icon: Icon, colorClass, onPlayer
          </div>
          <div className="ml-4 flex flex-col z-10 text-left min-w-0">
             <span className={`text-xs font-bold ${colorClass.replace('bg-', 'text-')}`}>{title}</span>
-            <h4 className="text-lg font-black text-slate-800 leading-tight mt-0.5 truncate pr-2">
-               {player?.name || '暂无'}
-            </h4>
+            <div className="flex items-center gap-1.5 mt-0.5 pr-2">
+               <h4 className="text-lg font-black text-slate-800 leading-tight truncate">
+                  {player?.name || '暂无'}
+               </h4>
+               {player?.isBirthdayToday && <Cake className="w-4 h-4 text-rose-500 animate-pulse shrink-0" />}
+            </div>
             <div className="flex items-center gap-1.5 mt-1">
                <span className="text-xs font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full border border-slate-100">
                   {stat}
@@ -861,6 +879,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
     players.forEach(p => {
       statsMap[p.name] = { 
         name: p.name, number: p.number, avatar: p.avatar, birthday: p.birthday, age: calculateAge(p.birthday),
+        isBirthdayToday: checkIsBirthdayToday(p.birthday),
         goals: 0, penaltyGoals: 0, assists: 0, penaltiesWon: 0, starts: 0, ownGoals: 0, yellowCards: 0, redCards: 0, penaltiesMissed: 0, conceded: 0, 
         matchesPlayed: 0, matchesCounted: 0, 
         matchesAsGK: 0, matchesAsGKCounted: 0,
@@ -1249,7 +1268,11 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                           <div className="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 font-bold text-slate-400 text-[10px]">
                              {player.avatar ? <img src={player.avatar} className="w-full h-full object-cover" alt={player.name}/> : player.number || '#'}
                           </div>
-                          <div className="font-black text-slate-800 truncate max-w-[64px] text-xs md:text-sm">{player.name}</div>
+                          <div className="flex items-center gap-1 min-0">
+                             <div className="font-black text-slate-800 truncate max-w-[64px] text-xs md:text-sm">{player.name}</div>
+                             {/* Fixed title prop on Lucide icon by wrapping in span */}
+                             {player.isBirthdayToday && <span title="今天是球员生日！"><Cake className="w-3.5 h-3.5 text-rose-500 animate-pulse shrink-0" /></span>}
+                          </div>
                        </div>
                     </td>
                     <td className="px-1 py-3 text-center text-slate-400 text-xs md:text-sm">{player.age || '-'}</td>

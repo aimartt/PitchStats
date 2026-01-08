@@ -1,11 +1,10 @@
-
 import React, { useMemo, useState } from 'react';
-import { DataItem, DashboardProps } from '../types';
+import { DataItem, DashboardProps, TeamAsset } from '../types';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, 
   PieChart, Pie, Cell 
 } from 'recharts';
-import { Activity, Calendar, UserCog, Shield } from 'lucide-react';
+import { Activity, Calendar, UserCog, Shield, Trophy, Medal } from 'lucide-react';
 
 const RESULT_COLORS = {
   Win: '#10B981', // Emerald 500
@@ -28,7 +27,7 @@ interface CoachStat {
 
 const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
   // Default to the first season (ranked #1) if available, otherwise 'all'
-  const [selectedSeason, setSelectedSeason] = useState<string>(seasons.length > 0 ? seasons[0] : 'all');
+  const [selectedSeason, setSelectedSeason] = useState<string>(seasons.length > 0 ? seasons[0].name : 'all');
 
   const stats = useMemo(() => {
     if (!data || data.length === 0) return null;
@@ -179,6 +178,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
     const avgGoalsFor = matchesPlayed ? (goalsFor / matchesPlayed).toFixed(1) : "0.0";
     const avgGoalsAgainst = matchesPlayed ? (goalsAgainst / matchesPlayed).toFixed(1) : "0.0";
     const avgLeagueGoalsFor = leagueMatchesPlayed ? (leagueGoalsFor / leagueMatchesPlayed).toFixed(1) : "0.0";
+    // Fixed: changed leagueAgainst to leagueGoalsAgainst
     const avgLeagueGoalsAgainst = leagueMatchesPlayed ? (leagueGoalsAgainst / leagueMatchesPlayed).toFixed(1) : "0.0";
 
     const resultData = [
@@ -200,6 +200,11 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
     };
   }, [data, selectedSeason]);
 
+  // 获取填有成绩数据的赛季
+  const achievements = useMemo(() => {
+    return seasons.filter(s => s.result && s.result.trim() !== '');
+  }, [seasons]);
+
   if (!data || data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-slate-500 py-20">
@@ -213,6 +218,28 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
   if (!stats || stats.matchesPlayed === 0) {
      return (
         <div className="space-y-6 animate-fade-in">
+           {achievements.length > 0 && (
+             <div className="mb-2">
+                <h3 
+                  className="font-bold text-slate-800 mb-3 flex items-center"
+                  style={{ fontSize: '17.75px' }}
+                >
+                  <Medal className="mr-2 text-amber-500" style={{ width: '17.75px', height: '17.75px' }} />
+                  赛季历史荣誉
+                </h3>
+                <div className="flex flex-col md:flex-row md:overflow-x-auto pb-4 gap-4 md:no-scrollbar">
+                  {achievements.map(a => (
+                    <div key={a.id} className="w-full md:w-64 md:flex-shrink-0 bg-white border border-slate-200 rounded-xl p-4 shadow-sm relative overflow-hidden group">
+                       <div className="absolute right-[-10px] top-[-10px] opacity-[0.05] transform rotate-12 group-hover:rotate-0 transition-transform duration-500">
+                          <Trophy className="w-20 h-20 text-slate-900" />
+                       </div>
+                       <div className="text-base md:text-lg font-bold text-slate-900 mb-1">{a.name}</div>
+                       <div className="text-xs md:text-sm font-medium text-slate-500 leading-tight">{a.result}</div>
+                    </div>
+                  ))}
+                </div>
+             </div>
+           )}
            <div className="flex justify-end">
               <div className="relative w-full md:w-48">
                 <Calendar className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -223,7 +250,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                   style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
                 >
                    <option value="all">所有赛季统计</option>
-                   {seasons.map(s => <option key={s} value={s}>{s}</option>)}
+                   {seasons.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
                 </select>
               </div>
            </div>
@@ -244,6 +271,32 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
   return (
     <div className="space-y-4 md:space-y-6 animate-fade-in pb-20">
       
+      {/* 赛季荣誉展示 - 顶部 */}
+      {achievements.length > 0 && (
+         <div className="animate-slide-up">
+            <h3 
+              className="font-bold text-slate-800 mb-3 flex items-center"
+              style={{ fontSize: '17.75px' }}
+            >
+              <Medal className="mr-2 text-amber-500" style={{ width: '17.75px', height: '17.75px' }} />
+              赛季历史荣誉
+            </h3>
+            <div className="flex flex-col md:flex-row md:overflow-x-auto pb-4 gap-4 md:no-scrollbar">
+               {achievements.map(a => (
+                 <div key={a.id} className="w-full md:w-64 md:flex-shrink-0 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm relative overflow-hidden group hover:border-amber-200 transition-colors">
+                    <div className="absolute right-[-15px] bottom-[-15px] opacity-[0.05] transform rotate-12 group-hover:scale-110 transition-transform duration-500">
+                       <Trophy className="w-24 h-24 text-slate-900" />
+                    </div>
+                    <div className="relative z-10">
+                       <div className="text-base md:text-lg font-bold text-slate-900 tracking-tight mb-1">{a.name}</div>
+                       <div className="text-xs md:text-sm font-medium text-slate-500 leading-tight pr-4">{a.result}</div>
+                    </div>
+                 </div>
+               ))}
+            </div>
+         </div>
+      )}
+
       {/* Filter Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
          <div className="flex items-center gap-2">
@@ -258,7 +311,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
               style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
             >
                <option value="all">所有赛季统计</option>
-               {seasons.map(s => <option key={s} value={s}>{s}</option>)}
+               {seasons.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
             </select>
          </div>
       </div>
@@ -546,7 +599,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
               </div>
            </div>
            <div className="overflow-x-auto">
-              <table className="w-full text-xs md:text-sm text-left text-slate-600">
+              <table className="w-full text-left text-slate-600">
                  <thead className="text-[10px] md:text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
                     <tr>
                        <th className="px-3 md:px-6 py-3 font-bold whitespace-nowrap sticky left-0 bg-slate-50 z-10">主教练</th>
@@ -558,11 +611,11 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                        <th className="px-2 md:px-4 py-3 text-center whitespace-nowrap">场均净胜</th>
                     </tr>
                  </thead>
-                 <tbody className="divide-y divide-slate-100">
+                 <tbody className="divide-y divide-slate-100 text-[12.25px]">
                     {coachStats.map((coach, idx) => (
                        <tr key={idx} className="hover:bg-slate-50 transition-colors">
                           <td className="px-3 md:px-6 py-3 font-bold text-slate-900 sticky left-0 bg-white z-10 border-r border-slate-100 md:border-none shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] md:shadow-none">{coach.name}</td>
-                          <td className="px-2 md:px-4 py-3 text-center text-xs text-slate-500 font-mono whitespace-nowrap">
+                          <td className="px-2 md:px-4 py-3 text-center text-slate-500 font-mono whitespace-nowrap">
                              {coach.lastMatchDate}
                           </td>
                           <td className="px-2 md:px-4 py-3 text-center font-medium">

@@ -3216,7 +3216,8 @@ export const defaultDb: FullDatabase = {
       "id": "legacy-season-mieaz0frf7pd4zt5vv",
       "name": "华侨城2025年夏",
       "teamId": "team-default-001",
-      "sortOrder": 2
+      "sortOrder": 2,
+      "result": "排名第12，共15只队伍"
     },
     {
       "id": "sea-1764382546941",
@@ -3228,13 +3229,15 @@ export const defaultDb: FullDatabase = {
       "id": "sea-1765519570609",
       "name": "华侨城2025年春",
       "teamId": "team-default-001",
-      "sortOrder": 3
+      "sortOrder": 3,
+      "result": "排名第16，共18只队伍"
     },
     {
       "id": "sea-1765521210334",
       "name": "华侨城2024年夏",
       "teamId": "team-default-001",
-      "sortOrder": 4
+      "sortOrder": 4,
+      "result": "赛季中加入，不计成绩"
     }
   ],
   "venues": [
