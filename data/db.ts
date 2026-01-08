@@ -2976,6 +2976,113 @@ export const defaultDb: FullDatabase = {
       "countForStats": true,
       "coach": "杨皓宇",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1767843051384",
+      "date": "2026-01-07",
+      "season": "华侨城2025年冬",
+      "round": 6,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "华侨城足球公园",
+      "opponent": "蔡碚都",
+      "ourScore": 1,
+      "opponentScore": 2,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "曹晓霖",
+        "车驰",
+        "陈春",
+        "陈启晅",
+        "郭佳东",
+        "何星谕",
+        "胡勇",
+        "李扬",
+        "林浩",
+        "刘豪",
+        "钱星宇",
+        "唐涛",
+        "杨皓宇",
+        "张龑瀚",
+        "朱峰",
+        "赵建宇",
+        "肖欣"
+      ],
+      "starters": [
+        "车驰",
+        "陈启晅",
+        "何星谕",
+        "胡勇",
+        "李扬",
+        "刘豪",
+        "唐涛",
+        "张龑瀚"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 2
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "胡勇",
+          "assist": "何星谕",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "杨皓宇",
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1767846427960",
+      "date": "2026-01-04",
+      "season": "2026平顶山健康杯",
+      "round": 17,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "汽配联",
+      "ourScore": 2,
+      "opponentScore": 7,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "唐涛"
+      ],
+      "starters": [
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 7
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "",
+      "teamId": "1764057295948"
     }
   ],
   "opponents": [
@@ -3521,5 +3628,5 @@ export const defaultDb: FullDatabase = {
       "teamId": "team-default-001"
     }
   ],
-  "theme": "slate"
+  "theme": "emerald"
 };

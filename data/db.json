@@ -3041,6 +3041,45 @@
       "countForStats": true,
       "coach": "杨皓宇",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1767846427960",
+      "date": "2026-01-04",
+      "season": "2026平顶山健康杯",
+      "round": 17,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "汽配联",
+      "ourScore": 2,
+      "opponentScore": 7,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "唐涛"
+      ],
+      "starters": [
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 7
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "",
+      "teamId": "1764057295948"
     }
   ],
   "opponents": [
