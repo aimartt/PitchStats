@@ -3080,6 +3080,112 @@
       "countForStats": true,
       "coach": "",
       "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1768352609805",
+      "date": "2026-01-09",
+      "season": "2026平顶山健康杯",
+      "round": 18,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "老头乐",
+      "ourScore": 3,
+      "opponentScore": 6,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "唐涛"
+      ],
+      "starters": [
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 6
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "",
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1768353117921",
+      "date": "2026-01-13",
+      "season": "华侨城2025年冬",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "华侨城足球公园",
+      "opponent": "浙商银行",
+      "ourScore": 2,
+      "opponentScore": 3,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "车驰",
+        "陈春",
+        "郭佳东",
+        "何星谕",
+        "胡勇",
+        "钱星宇",
+        "秦坤",
+        "唐涛",
+        "王薪炎",
+        "张善博",
+        "张龑瀚",
+        "赵建宇"
+      ],
+      "starters": [
+        "陈春",
+        "郭佳东",
+        "何星谕",
+        "钱星宇",
+        "秦坤",
+        "唐涛",
+        "张龑瀚",
+        "赵建宇"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 3
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "何星谕",
+          "assist": "陈春",
+          "isPenalty": false
+        },
+        {
+          "scorer": "王薪炎",
+          "assist": "张善博",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "外援3个",
+      "countForStats": true,
+      "coach": "车驰",
+      "teamId": "team-default-001"
     }
   ],
   "opponents": [
@@ -3306,6 +3412,11 @@
     {
       "id": "mjkq4460",
       "name": "炽江",
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "mkdbi7wu",
+      "name": "浙商银行",
       "teamId": "team-default-001"
     }
   ],
@@ -3625,5 +3736,5 @@
       "teamId": "team-default-001"
     }
   ],
-  "theme": "emerald"
+  "theme": "cyan"
 }

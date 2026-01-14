@@ -1088,7 +1088,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
             球员详细信息
           </h2>
           <p className="text-slate-500 mt-1">
-             本赛季: 总 {totalMatchesCount} 场 / 联赛 {totalLeagueMatchesCount} 场 (进球括号内为点球)
+             本赛季: 总 {totalMatchesCount} 场 / 联赛 {totalLeagueMatchesCount} 场 
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
