@@ -3176,7 +3176,6 @@ export const defaultDb: FullDatabase = {
         },
         {
           "scorer": "王薪炎",
-          "assist": "张善博",
           "isPenalty": false
         }
       ],
@@ -3186,6 +3185,118 @@ export const defaultDb: FullDatabase = {
       "penaltiesMissed": [],
       "ownGoals": [],
       "notes": "外援3个",
+      "countForStats": true,
+      "coach": "车驰",
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1768724259890",
+      "date": "2026-01-16",
+      "season": "2026平顶山健康杯",
+      "round": 19,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "悦想荟",
+      "ourScore": 5,
+      "opponentScore": 5,
+      "location": "Home",
+      "result": "Draw",
+      "squad": [
+        "唐涛"
+      ],
+      "starters": [
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 5
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "",
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1768896658879",
+      "date": "2026-01-20",
+      "season": "华侨城2025年冬",
+      "round": 8,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "华侨城足球公园",
+      "opponent": "知足常乐",
+      "ourScore": 2,
+      "opponentScore": 8,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "曹晓霖",
+        "车驰",
+        "陈春",
+        "陈启晅",
+        "胡勇",
+        "刘豪",
+        "钱星宇",
+        "孙张力",
+        "唐涛",
+        "王薪炎",
+        "肖欣",
+        "张龑瀚"
+      ],
+      "starters": [
+        "曹晓霖",
+        "陈春",
+        "刘豪",
+        "钱星宇",
+        "孙张力",
+        "唐涛",
+        "王薪炎",
+        "张龑瀚"
+      ],
+      "goalkeepers": [
+        "唐涛",
+        "孙张力"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 2
+        },
+        {
+          "player": "孙张力",
+          "conceded": 6
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "陈启晅",
+          "assist": "刘豪",
+          "isPenalty": false
+        },
+        {
+          "scorer": "陈启晅",
+          "assist": "钱星宇",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "唐涛受伤",
       "countForStats": true,
       "coach": "车驰",
       "teamId": "team-default-001"
@@ -3513,6 +3624,8 @@ export const defaultDb: FullDatabase = {
       "name": "柴陆俊夫",
       "number": "10",
       "birthday": "1992-01-06",
+      "avatar": "",
+      "status": "伤停",
       "teamId": "team-default-001"
     },
     {
@@ -3536,6 +3649,9 @@ export const defaultDb: FullDatabase = {
     {
       "name": "杜梓铭",
       "number": "",
+      "birthday": "",
+      "avatar": "",
+      "status": "已离队",
       "teamId": "team-default-001"
     },
     {
@@ -3565,12 +3681,16 @@ export const defaultDb: FullDatabase = {
     {
       "name": "老夏",
       "number": "",
+      "birthday": "",
+      "avatar": "",
+      "status": "已离队",
       "teamId": "team-default-001"
     },
     {
       "name": "李单",
       "number": "16",
       "birthday": "1986-10-16",
+      "status": "伤停",
       "teamId": "team-default-001"
     },
     {
@@ -3617,8 +3737,10 @@ export const defaultDb: FullDatabase = {
     },
     {
       "name": "唐涛",
-      "number": "",
+      "number": "25",
       "birthday": "1984-01-10",
+      "avatar": "",
+      "status": "伤停",
       "teamId": "team-default-001"
     },
     {
@@ -3642,6 +3764,8 @@ export const defaultDb: FullDatabase = {
       "name": "胥德伟",
       "number": "4",
       "birthday": "1984-12-25",
+      "avatar": "",
+      "status": "伤停",
       "teamId": "team-default-001"
     },
     {
@@ -3653,6 +3777,8 @@ export const defaultDb: FullDatabase = {
       "name": "杨皓宇",
       "number": "14",
       "birthday": "1991-10-24",
+      "avatar": "",
+      "status": "伤停",
       "teamId": "team-default-001"
     },
     {
@@ -3677,6 +3803,9 @@ export const defaultDb: FullDatabase = {
     {
       "name": "外援1",
       "number": "",
+      "birthday": "",
+      "avatar": "",
+      "status": "已离队",
       "teamId": "team-default-001"
     },
     {
@@ -3739,5 +3868,5 @@ export const defaultDb: FullDatabase = {
       "teamId": "team-default-001"
     }
   ],
-  "theme": "cyan"
+  "theme": "fuchsia"
 };

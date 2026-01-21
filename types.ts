@@ -25,6 +25,8 @@ export interface TeamAsset {
   result?: string;    // New: Season result or achievement
 }
 
+export type PlayerStatus = '正常' | '伤停' | '已离队';
+
 export interface PlayerProfile {
   name: string;
   number?: string;
@@ -32,6 +34,7 @@ export interface PlayerProfile {
   avatar?: string; // Base64 string for profile picture
   teamId?: string; // Data Isolation
   birthday?: string; // New: Birthday for age calculation (YYYY-MM-DD)
+  status?: PlayerStatus; // New: Player status
 }
 
 export interface GoalDetail {

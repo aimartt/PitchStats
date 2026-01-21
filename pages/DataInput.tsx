@@ -348,8 +348,17 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
     team.name.toLowerCase().includes(formData.opponent.toLowerCase())
   );
 
-  // Available players for stats (Squad only if squad selected, else all)
-  const statsPlayerOptions = selectedSquad.length > 0 ? selectedSquad : playerList.map(p => p.name);
+  // Filter players for selection grid:
+  // 1. Hide "Left" (已离队) players by default.
+  // 2. But show them if they are already in the selected squad (for historical record edits).
+  const visibleSelectionPlayers = playerList.filter(p => 
+    p.status !== '已离队' || selectedSquad.includes(p.name)
+  );
+
+  // Available players for stats (Squad only if squad selected, else filtered all)
+  const statsPlayerOptions = selectedSquad.length > 0 
+    ? selectedSquad 
+    : playerList.filter(p => p.status !== '已离队').map(p => p.name);
 
   // Determine current total conceded entered
   const currentGkConcededTotal = gkStats.reduce((sum, g) => sum + g.conceded, 0);
@@ -398,7 +407,7 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
                     <UserCog className="w-3 h-3 mr-1" /> 主教练
                   </label>
                   <SearchablePlayerSelect 
-                    options={playerList.map(p => p.name)}
+                    options={playerList.filter(p => p.status !== '已离队').map(p => p.name)}
                     value={formData.coach} 
                     onChange={(val) => setFormData(prev => ({ ...prev, coach: val }))} 
                     placeholder="选择执教教练" 
@@ -563,11 +572,12 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
                 </div>
              </h4>
              
-             {playerList.length > 0 ? (
+             {visibleSelectionPlayers.length > 0 ? (
                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
-                 {playerList.map(player => {
+                 {visibleSelectionPlayers.map(player => {
                    const isSelected = selectedSquad.includes(player.name);
                    const isStarter = starters.includes(player.name);
+                   const isLeft = player.status === '已离队';
                    
                    return (
                      <div 
@@ -578,6 +588,7 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
                          ${isSelected 
                            ? 'bg-emerald-50 border-emerald-500 text-emerald-800' 
                            : 'bg-slate-50 border-slate-200 text-slate-400 hover:border-slate-300'}
+                         ${isLeft && isSelected ? 'opacity-75 grayscale-[0.5]' : ''}
                        `}
                        style={isSelected ? { backgroundColor: 'var(--primary-light)', borderColor: 'var(--primary)', color: 'var(--primary-text)' } : {}}
                      >
@@ -591,6 +602,10 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
                        
                        <span className="text-sm font-bold text-center leading-tight truncate w-full">{player.name}</span>
                        
+                       {isLeft && (
+                         <span className="text-[8px] bg-slate-200 text-slate-500 px-1 rounded absolute top-1 left-1">已离队</span>
+                       )}
+
                        {isSelected && (
                          <div 
                            onClick={(e) => toggleStarter(e, player.name)}

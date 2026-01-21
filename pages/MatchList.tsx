@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { MatchRecord, AppRoute, UserRole, MatchListProps } from '../types';
 import { Plus, Calendar, MapPin, Search, Filter, Pencil, Trophy, Flag, Handshake, Shirt, ChevronRight, Crown, Users } from 'lucide-react';
@@ -158,8 +157,8 @@ const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserR
                            </span>
                         )}
                      </div>
-                     <div className="font-medium text-slate-400 bg-white/60 px-2 py-0.5 rounded-md">
-                        {new Date(match.date).toLocaleDateString('zh-CN', { month: 'numeric', day: 'numeric' })}
+                     <div className="font-medium text-slate-400 font-mono">
+                        {match.date}
                      </div>
                   </div>
 

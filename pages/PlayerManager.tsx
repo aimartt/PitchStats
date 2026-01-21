@@ -3,9 +3,9 @@ import {
   Shirt, Plus, Trash2, Search, Pencil, X, Check, Trophy, Zap, 
   Camera, ArrowUp, ArrowDown, Shield, Filter, HeartCrack, Cake, 
   Eye, ArrowLeft, Calendar, Info, Star, Activity, Target, Award, 
-  ChevronRight, Crown, ChevronDown, Gift
+  ChevronRight, Crown, ChevronDown, Gift, Stethoscope, UserX
 } from 'lucide-react';
-import { PlayerManagerProps, PlayerProfile, MatchRecord } from '../types';
+import { PlayerManagerProps, PlayerProfile, MatchRecord, PlayerStatus } from '../types';
 
 // Helper interface for calculated stats
 interface PlayerStats {
@@ -14,6 +14,7 @@ interface PlayerStats {
   avatar?: string;
   birthday?: string;
   age?: number;
+  status?: PlayerStatus;
   isBirthdayToday?: boolean; // 新增：是否今天生日
   
   // Total Stats
@@ -377,6 +378,12 @@ const PlayerDetailView: React.FC<{
                  <span className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-1.5 md:px-5 md:py-2 rounded-full text-slate-100 font-bold text-xs md:text-sm border border-white/10">
                     <Cake className="w-4 h-4 text-emerald-400" /> {player.birthday || '未设生日'} {player.age ? `(${player.age}岁)` : ''}
                  </span>
+                 {player.status && player.status !== '正常' && (
+                    <span className={`flex items-center gap-2 backdrop-blur-md px-4 py-1.5 md:px-5 md:py-2 rounded-full font-bold text-xs md:text-sm border ${player.status === '伤停' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' : 'bg-slate-500/20 text-slate-300 border-slate-500/30'}`}>
+                       {player.status === '伤停' ? <Stethoscope className="w-4 h-4" /> : <UserX className="w-4 h-4" />}
+                       {player.status}
+                    </span>
+                 )}
               </div>
            </div>
         </div>
@@ -857,6 +864,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
   const [formNumber, setFormNumber] = useState('');
   const [formBirthday, setFormBirthday] = useState('');
   const [formAvatar, setFormAvatar] = useState('');
+  const [formStatus, setFormStatus] = useState<PlayerStatus>('正常');
   const [formError, setFormError] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -879,6 +887,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
     players.forEach(p => {
       statsMap[p.name] = { 
         name: p.name, number: p.number, avatar: p.avatar, birthday: p.birthday, age: calculateAge(p.birthday),
+        status: p.status || '正常',
         isBirthdayToday: checkIsBirthdayToday(p.birthday),
         goals: 0, penaltyGoals: 0, assists: 0, penaltiesWon: 0, starts: 0, ownGoals: 0, yellowCards: 0, redCards: 0, penaltiesMissed: 0, conceded: 0, 
         matchesPlayed: 0, matchesCounted: 0, 
@@ -929,21 +938,21 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
          if (!stats) return;
          if (specificGkStat) {
             stats.matchesAsGK++;
-            if (isCounted) stats.matchesAsGKCounted++;
+            stats.matchesAsGKCounted += isCounted ? 1 : 0;
             stats.conceded += specificGkStat.conceded;
             if (isLeague) { 
                 stats.leagueMatchesAsGK++; 
-                if (isCounted) stats.leagueMatchesAsGKCounted++;
+                stats.leagueMatchesAsGKCounted += isCounted ? 1 : 0;
                 stats.leagueConceded += specificGkStat.conceded; 
             }
          } else if (isInLegacyGkList) {
             const val = m.opponentScore || 0;
             stats.matchesAsGK++;
-            if (isCounted) stats.matchesAsGKCounted++;
+            stats.matchesAsGKCounted += isCounted ? 1 : 0;
             stats.conceded += val;
             if (isLeague) { 
                 stats.leagueMatchesAsGK++; 
-                if (isCounted) stats.leagueMatchesAsGKCounted++;
+                stats.leagueMatchesAsGKCounted += isCounted ? 1 : 0;
                 stats.leagueConceded += val; 
             }
          }
@@ -1043,6 +1052,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
     setFormNumber('');
     setFormBirthday('');
     setFormAvatar('');
+    setFormStatus('正常');
     setFormError(null);
     setIsModalOpen(true);
   };
@@ -1053,6 +1063,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
     setFormNumber(p.number || '');
     setFormBirthday(p.birthday || '');
     setFormAvatar(p.avatar || '');
+    setFormStatus(p.status || '正常');
     setFormError(null);
     setIsModalOpen(true);
   };
@@ -1063,7 +1074,8 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
       name: formName.trim(),
       number: formNumber.trim(),
       birthday: formBirthday,
-      avatar: formAvatar
+      avatar: formAvatar,
+      status: formStatus
     };
 
     if (editingPlayer) {
@@ -1268,10 +1280,13 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                           <div className="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 font-bold text-slate-400 text-[10px]">
                              {player.avatar ? <img src={player.avatar} className="w-full h-full object-cover" alt={player.name}/> : player.number || '#'}
                           </div>
-                          <div className="flex items-center gap-1 min-0">
+                          <div className="flex items-center gap-1 min-w-0">
                              <div className="font-black text-slate-800 truncate max-w-[64px] text-xs md:text-sm">{player.name}</div>
-                             {/* Fixed title prop on Lucide icon by wrapping in span */}
-                             {player.isBirthdayToday && <span title="今天是球员生日！"><Cake className="w-3.5 h-3.5 text-rose-500 animate-pulse shrink-0" /></span>}
+                             <div className="flex items-center gap-0.5 shrink-0">
+                                {player.isBirthdayToday && <span title="今天是球员生日！"><Cake className="w-3.5 h-3.5 text-rose-500 animate-pulse shrink-0" /></span>}
+                                {player.status === '伤停' && <span title="伤停"><Stethoscope className="w-3.5 h-3.5 text-orange-500 shrink-0" /></span>}
+                                {player.status === '已离队' && <span title="已离队"><UserX className="w-3.5 h-3.5 text-slate-400 shrink-0" /></span>}
+                             </div>
                           </div>
                        </div>
                     </td>
@@ -1345,7 +1360,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                           <button onClick={() => setViewingPlayer(player)} className="p-1.5 text-slate-400 hover:text-blue-600 bg-slate-50 rounded border border-slate-200"><Eye className="w-3.5 h-3.5" /></button>
                           {!isReadOnly && (
                              <>
-                                <button onClick={() => openEditModal({ name: player.name, number: player.number, avatar: player.avatar, birthday: player.birthday })} className="p-1.5 text-slate-400 hover:text-emerald-600 bg-slate-50 rounded border border-slate-200"><Pencil className="w-3.5 h-3.5" /></button>
+                                <button onClick={() => openEditModal({ name: player.name, number: player.number, avatar: player.avatar, birthday: player.birthday, status: player.status })} className="p-1.5 text-slate-400 hover:text-emerald-600 bg-slate-50 rounded border border-slate-200"><Pencil className="w-3.5 h-3.5" /></button>
                                 <button onClick={() => onRemovePlayer(player.name)} className="p-1.5 text-slate-400 hover:text-red-500 bg-slate-50 rounded border border-slate-200"><Trash2 className="w-3.5 h-3.5" /></button>
                              </>
                           )}
@@ -1418,15 +1433,29 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                           />
                        </div>
                        <div>
-                          <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">出生日期</label>
-                          <input 
-                            type="date" 
-                            value={formBirthday} 
-                            onChange={(e) => setFormBirthday(e.target.value)} 
-                            className="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 outline-none font-bold text-slate-800 text-sm"
+                          <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">球员状态</label>
+                          <select 
+                            value={formStatus} 
+                            onChange={(e) => setFormStatus(e.target.value as PlayerStatus)} 
+                            className="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 outline-none font-bold text-slate-800 text-sm appearance-none cursor-pointer"
                             style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
-                          />
+                          >
+                             <option value="正常">正常</option>
+                             <option value="伤停">伤停</option>
+                             <option value="已离队">已离队</option>
+                          </select>
                        </div>
+                    </div>
+
+                    <div>
+                       <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">出生日期</label>
+                       <input 
+                         type="date" 
+                         value={formBirthday} 
+                         onChange={(e) => setFormBirthday(e.target.value)} 
+                         className="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 outline-none font-bold text-slate-800 text-sm"
+                         style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
+                       />
                     </div>
                  </div>
 
