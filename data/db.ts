@@ -3253,7 +3253,8 @@ export const defaultDb: FullDatabase = {
         "唐涛",
         "王薪炎",
         "肖欣",
-        "张龑瀚"
+        "张龑瀚",
+        "郭佳东"
       ],
       "starters": [
         "曹晓霖",
@@ -3299,6 +3300,168 @@ export const defaultDb: FullDatabase = {
       "notes": "唐涛受伤",
       "countForStats": true,
       "coach": "车驰",
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1769395500082",
+      "date": "2026-01-23",
+      "season": "2026平顶山健康杯",
+      "round": 20,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "正南齐北",
+      "ourScore": 1,
+      "opponentScore": 6,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "守门员1"
+      ],
+      "starters": [
+        "守门员1"
+      ],
+      "goalkeepers": [
+        "守门员1"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "守门员1",
+          "conceded": 6
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "",
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1769396680113",
+      "date": "2026-01-23",
+      "season": "华侨城2025年冬",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "溉澜溪体育公园",
+      "opponent": "黑米军团",
+      "ourScore": 13,
+      "opponentScore": 4,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "曹晓霖",
+        "车驰",
+        "何星谕",
+        "胡勇",
+        "刘豪",
+        "秦坤",
+        "孙张力",
+        "唐涛",
+        "杨涛",
+        "朱峰",
+        "申相峰",
+        "刘盛",
+        "肖欣",
+        "邓金华"
+      ],
+      "starters": [
+        "曹晓霖",
+        "车驰",
+        "何星谕",
+        "胡勇",
+        "刘豪",
+        "朱峰",
+        "申相峰"
+      ],
+      "goalkeepers": [
+        "胡勇",
+        "孙张力"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "胡勇",
+          "conceded": 0
+        },
+        {
+          "player": "孙张力",
+          "conceded": 4
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "何星谕",
+          "isPenalty": false
+        },
+        {
+          "scorer": "申相峰",
+          "isPenalty": false
+        },
+        {
+          "scorer": "何星谕",
+          "assist": "朱峰",
+          "isPenalty": false
+        },
+        {
+          "scorer": "何星谕",
+          "isPenalty": false
+        },
+        {
+          "scorer": "朱峰",
+          "isPenalty": false
+        },
+        {
+          "scorer": "申相峰",
+          "assist": "刘盛",
+          "isPenalty": false
+        },
+        {
+          "scorer": "何星谕",
+          "isPenalty": false
+        },
+        {
+          "scorer": "邓金华",
+          "assist": "何星谕",
+          "isPenalty": false
+        },
+        {
+          "scorer": "邓金华",
+          "assist": "申相峰",
+          "isPenalty": false
+        },
+        {
+          "scorer": "申相峰",
+          "assist": "刘豪",
+          "isPenalty": false
+        },
+        {
+          "scorer": "申相峰",
+          "assist": "刘盛",
+          "isPenalty": false
+        },
+        {
+          "scorer": "朱峰",
+          "assist": "刘豪",
+          "isPenalty": false
+        },
+        {
+          "scorer": "申相峰",
+          "assist": "刘盛",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "胡勇",
       "teamId": "team-default-001"
     }
   ],
@@ -3611,6 +3774,12 @@ export const defaultDb: FullDatabase = {
       "name": "高科体育中心足球场",
       "teamId": "team-default-001",
       "sortOrder": 6
+    },
+    {
+      "id": "ven-1769395590532",
+      "name": "溉澜溪体育公园",
+      "teamId": "team-default-001",
+      "sortOrder": 7
     }
   ],
   "players": [
@@ -3771,6 +3940,9 @@ export const defaultDb: FullDatabase = {
     {
       "name": "闫志伟",
       "number": "",
+      "birthday": "1993-11-15",
+      "avatar": "",
+      "status": "正常",
       "teamId": "team-default-001"
     },
     {
@@ -3856,17 +4028,27 @@ export const defaultDb: FullDatabase = {
     {
       "name": "刘盛",
       "number": "",
-      "birthday": "",
+      "birthday": "1984-11-02",
       "avatar": "",
+      "status": "正常",
       "teamId": "team-default-001"
     },
     {
       "name": "肖欣",
       "number": "",
-      "birthday": "",
+      "birthday": "1988-01-03",
       "avatar": "",
+      "status": "正常",
+      "teamId": "team-default-001"
+    },
+    {
+      "name": "邓金华",
+      "number": "2",
+      "birthday": "1983-02-18",
+      "avatar": "",
+      "status": "正常",
       "teamId": "team-default-001"
     }
   ],
-  "theme": "fuchsia"
+  "theme": "rose"
 };

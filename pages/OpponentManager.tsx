@@ -265,7 +265,7 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
   const favoriteOpponent = sortedByNetGoals.length > 0 ? sortedByNetGoals[sortedByNetGoals.length - 1] : null;
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 animate-fade-in relative">
+    <div className="max-w-7xl mx-auto space-y-8 animate-fade-in relative">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
@@ -284,7 +284,7 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
               placeholder="搜索球队..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-4 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 outline-none w-full md:w-64"
+              className="pl-9 pr-4 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 outline-none w-full md:w-64 bg-white"
               style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
             />
           </div>
@@ -299,65 +299,89 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
         </div>
       </div>
 
-      {/* Hero Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 md:gap-4">
+      {/* Optimized Hero Stats - Improved UI for these 5 cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6">
          {/* Count */}
-         <div className="bg-white p-3 md:p-4 rounded-xl border border-slate-200 shadow-sm flex items-center">
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 mr-3 shrink-0">
-               <Shield className="w-4 h-4 md:w-5 md:h-5" />
+         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3 mb-2">
+               <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0 border border-indigo-100">
+                  <Shield className="w-5 h-5" />
+               </div>
+               <p className="text-xs text-slate-500 font-black uppercase tracking-widest">在册对手</p>
             </div>
-            <div>
-               <p className="text-[10px] text-slate-500 font-bold uppercase">在册对手</p>
-               <h3 className="text-lg md:text-xl font-bold text-slate-800">{opponents.filter(o => o.name !== '队内对抗').length} <span className="text-xs font-normal text-slate-400">支</span></h3>
+            <div className="mt-2">
+               <h3 className="text-3xl font-black text-slate-900 leading-none">
+                 {opponents.filter(o => o.name !== '队内对抗').length} 
+                 <span className="text-sm font-bold text-slate-400 ml-1.5 uppercase">支</span>
+               </h3>
             </div>
          </div>
 
          {/* Total Matches */}
-         <div className="bg-white p-3 md:p-4 rounded-xl border border-slate-200 shadow-sm flex items-center">
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 mr-3 shrink-0">
-               <Swords className="w-4 h-4 md:w-5 md:h-5" />
+         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3 mb-2">
+               <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0 border border-emerald-100">
+                  <Swords className="w-5 h-5" />
+               </div>
+               <p className="text-xs text-slate-500 font-black uppercase tracking-widest">已记录交手</p>
             </div>
-            <div>
-               <p className="text-[10px] text-slate-500 font-bold uppercase">已记录交手</p>
-               <h3 className="text-lg md:text-xl font-bold text-slate-800">{totalMatchesAgainst} <span className="text-xs font-normal text-slate-400">场</span></h3>
+            <div className="mt-2">
+               <h3 className="text-3xl font-black text-slate-900 leading-none">
+                 {totalMatchesAgainst} 
+                 <span className="text-sm font-bold text-slate-400 ml-1.5 uppercase">场</span>
+               </h3>
             </div>
          </div>
 
          {/* Frequent Opponent */}
-         <div className="bg-white p-3 md:p-4 rounded-xl border border-slate-200 shadow-sm flex items-center">
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-600 mr-3 shrink-0">
-               <TrendingUp className="w-4 h-4 md:w-5 md:h-5" />
+         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow overflow-hidden relative group">
+            <div className="flex items-center gap-3 mb-2">
+               <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600 shrink-0 border border-orange-100">
+                  <TrendingUp className="w-5 h-5" />
+               </div>
+               <p className="text-xs text-slate-500 font-black uppercase tracking-widest">老对手</p>
             </div>
-            <div className="overflow-hidden">
-               <p className="text-[10px] text-slate-500 font-bold uppercase">老对手</p>
-               <h3 className="text-base md:text-lg font-bold text-slate-800 truncate">{mostFrequentOpponent ? mostFrequentOpponent.name : '-'}</h3>
-               <p className="text-[10px] text-slate-400">{mostFrequentOpponent ? `交手 ${mostFrequentOpponent.matchesPlayed} 次` : '暂无数据'}</p>
+            <div className="mt-2 z-10">
+               <h3 className="text-xl font-black text-slate-900 truncate leading-tight">
+                  {mostFrequentOpponent ? mostFrequentOpponent.name : '-'}
+               </h3>
+               <p className="text-xs text-slate-400 font-bold mt-1 uppercase">
+                  {mostFrequentOpponent ? `交手 ${mostFrequentOpponent.matchesPlayed} 次` : '暂无数据'}
+               </p>
             </div>
          </div>
 
          {/* Nemesis (苦主) */}
-         <div className="bg-white p-3 md:p-4 rounded-xl border border-slate-200 shadow-sm flex items-center">
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 mr-3 shrink-0">
-               <Ghost className="w-4 h-4 md:w-5 md:h-5" />
+         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow overflow-hidden relative">
+            <div className="flex items-center gap-3 mb-2">
+               <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 shrink-0 border border-purple-100">
+                  <Ghost className="w-5 h-5" />
+               </div>
+               <p className="text-xs text-slate-500 font-black uppercase tracking-widest">苦主</p>
             </div>
-            <div className="overflow-hidden">
-               <p className="text-[10px] text-slate-500 font-bold uppercase">苦主</p>
-               <h3 className="text-base md:text-lg font-bold text-slate-800 truncate">{nemesis ? nemesis.name : '-'}</h3>
-               <p className="text-[10px] text-slate-400">
+            <div className="mt-2">
+               <h3 className="text-xl font-black text-slate-900 truncate leading-tight">
+                  {nemesis ? nemesis.name : '-'}
+               </h3>
+               <p className="text-xs text-rose-500 font-bold mt-1 uppercase">
                   {nemesis ? `净负 ${Math.abs(nemesis.goalsFor - nemesis.goalsAgainst)} 球` : '暂无数据'}
                </p>
             </div>
          </div>
 
          {/* Favorite Opponent (最喜欢的对手) */}
-         <div className="bg-white p-3 md:p-4 rounded-xl border border-slate-200 shadow-sm flex items-center">
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-rose-50 flex items-center justify-center text-rose-600 mr-3 shrink-0">
-               <Heart className="w-4 h-4 md:w-5 md:h-5" />
+         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow overflow-hidden relative">
+            <div className="flex items-center gap-3 mb-2">
+               <div className="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600 shrink-0 border border-rose-100">
+                  <Heart className="w-5 h-5" />
+               </div>
+               <p className="text-xs text-slate-500 font-black uppercase tracking-widest">最爱对手</p>
             </div>
-            <div className="overflow-hidden">
-               <p className="text-[10px] text-slate-500 font-bold uppercase">软柿子</p>
-               <h3 className="text-base md:text-lg font-bold text-slate-800 truncate">{favoriteOpponent ? favoriteOpponent.name : '-'}</h3>
-               <p className="text-[10px] text-slate-400">
+            <div className="mt-2">
+               <h3 className="text-xl font-black text-slate-900 truncate leading-tight">
+                  {favoriteOpponent ? favoriteOpponent.name : '-'}
+               </h3>
+               <p className="text-xs text-emerald-600 font-bold mt-1 uppercase">
                   {favoriteOpponent ? `净胜 ${Math.abs(favoriteOpponent.goalsFor - favoriteOpponent.goalsAgainst)} 球` : '暂无数据'}
                </p>
             </div>
@@ -690,7 +714,7 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
                     {editLogo ? (
                       <img src={editLogo} className="w-full h-full object-cover" />
                     ) : (
-                      <Camera className="w-6 h-6 text-slate-400" />
+                      <Pencil className="w-6 h-6 text-slate-400" />
                     )}
                     <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center">
                        <Pencil className="w-6 h-6 text-white opacity-0 group-hover:opacity-100" />

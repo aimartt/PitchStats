@@ -1,9 +1,10 @@
+
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { 
   Shirt, Plus, Trash2, Search, Pencil, X, Check, Trophy, Zap, 
   Camera, ArrowUp, ArrowDown, Shield, Filter, HeartCrack, Cake, 
   Eye, ArrowLeft, Calendar, Info, Star, Activity, Target, Award, 
-  ChevronRight, Crown, ChevronDown, Gift, Stethoscope, UserX
+  ChevronRight, Crown, ChevronDown, Gift, UserX
 } from 'lucide-react';
 import { PlayerManagerProps, PlayerProfile, MatchRecord, PlayerStatus } from '../types';
 
@@ -379,8 +380,8 @@ const PlayerDetailView: React.FC<{
                     <Cake className="w-4 h-4 text-emerald-400" /> {player.birthday || '未设生日'} {player.age ? `(${player.age}岁)` : ''}
                  </span>
                  {player.status && player.status !== '正常' && (
-                    <span className={`flex items-center gap-2 backdrop-blur-md px-4 py-1.5 md:px-5 md:py-2 rounded-full font-bold text-xs md:text-sm border ${player.status === '伤停' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' : 'bg-slate-500/20 text-slate-300 border-slate-500/30'}`}>
-                       {player.status === '伤停' ? <Stethoscope className="w-4 h-4" /> : <UserX className="w-4 h-4" />}
+                    <span className={`flex items-center gap-2 backdrop-blur-md px-4 py-1.5 md:px-5 md:py-2 rounded-full font-bold text-xs md:text-sm border ${player.status === '伤停' ? 'bg-red-500/20 text-red-600 border-red-500/30' : 'bg-slate-500/20 text-slate-300 border-slate-500/30'}`}>
+                       {player.status === '伤停' ? <Plus className="w-4 h-4 stroke-[4px]" /> : <UserX className="w-4 h-4" />}
                        {player.status}
                     </span>
                  )}
@@ -1284,7 +1285,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                              <div className="font-black text-slate-800 truncate max-w-[64px] text-xs md:text-sm">{player.name}</div>
                              <div className="flex items-center gap-0.5 shrink-0">
                                 {player.isBirthdayToday && <span title="今天是球员生日！"><Cake className="w-3.5 h-3.5 text-rose-500 animate-pulse shrink-0" /></span>}
-                                {player.status === '伤停' && <span title="伤停"><Stethoscope className="w-3.5 h-3.5 text-orange-500 shrink-0" /></span>}
+                                {player.status === '伤停' && <span title="伤停"><Plus className="w-3.5 h-3.5 text-red-600 stroke-[4px] shrink-0" /></span>}
                                 {player.status === '已离队' && <span title="已离队"><UserX className="w-3.5 h-3.5 text-slate-400 shrink-0" /></span>}
                              </div>
                           </div>
