@@ -3463,6 +3463,71 @@ export const defaultDb: FullDatabase = {
       "countForStats": true,
       "coach": "胡勇",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1769736909921",
+      "date": "2026-01-29",
+      "season": "华侨城2025年冬",
+      "round": 9,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "华侨城足球公园",
+      "opponent": "龙七队",
+      "ourScore": 1,
+      "opponentScore": 1,
+      "location": "Home",
+      "result": "Draw",
+      "squad": [
+        "曹晓霖",
+        "车驰",
+        "陈春",
+        "陈启晅",
+        "何星谕",
+        "钱星宇",
+        "秦坤",
+        "孙张力",
+        "王薪炎",
+        "杨皓宇",
+        "张善博",
+        "张龑瀚",
+        "朱峰",
+        "刘盛"
+      ],
+      "starters": [
+        "车驰",
+        "陈启晅",
+        "何星谕",
+        "钱星宇",
+        "秦坤",
+        "孙张力",
+        "张善博",
+        "刘盛"
+      ],
+      "goalkeepers": [
+        "孙张力"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "孙张力",
+          "conceded": 1
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "何星谕",
+          "assist": "陈春",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "何星谕",
+      "teamId": "team-default-001"
     }
   ],
   "opponents": [
@@ -4100,5 +4165,5 @@ export const defaultDb: FullDatabase = {
       "teamId": "team-default-001"
     }
   ],
-  "theme": "rose"
+  "theme": "slate"
 };
