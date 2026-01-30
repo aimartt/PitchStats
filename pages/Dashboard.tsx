@@ -1,3 +1,4 @@
+
 import React, { useMemo, useState } from 'react';
 import { DataItem, DashboardProps, TeamAsset } from '../types';
 import { 
@@ -52,7 +53,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
       return newItem;
     });
 
-    // Sort by date ascending for charts
+    // Sort by date ascending for charts (Oldest to Newest)
     normalizedData.sort((a, b) => {
       const dateA = new Date(a.date).getTime();
       const dateB = new Date(b.date).getTime();
@@ -85,7 +86,6 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
       const date = match['date'] || index;
       const coachName = match['coach'];
       const matchType = match['originalMatchType'] || match['matchtype'];
-      // Logic Update: League stats now strictly count '联赛' type
       const isLeague = matchType === '联赛';
       
       let result = match['result'];
@@ -113,8 +113,11 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
         else if (result === 'Loss') leagueLosses++;
       }
 
+      // 修正：在图表数据中使用 球队名+日期 作为显示名称，防止同赛季内重复对阵导致的 Key 冲突（解决 13-4 被 1-8 覆盖的问题）
+      const displayDate = typeof date === 'string' ? date.substring(5) : date;
       history.push({
-        name: opponent,
+        name: `${opponent} (${displayDate})`,
+        originalName: opponent,
         date: date,
         type: matchType,
         进球: gf,
@@ -143,7 +146,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
          if (isLeague) c.leagueGames++;
          c.goalsFor += gf;
          c.goalsAgainst += ga;
-         c.lastMatchDate = date; // Update to latest match date
+         c.lastMatchDate = date; 
          if (result === 'Win') c.wins++;
          else if (result === 'Draw') c.draws++;
          else if (result === 'Loss') c.losses++;
@@ -155,12 +158,9 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
        ...c,
        winRate: c.games > 0 ? (c.wins / c.games) * 100 : 0
     })).sort((a, b) => {
-        // Sort by Last Match Date desc (Newest first)
         const dateA = new Date(a.lastMatchDate).getTime() || 0;
         const dateB = new Date(b.lastMatchDate).getTime() || 0;
         if (dateA !== dateB) return dateB - dateA;
-        
-        // Then by Games desc
         return b.games - a.games;
     });
 
@@ -169,16 +169,13 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
     const undefeatedRate = matchesPlayed ? ((wins + draws) / matchesPlayed * 100).toFixed(0) : "0";
     const goalDiff = goalsFor - goalsAgainst;
 
-    // League Derived Stats
     const leagueWinRate = leagueMatchesPlayed ? ((leagueWins / leagueMatchesPlayed) * 100).toFixed(0) : "0";
     const leagueUndefeatedRate = leagueMatchesPlayed ? ((leagueWins + leagueDraws) / leagueMatchesPlayed * 100).toFixed(0) : "0";
     const leagueGoalDiff = leagueGoalsFor - leagueGoalsAgainst;
 
-    // Per Game Averages
     const avgGoalsFor = matchesPlayed ? (goalsFor / matchesPlayed).toFixed(1) : "0.0";
     const avgGoalsAgainst = matchesPlayed ? (goalsAgainst / matchesPlayed).toFixed(1) : "0.0";
     const avgLeagueGoalsFor = leagueMatchesPlayed ? (leagueGoalsFor / leagueMatchesPlayed).toFixed(1) : "0.0";
-    // Fixed: changed leagueAgainst to leagueGoalsAgainst
     const avgLeagueGoalsAgainst = leagueMatchesPlayed ? (leagueGoalsAgainst / leagueMatchesPlayed).toFixed(1) : "0.0";
 
     const resultData = [
@@ -200,7 +197,6 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
     };
   }, [data, selectedSeason]);
 
-  // 获取填有成绩数据的赛季
   const achievements = useMemo(() => {
     return seasons.filter(s => s.result && s.result.trim() !== '');
   }, [seasons]);
@@ -220,10 +216,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
         <div className="space-y-6 animate-fade-in">
            {achievements.length > 0 && (
              <div className="mb-2">
-                <h3 
-                  className="font-bold text-slate-800 mb-3 flex items-center"
-                  style={{ fontSize: '17.75px' }}
-                >
+                <h3 className="font-bold text-slate-800 mb-3 flex items-center" style={{ fontSize: '17.75px' }}>
                   <Medal className="mr-2 text-amber-500" style={{ width: '17.75px', height: '17.75px' }} />
                   赛季历史荣誉
                 </h3>
@@ -271,13 +264,9 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
   return (
     <div className="space-y-4 md:space-y-6 animate-fade-in pb-20">
       
-      {/* 赛季荣誉展示 - 顶部 */}
       {achievements.length > 0 && (
          <div className="animate-slide-up">
-            <h3 
-              className="font-bold text-slate-800 mb-3 flex items-center"
-              style={{ fontSize: '17.75px' }}
-            >
+            <h3 className="font-bold text-slate-800 mb-3 flex items-center" style={{ fontSize: '17.75px' }}>
               <Medal className="mr-2 text-amber-500" style={{ width: '17.75px', height: '17.75px' }} />
               赛季历史荣誉
             </h3>
@@ -297,7 +286,6 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
          </div>
       )}
 
-      {/* Filter Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
          <div className="flex items-center gap-2">
             <h2 className="text-lg font-bold text-slate-800">球队数据看板</h2>
@@ -316,12 +304,8 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
          </div>
       </div>
 
-      {/* Stats Cards - Optimized Grid for Mobile */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-        
-        {/* Card 1: Matches */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-           {/* Top: All */}
            <div className="p-3 md:p-4 flex-1 flex flex-col justify-center">
               <div className="flex justify-between items-start mb-1">
                  <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider">总场次</span>
@@ -338,10 +322,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                  </div>
               </div>
            </div>
-           
            <div className="h-px bg-slate-100 mx-3"></div>
-
-           {/* Bottom: League */}
            <div className="p-3 md:p-4 flex-1 flex flex-col justify-center bg-slate-50/50">
               <div className="flex justify-between items-start mb-1">
                  <span className="text-[10px] md:text-xs font-bold text-indigo-500 uppercase tracking-wider">联赛</span>
@@ -360,9 +341,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
            </div>
         </div>
 
-        {/* Card 2: Win Rate */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-           {/* Top: All */}
            <div className="p-3 md:p-4 flex-1 flex flex-col justify-center">
               <div className="flex justify-between items-start mb-1">
                  <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider">总胜率</span>
@@ -375,10 +354,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                  </div>
               </div>
            </div>
-
            <div className="h-px bg-slate-100 mx-3"></div>
-
-           {/* Bottom: League */}
            <div className="p-3 md:p-4 flex-1 flex flex-col justify-center bg-slate-50/50">
               <div className="flex justify-between items-start mb-1">
                  <span className="text-[10px] md:text-xs font-bold text-indigo-500 uppercase tracking-wider">联赛胜率</span>
@@ -393,9 +369,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
            </div>
         </div>
 
-        {/* Card 3: Offense */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-           {/* Top: All */}
            <div className="p-3 md:p-4 flex-1 flex flex-col justify-center">
               <div className="flex justify-between items-start mb-1">
                  <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider">总进球</span>
@@ -408,10 +382,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                  </div>
               </div>
            </div>
-
            <div className="h-px bg-slate-100 mx-3"></div>
-
-           {/* Bottom: League */}
            <div className="p-3 md:p-4 flex-1 flex flex-col justify-center bg-slate-50/50">
               <div className="flex justify-between items-start mb-1">
                  <span className="text-[10px] md:text-xs font-bold text-indigo-500 uppercase tracking-wider">联赛进球</span>
@@ -426,9 +397,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
            </div>
         </div>
 
-        {/* Card 4: Defense */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-           {/* Top: All */}
            <div className="p-3 md:p-4 flex-1 flex flex-col justify-center">
               <div className="flex justify-between items-start mb-1">
                  <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider">总净胜</span>
@@ -446,10 +415,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                  </div>
               </div>
            </div>
-
            <div className="h-px bg-slate-100 mx-3"></div>
-
-           {/* Bottom: League */}
            <div className="p-3 md:p-4 flex-1 flex flex-col justify-center bg-slate-50/50">
               <div className="flex justify-between items-start mb-1">
                  <span className="text-[10px] md:text-xs font-bold text-indigo-500 uppercase tracking-wider">联赛净胜</span>
@@ -468,22 +434,30 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
               </div>
            </div>
         </div>
-
       </div>
 
-      {/* Main Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Bar Chart - Goals History */}
         <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200 lg:col-span-2">
           <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center">
             <Activity className="w-5 h-5 mr-2" style={{ color: 'var(--primary)' }} />
-            进球趋势分析
+            进球趋势分析 (按时间轴显示)
           </h3>
           <div className="h-60 md:h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={history}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                <XAxis dataKey="name" stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} interval={0} angle={-45} textAnchor="end" height={60} />
+                <XAxis 
+                   dataKey="name" 
+                   stroke="#64748b" 
+                   fontSize={9} 
+                   tickLine={false} 
+                   axisLine={false} 
+                   interval={0} 
+                   angle={-45} 
+                   textAnchor="end" 
+                   height={80} 
+                   tickFormatter={(value) => value.split(' (')[0]}
+                />
                 <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
                 <Tooltip 
                   cursor={{fill: '#f1f5f9'}}
@@ -497,78 +471,43 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
           </div>
         </div>
 
-        {/* Pie Charts - Results */}
         <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col min-h-[320px]">
           <h3 className="text-lg font-bold text-slate-800 mb-4">比赛结果分布</h3>
-          
           <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
-             {/* Chart 1: All Matches */}
              <div className="flex flex-col items-center justify-center">
-                {/* Label above chart */}
                 <div className="mb-2">
                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider bg-slate-100 px-3 py-1 rounded-full border border-slate-200">全部</span>
                 </div>
-                
                 <div className="relative h-40 w-full">
-                    {/* Center Text */}
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
                        <p className="text-2xl font-black text-slate-800">
                           {matchesPlayed}<span className="text-xs font-bold text-slate-400 ml-0.5">场</span>
                        </p>
                     </div>
-                    
                     <ResponsiveContainer width="100%" height="100%" className="relative z-10">
                       <PieChart>
-                        <Pie
-                          data={resultData}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={50}
-                          outerRadius={70}
-                          paddingAngle={5}
-                          dataKey="value"
-                          stroke="none"
-                        >
-                          {resultData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
+                        <Pie data={resultData} cx="50%" cy="50%" innerRadius={50} outerRadius={70} paddingAngle={5} dataKey="value" stroke="none">
+                          {resultData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
                         </Pie>
                         <Tooltip />
                       </PieChart>
                     </ResponsiveContainer>
                 </div>
              </div>
-
-             {/* Chart 2: League Matches */}
              <div className="flex flex-col items-center justify-center sm:border-l border-slate-100 pt-4 sm:pt-0 border-t sm:border-t-0">
-                {/* Label above chart */}
                 <div className="mb-2">
                    <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">联赛</span>
                 </div>
-
                 <div className="relative h-40 w-full">
-                    {/* Center Text */}
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
                        <p className="text-2xl font-black text-slate-800">
                           {leagueMatchesPlayed}<span className="text-xs font-bold text-slate-400 ml-0.5">场</span>
                        </p>
                     </div>
-
                     <ResponsiveContainer width="100%" height="100%" className="relative z-10">
                       <PieChart>
-                        <Pie
-                          data={leagueResultData}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={50}
-                          outerRadius={70}
-                          paddingAngle={5}
-                          dataKey="value"
-                          stroke="none"
-                        >
-                          {leagueResultData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
+                        <Pie data={leagueResultData} cx="50%" cy="50%" innerRadius={50} outerRadius={70} paddingAngle={5} dataKey="value" stroke="none">
+                          {leagueResultData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
                         </Pie>
                         <Tooltip />
                       </PieChart>
@@ -576,8 +515,6 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                 </div>
              </div>
           </div>
-
-          {/* Shared Legend */}
           <div className="mt-4 flex justify-center gap-4 text-xs text-slate-500 border-t border-slate-50 pt-4">
               <div className="flex items-center"><div className="w-2.5 h-2.5 rounded-full mr-1.5" style={{backgroundColor: RESULT_COLORS.Win}}></div> 胜</div>
               <div className="flex items-center"><div className="w-2.5 h-2.5 rounded-full mr-1.5" style={{backgroundColor: RESULT_COLORS.Draw}}></div> 平</div>
@@ -586,7 +523,6 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
         </div>
       </div>
 
-      {/* Coach Stats Section */}
       {coachStats.length > 0 && (
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
            <div className="px-4 md:px-6 py-3 md:py-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
@@ -594,9 +530,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                 <UserCog className="w-5 h-5 mr-2 text-indigo-500" />
                 <h3 className="text-base md:text-lg font-bold text-slate-800">执教表现</h3>
               </div>
-              <div className="text-[10px] md:text-xs text-slate-400 font-medium">
-                 按最近执教时间排序
-              </div>
+              <div className="text-[10px] md:text-xs text-slate-400 font-medium">按最近执教时间排序</div>
            </div>
            <div className="overflow-x-auto">
               <table className="w-full text-left text-slate-600">
@@ -608,22 +542,16 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                        <th className="px-2 md:px-4 py-3 text-center whitespace-nowrap">战绩 (胜/平/负)</th>
                        <th className="px-2 md:px-4 py-3 text-center whitespace-nowrap">胜率</th>
                        <th className="px-2 md:px-4 py-3 text-center whitespace-nowrap">进/失球</th>
-                       <th className="px-2 md:px-4 py-3 text-center whitespace-nowrap">场均净胜</th>
+                       <th className="px-2 md:px-4 py-3 text-center font-mono">场均净胜</th>
                     </tr>
                  </thead>
                  <tbody className="divide-y divide-slate-100 text-[12.25px]">
                     {coachStats.map((coach, idx) => (
                        <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                          <td className="px-3 md:px-6 py-3 font-bold text-slate-900 sticky left-0 bg-white z-10 border-r border-slate-100 md:border-none shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] md:shadow-none">{coach.name}</td>
-                          <td className="px-2 md:px-4 py-3 text-center text-slate-500 font-mono whitespace-nowrap">
-                             {coach.lastMatchDate}
-                          </td>
-                          <td className="px-2 md:px-4 py-3 text-center font-medium">
-                             {coach.games} <span className="text-slate-300">/</span> <span className="text-indigo-600">{coach.leagueGames}</span>
-                          </td>
-                          <td className="px-2 md:px-4 py-3 text-center whitespace-nowrap">
-                             <span className="text-emerald-600 font-bold">{coach.wins}</span> - <span className="text-amber-500 font-bold">{coach.draws}</span> - <span className="text-red-500 font-bold">{coach.losses}</span>
-                          </td>
+                          <td className="px-3 md:px-6 py-3 font-bold text-slate-900 sticky left-0 bg-white z-10 border-r border-slate-100 md:border-none">{coach.name}</td>
+                          <td className="px-2 md:px-4 py-3 text-center text-slate-500 font-mono whitespace-nowrap">{coach.lastMatchDate}</td>
+                          <td className="px-2 md:px-4 py-3 text-center font-medium">{coach.games} / <span className="text-indigo-600">{coach.leagueGames}</span></td>
+                          <td className="px-2 md:px-4 py-3 text-center whitespace-nowrap"><span className="text-emerald-600 font-bold">{coach.wins}</span> - <span className="text-amber-500 font-bold">{coach.draws}</span> - <span className="text-red-500 font-bold">{coach.losses}</span></td>
                           <td className="px-2 md:px-4 py-3 text-center">
                              <div className="flex items-center justify-center gap-2">
                                 <span className="font-bold text-slate-800">{coach.winRate.toFixed(0)}%</span>
@@ -632,12 +560,8 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                                 </div>
                              </div>
                           </td>
-                          <td className="px-2 md:px-4 py-3 text-center whitespace-nowrap">
-                             {coach.goalsFor} : {coach.goalsAgainst}
-                          </td>
-                          <td className="px-2 md:px-4 py-3 text-center font-mono">
-                             {((coach.goalsFor - coach.goalsAgainst) / coach.games).toFixed(1)}
-                          </td>
+                          <td className="px-2 md:px-4 py-3 text-center whitespace-nowrap">{coach.goalsFor} : {coach.goalsAgainst}</td>
+                          <td className="px-2 md:px-4 py-3 text-center font-mono">{((coach.goalsFor - coach.goalsAgainst) / coach.games).toFixed(1)}</td>
                        </tr>
                     ))}
                  </tbody>
@@ -646,10 +570,9 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
         </div>
       )}
 
-      {/* Recent Matches Table */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div className="px-4 md:px-6 py-3 md:py-4 border-b border-slate-100 bg-slate-50/50">
-           <h3 className="text-base md:text-lg font-bold text-slate-800">近期比赛记录</h3>
+           <h3 className="text-base md:text-lg font-bold text-slate-800">近期比赛记录 (最新显示在最上方)</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-xs md:text-sm text-left text-slate-600">
@@ -663,35 +586,47 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {/* Reverse history to show newest first */}
-              {history.slice().reverse().slice(0, 10).map((match, idx) => (
-                <tr key={idx} className="bg-white hover:bg-slate-50 transition-colors">
-                  <td className="px-3 md:px-6 py-3 font-medium text-slate-900 whitespace-nowrap">{match.date}</td>
-                  <td className="px-2 md:px-4 py-3 text-center">
-                     <span className={`text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5 md:py-1 rounded border font-medium ${
-                        match.type === '联赛' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' :
-                        match.type === '友谊赛' ? 'bg-sky-50 text-sky-600 border-sky-100' :
-                        match.type === '杯赛' ? 'bg-amber-50 text-amber-600 border-amber-100' :
-                        'bg-slate-100 text-slate-500 border-slate-200'
-                     }`}>
-                        {match.type || '友谊赛'}
-                     </span>
-                  </td>
-                  <td className="px-3 md:px-6 py-3 text-slate-900 font-bold whitespace-nowrap max-w-[120px] truncate">{match.name}</td>
-                  <td className="px-2 md:px-6 py-3 text-center">
-                    <span className={`px-2 md:px-3 py-0.5 md:py-1 rounded text-xs font-bold ${
-                      match.result === 'Win' ? 'bg-emerald-100 text-emerald-700' :
-                      match.result === 'Loss' ? 'bg-red-100 text-red-700' :
-                      'bg-amber-100 text-amber-700'
-                    }`}>
-                      {match.result === 'Win' ? '胜' : match.result === 'Loss' ? '负' : '平'}
-                    </span>
-                  </td>
-                  <td className="px-3 md:px-6 py-3 text-center font-mono font-bold text-slate-700 whitespace-nowrap">
-                    {match.进球} : {match.失球}
-                  </td>
-                </tr>
-              ))}
+              {history.slice().reverse().slice(0, 15).map((match, idx) => {
+                // 将日期格式化为换行显示 (年份在上，月日在下)
+                const dateParts = match.date.split('-');
+                const formattedDate = dateParts.length === 3 ? (
+                   <div className="flex flex-col leading-tight">
+                      <span className="text-slate-400 font-mono" style={{ fontSize: '10px' }}>{dateParts[0]}</span>
+                      <span className="font-bold text-slate-900">{dateParts[1]}-{dateParts[2]}</span>
+                   </div>
+                ) : match.date;
+
+                return (
+                  <tr key={idx} className="bg-white hover:bg-slate-50 transition-colors">
+                    <td className="px-3 md:px-6 py-3 font-medium text-slate-900">
+                       {formattedDate}
+                    </td>
+                    <td className="px-2 md:px-4 py-3 text-center">
+                       <span className={`text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5 md:py-1 rounded border font-medium ${
+                          match.type === '联赛' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' :
+                          match.type === '友谊赛' ? 'bg-sky-50 text-sky-600 border-sky-100' :
+                          match.type === '杯赛' ? 'bg-amber-50 text-amber-600 border-amber-100' :
+                          'bg-slate-100 text-slate-500 border-slate-200'
+                       }`}>
+                          {match.type || '友谊赛'}
+                       </span>
+                    </td>
+                    <td className="px-3 md:px-6 py-3 text-slate-900 font-bold whitespace-nowrap max-w-[120px] truncate">{match.originalName || match.name}</td>
+                    <td className="px-2 md:px-6 py-3 text-center">
+                      <span className={`px-2 md:px-3 py-0.5 md:py-1 rounded text-xs font-bold ${
+                        match.result === 'Win' ? 'bg-emerald-100 text-emerald-700' :
+                        match.result === 'Loss' ? 'bg-red-100 text-red-700' :
+                        'bg-amber-100 text-amber-700'
+                      }`}>
+                        {match.result === 'Win' ? '胜' : match.result === 'Loss' ? '负' : '平'}
+                      </span>
+                    </td>
+                    <td className="px-3 md:px-6 py-3 text-center font-mono font-bold text-slate-700 whitespace-nowrap">
+                      {match.进球} : {match.失球}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
