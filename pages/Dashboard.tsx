@@ -572,7 +572,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
 
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div className="px-4 md:px-6 py-3 md:py-4 border-b border-slate-100 bg-slate-50/50">
-           <h3 className="text-base md:text-lg font-bold text-slate-800">近期比赛记录 (最新显示在最上方)</h3>
+           <h3 className="text-base md:text-lg font-bold text-slate-800">近期比赛记录</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-xs md:text-sm text-left text-slate-600">
