@@ -440,7 +440,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
         <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200 lg:col-span-2">
           <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center">
             <Activity className="w-5 h-5 mr-2" style={{ color: 'var(--primary)' }} />
-            进球趋势分析 (按时间轴显示)
+            进球趋势分析
           </h3>
           <div className="h-60 md:h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -546,24 +546,27 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                     </tr>
                  </thead>
                  <tbody className="divide-y divide-slate-100 text-[12.25px]">
-                    {coachStats.map((coach, idx) => (
-                       <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                          <td className="px-3 md:px-6 py-3 font-bold text-slate-900 sticky left-0 bg-white z-10 border-r border-slate-100 md:border-none">{coach.name}</td>
-                          <td className="px-2 md:px-4 py-3 text-center text-slate-500 font-mono whitespace-nowrap">{coach.lastMatchDate}</td>
-                          <td className="px-2 md:px-4 py-3 text-center font-medium">{coach.games} / <span className="text-indigo-600">{coach.leagueGames}</span></td>
-                          <td className="px-2 md:px-4 py-3 text-center whitespace-nowrap"><span className="text-emerald-600 font-bold">{coach.wins}</span> - <span className="text-amber-500 font-bold">{coach.draws}</span> - <span className="text-red-500 font-bold">{coach.losses}</span></td>
-                          <td className="px-2 md:px-4 py-3 text-center">
-                             <div className="flex items-center justify-center gap-2">
-                                <span className="font-bold text-slate-800">{coach.winRate.toFixed(0)}%</span>
-                                <div className="w-12 md:w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden hidden sm:block">
-                                   <div className="h-full bg-emerald-500" style={{ width: `${coach.winRate}%` }}></div>
+                    {coachStats.map((coach, idx) => {
+                       const isEven = idx % 2 !== 0;
+                       return (
+                          <tr key={idx} className={`hover:bg-slate-50 transition-colors ${isEven ? 'bg-slate-50/50' : ''}`}>
+                             <td className={`px-3 md:px-6 py-3 font-bold text-slate-900 sticky left-0 z-10 border-r border-slate-100 md:border-none ${isEven ? 'bg-slate-50' : 'bg-white'}`}>{coach.name}</td>
+                             <td className="px-2 md:px-4 py-3 text-center text-slate-500 font-mono whitespace-nowrap">{coach.lastMatchDate}</td>
+                             <td className="px-2 md:px-4 py-3 text-center font-medium">{coach.games} / <span className="text-indigo-600">{coach.leagueGames}</span></td>
+                             <td className="px-2 md:px-4 py-3 text-center whitespace-nowrap"><span className="text-emerald-600 font-bold">{coach.wins}</span> - <span className="text-amber-500 font-bold">{coach.draws}</span> - <span className="text-red-500 font-bold">{coach.losses}</span></td>
+                             <td className="px-2 md:px-4 py-3 text-center">
+                                <div className="flex items-center justify-center gap-2">
+                                   <span className="font-bold text-slate-800">{coach.winRate.toFixed(0)}%</span>
+                                   <div className="w-12 md:w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden hidden sm:block">
+                                      <div className="h-full bg-emerald-500" style={{ width: `${coach.winRate}%` }}></div>
+                                   </div>
                                 </div>
-                             </div>
-                          </td>
-                          <td className="px-2 md:px-4 py-3 text-center whitespace-nowrap">{coach.goalsFor} : {coach.goalsAgainst}</td>
-                          <td className="px-2 md:px-4 py-3 text-center font-mono">{((coach.goalsFor - coach.goalsAgainst) / coach.games).toFixed(1)}</td>
-                       </tr>
-                    ))}
+                             </td>
+                             <td className="px-2 md:px-4 py-3 text-center whitespace-nowrap">{coach.goalsFor} : {coach.goalsAgainst}</td>
+                             <td className="px-2 md:px-4 py-3 text-center font-mono">{((coach.goalsFor - coach.goalsAgainst) / coach.games).toFixed(1)}</td>
+                          </tr>
+                       );
+                    })}
                  </tbody>
               </table>
            </div>
@@ -596,8 +599,10 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                    </div>
                 ) : match.date;
 
+                const isEven = idx % 2 !== 0;
+
                 return (
-                  <tr key={idx} className="bg-white hover:bg-slate-50 transition-colors">
+                  <tr key={idx} className={`hover:bg-slate-50 transition-colors ${isEven ? 'bg-slate-50/50' : 'bg-white'}`}>
                     <td className="px-3 md:px-6 py-3 font-medium text-slate-900">
                        {formattedDate}
                     </td>

@@ -3618,6 +3618,109 @@
       "countForStats": true,
       "coach": "",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1770686151422",
+      "date": "2026-02-09",
+      "season": "华侨城2025年冬",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "溉澜溪体育公园",
+      "opponent": "雾都霍得转",
+      "ourScore": 1,
+      "opponentScore": 1,
+      "location": "Home",
+      "result": "Draw",
+      "squad": [
+        "车驰",
+        "陈春",
+        "陈启晅",
+        "郭佳东",
+        "何星谕",
+        "胡勇",
+        "刘豪",
+        "孙张力",
+        "唐涛",
+        "胥德伟",
+        "杨涛",
+        "张龑瀚",
+        "朱峰",
+        "肖欣"
+      ],
+      "starters": [
+        "车驰",
+        "陈春",
+        "何星谕",
+        "胡勇",
+        "刘豪",
+        "唐涛",
+        "胥德伟",
+        "朱峰"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 1
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "朱峰",
+          "assist": "杨涛",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "何星谕",
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1770686257303",
+      "date": "2026-02-06",
+      "season": "2026平顶山健康杯",
+      "round": 22,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "聚友联",
+      "ourScore": 3,
+      "opponentScore": 2,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "守门员1"
+      ],
+      "starters": [
+        "守门员1"
+      ],
+      "goalkeepers": [
+        "守门员1"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "守门员1",
+          "conceded": 2
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "",
+      "teamId": "1764057295948"
     }
   ],
   "opponents": [
@@ -3875,7 +3978,8 @@
       "id": "sea-1764382546941",
       "name": "2026平顶山健康杯",
       "teamId": "1764057295948",
-      "sortOrder": 1
+      "sortOrder": 1,
+      "result": "排名第8，共12只队伍"
     },
     {
       "id": "sea-1765519570609",
@@ -4262,5 +4366,5 @@
       "teamId": "team-default-001"
     }
   ],
-  "theme": "teal"
+  "theme": "rose"
 }
