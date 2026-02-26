@@ -3724,6 +3724,63 @@ export const defaultDb: FullDatabase = {
       "countForStats": true,
       "coach": "",
       "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1772075282595",
+      "date": "2026-02-25",
+      "season": "华侨城2025年冬",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "天才足球场鳄鱼馆",
+      "opponent": "钱队",
+      "ourScore": 3,
+      "opponentScore": 0,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "张龑瀚",
+        "申相峰",
+        "文云波",
+        "康鑫",
+        "李扬",
+        "秦坤",
+        "陈春",
+        "车驰",
+        "刘豪",
+        "陈启晅",
+        "杨涛",
+        "钱星宇"
+      ],
+      "starters": [
+        "张龑瀚",
+        "申相峰",
+        "文云波",
+        "康鑫",
+        "李扬",
+        "秦坤",
+        "陈春"
+      ],
+      "goalkeepers": [],
+      "goalkeeperStats": [],
+      "goalsDetails": [
+        {
+          "scorer": "杨涛",
+          "isPenalty": false
+        },
+        {
+          "scorer": "刘豪",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "车驰",
+      "teamId": "team-default-001"
     }
   ],
   "opponents": [
@@ -3961,6 +4018,11 @@ export const defaultDb: FullDatabase = {
       "id": "ml7btrui",
       "name": "起航",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "mm2vo4lv",
+      "name": "钱队",
+      "teamId": "team-default-001"
     }
   ],
   "seasons": [
@@ -4047,6 +4109,12 @@ export const defaultDb: FullDatabase = {
       "name": "溉澜溪体育公园",
       "teamId": "team-default-001",
       "sortOrder": 7
+    },
+    {
+      "id": "ven-1772074894738",
+      "name": "天才足球场鳄鱼馆",
+      "teamId": "team-default-001",
+      "sortOrder": 8
     }
   ],
   "players": [
@@ -4369,5 +4437,5 @@ export const defaultDb: FullDatabase = {
       "teamId": "team-default-001"
     }
   ],
-  "theme": "rose"
+  "theme": "red"
 };

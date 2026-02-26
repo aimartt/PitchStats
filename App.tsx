@@ -41,27 +41,64 @@ const THEMES: Record<ThemeColor, ThemeConfig> = {
   pink: { primary: '#ec4899', primaryHover: '#db2777', primaryLight: '#fdf2f8', text: '#9d174d' },
 };
 
+// Initialize storage before app starts
+storageService.initialize();
+
 const AppContent: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [authState, setAuthState] = useState<{ user: User | null; isAuthenticated: boolean }>({
-    user: null,
-    isAuthenticated: false,
+  const [loading, setLoading] = useState(false); // Set to false as we initialize lazily
+  const [authState, setAuthState] = useState<{ user: User | null; isAuthenticated: boolean }>(() => {
+    const user = authService.getCurrentUser();
+    return {
+      user,
+      isAuthenticated: !!user,
+    };
   });
   
   // Multi-tenancy State
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [currentTeam, setCurrentTeam] = useState<Team | null>(null);
+  const [teams, setTeams] = useState<Team[]>(() => {
+    const teamsStr = localStorage.getItem(STORAGE_KEYS.TEAMS);
+    return teamsStr ? JSON.parse(teamsStr) : defaultDb.teams;
+  });
+  const [currentTeam, setCurrentTeam] = useState<Team | null>(() => {
+    const user = authService.getCurrentUser();
+    if (user && user.teamIds && user.teamIds.length > 0) {
+      const teamsStr = localStorage.getItem(STORAGE_KEYS.TEAMS);
+      const loadedTeams: Team[] = teamsStr ? JSON.parse(teamsStr) : defaultDb.teams;
+      const validTeams = loadedTeams.filter(t => user.teamIds.includes(t.id));
+      if (validTeams.length > 0) return validTeams[0];
+    }
+    return null;
+  });
 
   // Global Data State
-  const [rawData, setRawData] = useState<MatchRecord[]>([]);
-  const [allOpponents, setAllOpponents] = useState<OpponentTeam[]>([]);
-  const [allSeasons, setAllSeasons] = useState<TeamAsset[]>([]);
-  const [allVenues, setAllVenues] = useState<TeamAsset[]>([]);
-  const [allPlayers, setAllPlayers] = useState<PlayerProfile[]>([]);
+  const [rawData, setRawData] = useState<MatchRecord[]>(() => {
+    const storedData = localStorage.getItem(STORAGE_KEYS.DATA);
+    return storedData ? JSON.parse(storedData) : defaultDb.matches;
+  });
+  const [allOpponents, setAllOpponents] = useState<OpponentTeam[]>(() => {
+    const storedOpponents = localStorage.getItem(STORAGE_KEYS.OPPONENTS);
+    return storedOpponents ? JSON.parse(storedOpponents) : defaultDb.opponents;
+  });
+  const [allSeasons, setAllSeasons] = useState<TeamAsset[]>(() => {
+    const storedSeasons = localStorage.getItem(STORAGE_KEYS.SEASONS);
+    return storedSeasons ? JSON.parse(storedSeasons) : defaultDb.seasons;
+  });
+  const [allVenues, setAllVenues] = useState<TeamAsset[]>(() => {
+    const storedVenues = localStorage.getItem(STORAGE_KEYS.VENUES);
+    return storedVenues ? JSON.parse(storedVenues) : defaultDb.venues;
+  });
+  const [allPlayers, setAllPlayers] = useState<PlayerProfile[]>(() => {
+    const storedPlayers = localStorage.getItem(STORAGE_KEYS.PLAYERS);
+    return storedPlayers ? JSON.parse(storedPlayers) : defaultDb.players;
+  });
 
   // Theme State
-  const [theme, setTheme] = useState<ThemeColor>('emerald');
+  const [theme, setTheme] = useState<ThemeColor>(() => {
+    const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) as ThemeColor;
+    if (savedTheme && THEMES[savedTheme]) return savedTheme;
+    return (defaultDb.theme as ThemeColor) || 'emerald';
+  });
 
   // Edit / View State
   const [editingMatch, setEditingMatch] = useState<MatchRecord | undefined>(undefined);
@@ -72,43 +109,7 @@ const AppContent: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    storageService.initialize();
-    
-    const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) as ThemeColor;
-    if (savedTheme && THEMES[savedTheme]) setTheme(savedTheme);
-
-    const teamsStr = localStorage.getItem(STORAGE_KEYS.TEAMS);
-    const loadedTeams: Team[] = teamsStr ? JSON.parse(teamsStr) : defaultDb.teams;
-    setTeams(loadedTeams);
-
-    const user = authService.getCurrentUser();
-    if (user) {
-      setAuthState({ user, isAuthenticated: true });
-      if (user.teamIds && user.teamIds.length > 0) {
-        const validTeams = loadedTeams.filter(t => user.teamIds.includes(t.id));
-        if (validTeams.length > 0) setCurrentTeam(validTeams[0]);
-      }
-    }
-
-    const storedData = localStorage.getItem(STORAGE_KEYS.DATA);
-    setRawData(storedData ? JSON.parse(storedData) : defaultDb.matches);
-
-    const storedOpponents = localStorage.getItem(STORAGE_KEYS.OPPONENTS);
-    setAllOpponents(storedOpponents ? JSON.parse(storedOpponents) : defaultDb.opponents);
-
-    const storedSeasons = localStorage.getItem(STORAGE_KEYS.SEASONS);
-    setAllSeasons(storedSeasons ? JSON.parse(storedSeasons) : defaultDb.seasons);
-
-    const storedVenues = localStorage.getItem(STORAGE_KEYS.VENUES);
-    setAllVenues(storedVenues ? JSON.parse(storedVenues) : defaultDb.venues);
-
-    const storedPlayers = localStorage.getItem(STORAGE_KEYS.PLAYERS);
-    setAllPlayers(storedPlayers ? JSON.parse(storedPlayers) : defaultDb.players);
-
-    setLoading(false);
-  }, []);
-
-  useEffect(() => {
+    // Apply theme to document root
     const config = THEMES[theme] || THEMES.emerald;
     const root = document.documentElement;
     root.style.setProperty('--primary', config.primary);
@@ -139,7 +140,7 @@ const AppContent: React.FC = () => {
   };
 
   const handleLogout = () => {
-    localStorage.clear();
+    authService.logout();
     window.location.reload();
   };
 
