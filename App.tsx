@@ -140,7 +140,7 @@ const AppContent: React.FC = () => {
   };
 
   const handleLogout = () => {
-    authService.logout();
+    localStorage.clear();
     window.location.reload();
   };
 
