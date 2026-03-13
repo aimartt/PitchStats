@@ -378,7 +378,7 @@ const PlayerDetailView: React.FC<{
               </div>
               <div className="flex flex-wrap justify-center md:justify-start items-center gap-3 mt-4 w-full">
                  <span className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-1.5 md:px-5 md:py-2 rounded-full text-slate-100 font-bold text-xs md:text-sm border border-white/10">
-                    <Cake className="w-4 h-4 text-emerald-400" /> {player.birthday || '未设生日'} {player.age ? `(${player.age}岁)` : ''}
+                    <Cake className="w-4 h-4 text-emerald-400" /> {player.birthday ? player.birthday.substring(5) : '未设生日'} {player.age ? `(${player.age}岁)` : ''}
                  </span>
                  {player.status && player.status !== '正常' && (
                     <span className={`flex items-center gap-2 backdrop-blur-md px-4 py-1.5 md:px-5 md:py-2 rounded-full font-bold text-xs md:text-sm border ${player.status === '伤停' ? 'bg-red-500/20 text-red-600 border-red-500/30' : 'bg-slate-500/20 text-slate-300 border-slate-500/30'}`}>

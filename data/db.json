@@ -3904,6 +3904,117 @@
       "countForStats": true,
       "coach": "车驰",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1773191363382",
+      "date": "2026-03-10",
+      "season": "2026平顶山健康杯",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "TCL华科能源",
+      "ourScore": 10,
+      "opponentScore": 3,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "唐涛"
+      ],
+      "starters": [
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 3
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "",
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1773365071026",
+      "date": "2026-03-12",
+      "season": "华侨城2025年冬",
+      "round": 10,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "华侨城足球公园",
+      "opponent": "实况达人",
+      "ourScore": 2,
+      "opponentScore": 1,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "车驰",
+        "陈春",
+        "陈启晅",
+        "郭佳东",
+        "何星谕",
+        "李扬",
+        "刘豪",
+        "钱星宇",
+        "秦坤",
+        "孙张力",
+        "唐涛",
+        "张善博",
+        "张龑瀚",
+        "朱峰",
+        "申相峰",
+        "赵建宇",
+        "肖欣",
+        "刘杰"
+      ],
+      "starters": [
+        "陈春",
+        "何星谕",
+        "李扬",
+        "刘豪",
+        "钱星宇",
+        "秦坤",
+        "唐涛",
+        "申相峰"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 1
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "何星谕",
+          "assist": "李扬",
+          "isPenalty": false
+        },
+        {
+          "scorer": "何星谕",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "何星谕",
+      "teamId": "team-default-001"
     }
   ],
   "opponents": [
@@ -3944,7 +4055,7 @@
     },
     {
       "id": "legacy-miea5bpuqr33ygcpwb",
-      "name": "（渝G）起手叫",
+      "name": "边起40",
       "teamId": "team-default-001"
     },
     {
@@ -4156,6 +4267,11 @@
       "id": "mmd2z71b",
       "name": "HAYATO",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "mmlcc4at",
+      "name": "TCL华科能源",
+      "teamId": "1764057295948"
     }
   ],
   "seasons": [
@@ -4584,5 +4700,5 @@
       "teamId": "team-default-001"
     }
   ],
-  "theme": "cyan"
+  "theme": "fuchsia"
 }
