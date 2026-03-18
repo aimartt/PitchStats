@@ -304,7 +304,7 @@ const PlayerDetailView: React.FC<{
           s.conceded += specificGkStat.conceded;
           if (isLeague) { 
             s.leagueMatchesAsGK++; 
-            if (isCounted) s.leagueMatchesCounted++;
+            if (isCounted) s.leagueMatchesAsGKCounted++;
             s.leagueConceded += specificGkStat.conceded; 
           }
        } else if (isInLegacyGkList) {
@@ -314,7 +314,7 @@ const PlayerDetailView: React.FC<{
           s.conceded += matchConceded;
           if (isLeague) { 
             s.leagueMatchesAsGK++; 
-            if (isCounted) s.leagueMatchesCounted++;
+            if (isCounted) s.leagueMatchesAsGKCounted++;
             s.leagueConceded += matchConceded; 
           }
        }
