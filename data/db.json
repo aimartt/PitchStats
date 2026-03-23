@@ -4098,6 +4098,69 @@
       "countForStats": false,
       "coach": "",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1774234279651",
+      "date": "2026-03-20",
+      "season": "华侨城2025年冬",
+      "round": 11,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "华侨城足球公园",
+      "opponent": "板得凶",
+      "ourScore": 0,
+      "opponentScore": 2,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "车驰",
+        "陈启晅",
+        "郭佳东",
+        "何星谕",
+        "胡勇",
+        "李扬",
+        "刘豪",
+        "钱星宇",
+        "秦坤",
+        "唐涛",
+        "胥德伟",
+        "杨皓宇",
+        "曹晓霖",
+        "张龑瀚",
+        "朱峰",
+        "申相峰",
+        "肖欣",
+        "邓金华"
+      ],
+      "starters": [
+        "车驰",
+        "陈启晅",
+        "何星谕",
+        "胡勇",
+        "李扬",
+        "刘豪",
+        "秦坤",
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 2
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "何星谕",
+      "teamId": "team-default-001"
     }
   ],
   "opponents": [
@@ -4794,5 +4857,5 @@
       "teamId": "team-default-001"
     }
   ],
-  "theme": "fuchsia"
+  "theme": "red"
 }
