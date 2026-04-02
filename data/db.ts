@@ -4361,6 +4361,73 @@ export const defaultDb: FullDatabase = {
       "countForStats": true,
       "coach": "",
       "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1775100571872",
+      "date": "2026-04-01",
+      "season": "华侨城2025年冬",
+      "round": 13,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "华侨城足球公园",
+      "opponent": "两江一河",
+      "ourScore": 2,
+      "opponentScore": 1,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "车驰",
+        "陈春",
+        "陈启晅",
+        "郭佳东",
+        "胡勇",
+        "刘豪",
+        "唐涛",
+        "张善博",
+        "张龑瀚",
+        "刘杰"
+      ],
+      "starters": [
+        "车驰",
+        "陈春",
+        "陈启晅",
+        "郭佳东",
+        "胡勇",
+        "刘豪",
+        "唐涛",
+        "张龑瀚"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 1
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "陈春",
+          "isPenalty": false
+        },
+        {
+          "scorer": "陈春",
+          "assist": "胡勇",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [
+        "车驰"
+      ],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "何星谕",
+      "teamId": "team-default-001"
     }
   ],
   "opponents": [
