@@ -4511,6 +4511,113 @@ export const defaultDb: FullDatabase = {
       "countForStats": true,
       "coach": "",
       "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1775549423701",
+      "date": "2026-04-03",
+      "season": "华侨城2025年冬",
+      "matchType": "队内赛",
+      "format": "五人制",
+      "venue": "金谷运动中心",
+      "opponent": "队内对抗",
+      "ourScore": 0,
+      "opponentScore": 0,
+      "location": "Home",
+      "result": "Draw",
+      "squad": [
+        "车驰",
+        "郭佳东",
+        "李单",
+        "杨涛",
+        "赵建宇",
+        "杨皓宇"
+      ],
+      "starters": [
+        "车驰",
+        "郭佳东",
+        "李单",
+        "杨涛",
+        "赵建宇",
+        "杨皓宇"
+      ],
+      "goalkeepers": [],
+      "goalkeeperStats": [],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": false,
+      "coach": "",
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1775716626634",
+      "date": "2026-04-08",
+      "season": "华侨城2025年冬",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "华侨城足球公园",
+      "opponent": "降妖伏魔",
+      "ourScore": 1,
+      "opponentScore": 6,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "曹晓霖",
+        "车驰",
+        "陈春",
+        "陈启晅",
+        "郭佳东",
+        "胡勇",
+        "李扬",
+        "刘豪",
+        "钱星宇",
+        "孙张力",
+        "唐涛",
+        "杨涛",
+        "张善博",
+        "张龑瀚",
+        "朱峰",
+        "刘杰"
+      ],
+      "starters": [
+        "曹晓霖",
+        "郭佳东",
+        "李扬",
+        "钱星宇",
+        "孙张力",
+        "唐涛",
+        "杨涛",
+        "朱峰"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 6
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "陈启晅",
+          "assist": "陈春",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "车驰",
+      "teamId": "team-default-001"
     }
   ],
   "opponents": [
@@ -4990,7 +5097,7 @@ export const defaultDb: FullDatabase = {
       "number": "16",
       "birthday": "1986-10-16",
       "avatar": "data:image/jpeg;base64,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",
-      "status": "伤停",
+      "status": "正常",
       "teamId": "team-default-001"
     },
     {
@@ -5358,5 +5465,5 @@ export const defaultDb: FullDatabase = {
       "teamId": "1764057295948"
     }
   ],
-  "theme": "pink"
+  "theme": "orange"
 };
