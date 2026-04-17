@@ -150,7 +150,7 @@ const VenueManager: React.FC<VenueManagerProps> = ({ venues, onAddVenue, onRemov
               </div>
             </div>
             
-            <div className="max-h-[600px] overflow-y-auto p-4">
+            <div className="p-4">
               {filteredVenues.length > 0 ? (
                 <div className="space-y-3">
                   {filteredVenues.map((venue) => (
