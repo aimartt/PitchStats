@@ -4,6 +4,7 @@ import { Plus, Calendar, MapPin, Search, Filter, Pencil, Trophy, Flag, Handshake
 
 const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserRole, seasons, onEditMatch, onViewMatch, currentTeamName, currentTeamLogo }) => {
   const [selectedSeason, setSelectedSeason] = useState<string>('all');
+  const [selectedMatchType, setSelectedMatchType] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
 
   // Sort matches by date descending (newest first)
@@ -19,6 +20,7 @@ const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserR
 
   const filteredMatches = sortedMatches.filter(match => {
     const matchesSeason = selectedSeason === 'all' || match.season === selectedSeason;
+    const matchesType = selectedMatchType === 'all' || match.matchType === selectedMatchType;
     
     // Defensive check: Ensure strings exist before calling toLowerCase()
     const opponentName = match.opponent ? match.opponent.toLowerCase() : '';
@@ -26,7 +28,7 @@ const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserR
     const term = searchTerm.toLowerCase();
 
     const matchesSearch = opponentName.includes(term) || venueName.includes(term);
-    return matchesSeason && matchesSearch;
+    return matchesSeason && matchesType && matchesSearch;
   });
 
   const getResultColorClass = (result?: string) => {
@@ -107,7 +109,7 @@ const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserR
               style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
             />
          </div>
-         <div className="w-full md:w-48 relative">
+         <div className="w-full md:w-40 relative">
             <Filter className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <select 
               value={selectedSeason}
@@ -117,6 +119,21 @@ const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserR
             >
                <option value="all">所有赛季</option>
                {seasons.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+         </div>
+         <div className="w-full md:w-40 relative">
+            <Filter className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <select 
+              value={selectedMatchType}
+              onChange={(e) => setSelectedMatchType(e.target.value)}
+              className="w-full pl-9 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm appearance-none outline-none focus:ring-2 cursor-pointer"
+              style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
+            >
+               <option value="all">所有类型</option>
+               <option value="联赛">联赛</option>
+               <option value="杯赛">杯赛</option>
+               <option value="友谊赛">友谊赛</option>
+               <option value="队内赛">队内赛</option>
             </select>
          </div>
       </div>

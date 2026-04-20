@@ -72,7 +72,7 @@ const VenueManager: React.FC<VenueManagerProps> = ({ venues, onAddVenue, onRemov
   );
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-fade-in relative">
+    <div className="max-w-6xl mx-auto space-y-8 animate-fade-in relative px-2 md:px-0">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
@@ -130,7 +130,7 @@ const VenueManager: React.FC<VenueManagerProps> = ({ venues, onAddVenue, onRemov
 
         {/* Venue List Section */}
         <div className="md:col-span-2">
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden min-h-[400px]">
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
             <div className="p-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
               <h3 className="font-bold text-slate-800">场地列表 ({venues.length})</h3>
               <div className="flex items-center gap-4">
