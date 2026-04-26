@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CalendarRange, Plus, Trash2, Pencil, X, Check, Calendar, ArrowUp, Trophy } from 'lucide-react';
+import { CalendarRange, Plus, Trash2, Pencil, X, Check, Calendar, ArrowDown, Trophy } from 'lucide-react';
 import { SeasonManagerProps } from '../types';
 
 const SeasonManager: React.FC<SeasonManagerProps> = ({ seasons, onAddSeason, onRemoveSeason, onEditSeason }) => {
@@ -98,7 +98,7 @@ const SeasonManager: React.FC<SeasonManagerProps> = ({ seasons, onAddSeason, onR
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">排序号 (越小越靠前)</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">排序号 (越大越靠前)</label>
                 <input 
                   type="number" 
                   value={newSortOrder}
@@ -141,7 +141,7 @@ const SeasonManager: React.FC<SeasonManagerProps> = ({ seasons, onAddSeason, onR
             <div className="p-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
               <h3 className="font-bold text-slate-800">所有赛季 ({seasons.length})</h3>
               <div className="text-xs text-slate-500 flex items-center">
-                 <ArrowUp className="w-3 h-3 mr-1" /> 按排序号升序
+                 <ArrowDown className="w-3 h-3 mr-1" /> 按排序号降序
               </div>
             </div>
             

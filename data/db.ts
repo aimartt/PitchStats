@@ -4873,6 +4873,199 @@ export const defaultDb: FullDatabase = {
       "countForStats": true,
       "coach": "",
       "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1776909255137",
+      "date": "2026-04-22",
+      "season": "华侨城2025年冬",
+      "matchType": "队内赛",
+      "format": "八人制",
+      "venue": "天才足球场鳄鱼馆",
+      "opponent": "队内对抗",
+      "ourScore": 0,
+      "opponentScore": 0,
+      "location": "Home",
+      "result": "Draw",
+      "squad": [
+        "曹晓霖",
+        "车驰",
+        "胡勇",
+        "李单",
+        "刘豪",
+        "秦坤",
+        "孙张力",
+        "胥德伟",
+        "杨皓宇",
+        "张善博",
+        "张龑瀚",
+        "申相峰",
+        "刘盛",
+        "肖欣",
+        "邓金华",
+        "刘杰",
+        "朱峰"
+      ],
+      "starters": [
+        "曹晓霖",
+        "车驰",
+        "胡勇",
+        "李单",
+        "秦坤",
+        "胥德伟",
+        "杨皓宇",
+        "张善博",
+        "张龑瀚",
+        "申相峰",
+        "刘盛",
+        "邓金华",
+        "刘杰",
+        "朱峰"
+      ],
+      "goalkeepers": [],
+      "goalkeeperStats": [],
+      "goalsDetails": [],
+      "yellowCards": [
+        "胥德伟"
+      ],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": false,
+      "coach": "",
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1777185679827",
+      "date": "2026-04-23",
+      "season": "华侨城2025年冬",
+      "round": 15,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "华侨城足球公园",
+      "opponent": "雾都霍得转",
+      "ourScore": 1,
+      "opponentScore": 1,
+      "location": "Home",
+      "result": "Draw",
+      "squad": [
+        "车驰",
+        "陈启晅",
+        "郭佳东",
+        "何星谕",
+        "胡勇",
+        "李扬",
+        "刘豪",
+        "钱星宇",
+        "孙张力",
+        "唐涛",
+        "张善博",
+        "张龑瀚",
+        "申相峰",
+        "刘杰"
+      ],
+      "starters": [
+        "车驰",
+        "陈启晅",
+        "郭佳东",
+        "胡勇",
+        "李扬",
+        "刘豪",
+        "唐涛",
+        "申相峰"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 1
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "何星谕",
+          "assist": "刘豪",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [
+        "何星谕"
+      ],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "何星谕",
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1777186028682",
+      "date": "2026-04-24",
+      "season": "第20届平顶山保健杯",
+      "round": 5,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "一直喝",
+      "ourScore": 1,
+      "opponentScore": 3,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "唐涛",
+        "蔡科",
+        "帅冰",
+        "刘柯",
+        "曾亮",
+        "邹宇",
+        "周渝",
+        "王庆",
+        "吴诗佳",
+        "刘晓秋",
+        "赵光雄"
+      ],
+      "starters": [
+        "唐涛",
+        "蔡科",
+        "帅冰",
+        "刘柯",
+        "曾亮",
+        "邹宇",
+        "吴诗佳",
+        "赵光雄"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 3
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "蔡科",
+          "assist": "刘柯",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [
+        "邹宇"
+      ],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "",
+      "teamId": "1764057295948"
     }
   ],
   "opponents": [
@@ -5152,41 +5345,49 @@ export const defaultDb: FullDatabase = {
       "id": "legacy-season-mieaz0frgypbajwh42m",
       "name": "华侨城2025年冬",
       "teamId": "team-default-001",
-      "sortOrder": 1
+      "sortOrder": 4,
+      "result": "排名第9，共15只队伍"
     },
     {
       "id": "legacy-season-mieaz0frf7pd4zt5vv",
       "name": "华侨城2025年夏",
       "teamId": "team-default-001",
-      "sortOrder": 2,
+      "sortOrder": 3,
       "result": "排名第12，共15只队伍"
     },
     {
       "id": "sea-1764382546941",
       "name": "第19届平顶山健康杯",
       "teamId": "1764057295948",
-      "sortOrder": 2,
+      "sortOrder": 1,
       "result": "排名第8，共12只队伍"
     },
     {
       "id": "sea-1765519570609",
       "name": "华侨城2025年春",
       "teamId": "team-default-001",
-      "sortOrder": 3,
+      "sortOrder": 2,
       "result": "排名第16，共18只队伍"
     },
     {
       "id": "sea-1765521210334",
       "name": "华侨城2024年夏",
       "teamId": "team-default-001",
-      "sortOrder": 4,
+      "sortOrder": 1,
       "result": "赛季中加入，不计成绩"
     },
     {
       "id": "sea-1774920316832",
       "name": "第20届平顶山保健杯",
       "teamId": "1764057295948",
-      "sortOrder": 1,
+      "sortOrder": 2,
+      "result": ""
+    },
+    {
+      "id": "sea-1777185186445",
+      "name": "华侨城2026年春",
+      "teamId": "team-default-001",
+      "sortOrder": 5,
       "result": ""
     }
   ],
@@ -5752,5 +5953,5 @@ export const defaultDb: FullDatabase = {
       "teamId": "1764057295948"
     }
   ],
-  "theme": "cyan"
+  "theme": "violet"
 };

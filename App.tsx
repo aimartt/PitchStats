@@ -121,7 +121,7 @@ const AppContent: React.FC = () => {
 
   const filteredMatches = useMemo(() => currentTeam ? rawData.filter(m => m.teamId === currentTeam.id) : [], [rawData, currentTeam]);
   const filteredOpponents = useMemo(() => currentTeam ? allOpponents.filter(o => o.teamId === currentTeam.id) : [], [allOpponents, currentTeam]);
-  const filteredSeasons = useMemo(() => currentTeam ? allSeasons.filter(s => s.teamId === currentTeam.id).sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)) : [], [allSeasons, currentTeam]);
+  const filteredSeasons = useMemo(() => currentTeam ? allSeasons.filter(s => s.teamId === currentTeam.id).sort((a, b) => (b.sortOrder ?? 0) - (a.sortOrder ?? 0)) : [], [allSeasons, currentTeam]);
   const filteredVenues = useMemo(() => currentTeam ? allVenues.filter(v => v.teamId === currentTeam.id).sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)) : [], [allVenues, currentTeam]);
   const filteredPlayers = useMemo(() => currentTeam ? allPlayers.filter(p => p.teamId === currentTeam.id) : [], [allPlayers, currentTeam]);
 
