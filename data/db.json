@@ -5063,6 +5063,70 @@
       "countForStats": true,
       "coach": "",
       "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1777360858777",
+      "date": "2026-04-27",
+      "season": "华侨城2026年春",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "华侨城足球公园",
+      "opponent": "散人",
+      "ourScore": 5,
+      "opponentScore": 3,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "车驰",
+        "郭佳东",
+        "胡勇",
+        "李单",
+        "李扬",
+        "孙张力",
+        "杨皓宇",
+        "张龑瀚",
+        "张善博"
+      ],
+      "starters": [
+        "郭佳东",
+        "李单",
+        "张龑瀚"
+      ],
+      "goalkeepers": [],
+      "goalkeeperStats": [],
+      "goalsDetails": [
+        {
+          "scorer": "李单",
+          "isPenalty": false
+        },
+        {
+          "scorer": "李单",
+          "isPenalty": false
+        },
+        {
+          "scorer": "胡勇",
+          "isPenalty": false
+        },
+        {
+          "scorer": "胡勇",
+          "assist": "李扬",
+          "isPenalty": false
+        },
+        {
+          "scorer": "李扬",
+          "assist": "胡勇",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "何星谕",
+      "teamId": "team-default-001"
     }
   ],
   "opponents": [
@@ -5335,6 +5399,11 @@
       "id": "mnllvd83",
       "name": "BHC FC",
       "teamId": "1764057295948"
+    },
+    {
+      "id": "moiaoqqg",
+      "name": "散人",
+      "teamId": "team-default-001"
     }
   ],
   "seasons": [
