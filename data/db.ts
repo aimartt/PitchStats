@@ -5537,6 +5537,7 @@ export const defaultDb: FullDatabase = {
       "id": "match-1779586055553",
       "date": "2026-05-22",
       "season": "华侨城2026年春",
+      "round": 2,
       "matchType": "友谊赛",
       "format": "八人制",
       "venue": "华侨城足球公园",
@@ -5684,7 +5685,7 @@ export const defaultDb: FullDatabase = {
       "id": "match-1779761560572",
       "date": "2026-05-25",
       "season": "华侨城2026年春",
-      "round": 2,
+      "round": 3,
       "matchType": "联赛",
       "format": "八人制",
       "venue": "华侨城足球公园",
@@ -5742,6 +5743,187 @@ export const defaultDb: FullDatabase = {
       "countForStats": true,
       "coach": "何星谕",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1780324140215",
+      "date": "2026-05-28",
+      "season": "华侨城2026年春",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "华侨城足球公园",
+      "opponent": "好友队",
+      "ourScore": 2,
+      "opponentScore": 10,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "车驰",
+        "胡勇",
+        "李单",
+        "李扬",
+        "刘盛",
+        "钱星宇",
+        "孙张力",
+        "肖欣",
+        "杨皓宇",
+        "杨涛",
+        "张龑瀚",
+        "张善博",
+        "赵建宇"
+      ],
+      "starters": [
+        "车驰",
+        "钱星宇",
+        "肖欣",
+        "杨皓宇",
+        "杨涛",
+        "张龑瀚",
+        "张善博",
+        "李扬"
+      ],
+      "goalkeepers": [],
+      "goalkeeperStats": [],
+      "goalsDetails": [
+        {
+          "scorer": "李扬",
+          "assist": "杨皓宇",
+          "isPenalty": false
+        },
+        {
+          "scorer": "杨涛",
+          "assist": "杨皓宇",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "车驰",
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1780324221965",
+      "date": "2026-06-01",
+      "season": "华侨城2026年春",
+      "round": 4,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "华侨城足球公园",
+      "opponent": "河马竞技",
+      "ourScore": 1,
+      "opponentScore": 3,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "曹晓霖",
+        "车驰",
+        "陈启晅",
+        "李单",
+        "钱星宇",
+        "秦坤",
+        "孙张力",
+        "唐涛",
+        "王薪炎",
+        "张龑瀚"
+      ],
+      "starters": [
+        "曹晓霖",
+        "车驰",
+        "李单",
+        "钱星宇",
+        "秦坤",
+        "孙张力",
+        "唐涛",
+        "王薪炎"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 3
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "唐涛",
+          "isPenalty": true
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [
+        "王薪炎"
+      ],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "何星谕",
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1780324565069",
+      "date": "2026-05-29",
+      "season": "第20届平顶山保健杯",
+      "round": 9,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "汽配联",
+      "ourScore": 0,
+      "opponentScore": 3,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "唐涛",
+        "蔡科",
+        "帅冰",
+        "姚国强",
+        "刘柯",
+        "曾亮",
+        "贺东",
+        "吴诗佳",
+        "刘晓秋",
+        "刘滔",
+        "周渝"
+      ],
+      "starters": [
+        "唐涛",
+        "蔡科",
+        "帅冰",
+        "姚国强",
+        "刘柯",
+        "曾亮",
+        "吴诗佳",
+        "刘滔"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 3
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [
+        "姚国强"
+      ],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "",
+      "teamId": "1764057295948"
     }
   ],
   "opponents": [
@@ -6043,6 +6225,11 @@ export const defaultDb: FullDatabase = {
     {
       "id": "mpj3fsip",
       "name": "无产阶级",
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "mpvavx3d",
+      "name": "好友队",
       "teamId": "team-default-001"
     }
   ],
@@ -6683,5 +6870,5 @@ export const defaultDb: FullDatabase = {
       "teamId": "1764057295948"
     }
   ],
-  "theme": "orange"
+  "theme": "lime"
 };
