@@ -5921,6 +5921,138 @@
       "countForStats": true,
       "coach": "",
       "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1780899357915",
+      "date": "2026-06-05",
+      "season": "第20届平顶山保健杯",
+      "round": 10,
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "奥体FC",
+      "ourScore": 3,
+      "opponentScore": 4,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "唐涛",
+        "吴诗佳",
+        "刘柯",
+        "张衡",
+        "赵光雄",
+        "蔡科",
+        "帅冰",
+        "姚国强",
+        "刘晓秋"
+      ],
+      "starters": [
+        "唐涛",
+        "吴诗佳",
+        "刘柯",
+        "张衡",
+        "赵光雄",
+        "蔡科",
+        "帅冰",
+        "姚国强"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 4
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "蔡科",
+          "assist": "帅冰",
+          "isPenalty": false
+        },
+        {
+          "scorer": "赵光雄",
+          "assist": "吴诗佳",
+          "isPenalty": false
+        },
+        {
+          "scorer": "赵光雄",
+          "assist": "姚国强",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "",
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1781056921761",
+      "date": "2026-06-09",
+      "season": "华侨城2026年春",
+      "round": 5,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "华侨城足球公园",
+      "opponent": "远达重庆快乐足球队",
+      "ourScore": 0,
+      "opponentScore": 4,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "曹晓霖",
+        "车驰",
+        "唐涛",
+        "杨涛",
+        "刘豪",
+        "雷熙",
+        "胡勇",
+        "李扬",
+        "陈春",
+        "郭佳东",
+        "钱星宇",
+        "孙张力",
+        "王薪炎",
+        "张龑瀚",
+        "刘杰"
+      ],
+      "starters": [
+        "车驰",
+        "唐涛",
+        "杨涛",
+        "刘豪",
+        "曹晓霖",
+        "雷熙",
+        "胡勇",
+        "李扬"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 4
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [
+        "雷熙"
+      ],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "何星谕",
+      "teamId": "team-default-001"
     }
   ],
   "opponents": [
@@ -6228,6 +6360,11 @@
       "id": "mpvavx3d",
       "name": "好友队",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "mq4teic5",
+      "name": "奥体FC",
+      "teamId": "1764057295948"
     }
   ],
   "seasons": [
@@ -6867,5 +7004,5 @@
       "teamId": "1764057295948"
     }
   ],
-  "theme": "lime"
+  "theme": "purple"
 }
