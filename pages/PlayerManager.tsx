@@ -975,31 +975,35 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
 
   const honors = useMemo(() => {
      if (playerStats.length === 0) return null;
-     const topScorer = [...playerStats].sort((a, b) => b.goals - a.goals || a.matchesPlayed - b.matchesPlayed)[0];
-     const topLeagueScorer = [...playerStats].sort((a, b) => b.leagueGoals - a.leagueGoals || a.leagueMatchesPlayed - b.leagueMatchesPlayed)[0];
-     const topAssist = [...playerStats].sort((a, b) => b.assists - a.assists || a.matchesPlayed - b.matchesPlayed)[0];
-     const topLeagueAssist = [...playerStats].sort((a, b) => b.leagueAssists - a.leagueAssists || a.leagueMatchesPlayed - b.leagueMatchesPlayed)[0];
+
+     const getTiedPlayers = (players: PlayerStats[], filterFn: (p: PlayerStats) => boolean, sortFn: (a: PlayerStats, b: PlayerStats) => number, isTiedFn: (p: PlayerStats, top: PlayerStats) => boolean) => {
+        const sorted = [...players].filter(filterFn).sort(sortFn);
+        if (sorted.length === 0) return [];
+        return sorted.filter(p => isTiedFn(p, sorted[0]));
+     };
+
+     const topScorers = getTiedPlayers(playerStats, p => p.goals > 0, (a, b) => b.goals - a.goals || a.matchesPlayed - b.matchesPlayed, (p, top) => p.goals === top.goals);
+     const topLeagueScorers = getTiedPlayers(playerStats, p => p.leagueGoals > 0, (a, b) => b.leagueGoals - a.leagueGoals || a.leagueMatchesPlayed - b.leagueMatchesPlayed, (p, top) => p.leagueGoals === top.leagueGoals);
+     
+     const topAssists = getTiedPlayers(playerStats, p => p.assists > 0, (a, b) => b.assists - a.assists || a.matchesPlayed - b.matchesPlayed, (p, top) => p.assists === top.assists);
+     const topLeagueAssists = getTiedPlayers(playerStats, p => p.leagueAssists > 0, (a, b) => b.leagueAssists - a.leagueAssists || a.leagueMatchesPlayed - b.leagueMatchesPlayed, (p, top) => p.leagueAssists === top.leagueAssists);
      
      // Correct GK sorting: lowest conceded/match, minimum 1 match
-     const topGK = [...playerStats]
-        .filter(p => p.matchesAsGKCounted > 0)
-        .sort((a, b) => (a.conceded / a.matchesAsGKCounted) - (b.conceded / b.matchesAsGKCounted) || b.matchesAsGKCounted - a.matchesAsGKCounted)[0];
-     const topLeagueGK = [...playerStats]
-        .filter(p => p.leagueMatchesAsGKCounted > 0)
-        .sort((a, b) => (a.leagueConceded / a.leagueMatchesAsGKCounted) - (b.leagueConceded / b.leagueMatchesAsGKCounted) || b.leagueMatchesAsGKCounted - a.matchesAsGKCounted)[0];
+     const topGKs = getTiedPlayers(playerStats, p => p.matchesAsGKCounted > 0, (a, b) => (a.conceded / a.matchesAsGKCounted) - (b.conceded / b.matchesAsGKCounted) || b.matchesAsGKCounted - a.matchesAsGKCounted, (p, top) => (p.conceded / p.matchesAsGKCounted) === (top.conceded / top.matchesAsGKCounted));
+     const topLeagueGKs = getTiedPlayers(playerStats, p => p.leagueMatchesAsGKCounted > 0, (a, b) => (a.leagueConceded / a.leagueMatchesAsGKCounted) - (b.leagueConceded / b.leagueMatchesAsGKCounted) || b.leagueMatchesAsGKCounted - a.leagueMatchesAsGKCounted, (p, top) => (p.leagueConceded / p.leagueMatchesAsGKCounted) === (top.leagueConceded / top.leagueMatchesAsGKCounted));
      
-     const unluckyGuy = [...playerStats].sort((a, b) => b.ownGoals - a.ownGoals)[0];
-     const badLuckPenalty = [...playerStats].sort((a,b) => b.penaltiesMissed - a.penaltiesMissed)[0];
+     const unluckyGuys = getTiedPlayers(playerStats, p => p.ownGoals > 0, (a, b) => b.ownGoals - a.ownGoals, (p, top) => p.ownGoals === top.ownGoals);
+     const badLuckPenalties = getTiedPlayers(playerStats, p => p.penaltiesMissed > 0, (a, b) => b.penaltiesMissed - a.penaltiesMissed, (p, top) => p.penaltiesMissed === top.penaltiesMissed);
      
      return { 
-       topScorer: topScorer?.goals > 0 ? topScorer : null, 
-       topLeagueScorer: topLeagueScorer?.leagueGoals > 0 ? topLeagueScorer : null, 
-       topAssist: topAssist?.assists > 0 ? topAssist : null, 
-       topLeagueAssist: topLeagueAssist?.leagueAssists > 0 ? topLeagueAssist : null, 
-       topGK: topGK || null, 
-       topLeagueGK: topLeagueGK || null, 
-       unluckyGuy: unluckyGuy?.ownGoals > 0 ? unluckyGuy : null,
-       badLuckPenalty: badLuckPenalty?.penaltiesMissed > 0 ? badLuckPenalty : null
+       topScorers: topScorers.length > 0 ? topScorers : null, 
+       topLeagueScorers: topLeagueScorers.length > 0 ? topLeagueScorers : null, 
+       topAssists: topAssists.length > 0 ? topAssists : null, 
+       topLeagueAssists: topLeagueAssists.length > 0 ? topLeagueAssists : null, 
+       topGKs: topGKs.length > 0 ? topGKs : null, 
+       topLeagueGKs: topLeagueGKs.length > 0 ? topLeagueGKs : null, 
+       unluckyGuys: unluckyGuys.length > 0 ? unluckyGuys : null,
+       badLuckPenalties: badLuckPenalties.length > 0 ? badLuckPenalties : null
      };
   }, [playerStats]);
 
@@ -1130,103 +1134,111 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
 
       {honors && (
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {(honors.topScorer || honors.topLeagueScorer) && (
+            {(honors.topScorers || honors.topLeagueScorers) && (
               <HonorSection title="射手榜">
-                 {honors.topScorer && (
+                 {honors.topScorers?.map((player, idx) => (
                    <PlayerHonorCard 
+                      key={`top-scorer-${player.name}-${idx}`}
                       title="最佳射手" 
-                      stat={`${honors.topScorer.goals} 进球`}
-                      player={honors.topScorer}
+                      stat={`${player.goals} 进球`}
+                      player={player}
                       icon={Trophy}
                       colorClass="bg-amber-400"
                       onPlayerClick={setViewingPlayer}
                    />
-                 )}
-                 {honors.topLeagueScorer && (
+                 ))}
+                 {honors.topLeagueScorers?.map((player, idx) => (
                    <PlayerHonorCard 
+                      key={`top-league-scorer-${player.name}-${idx}`}
                       title="联赛最佳射手" 
-                      stat={`${honors.topLeagueScorer.leagueGoals} 进球`}
-                      player={honors.topLeagueScorer}
+                      stat={`${player.leagueGoals} 进球`}
+                      player={player}
                       icon={Crown}
                       colorClass="bg-emerald-400"
                       onPlayerClick={setViewingPlayer}
                    />
-                 )}
+                 ))}
               </HonorSection>
             )}
             
-            {(honors.topAssist || honors.topLeagueAssist) && (
+            {(honors.topAssists || honors.topLeagueAssists) && (
               <HonorSection title="组织榜">
-                 {honors.topAssist && (
+                 {honors.topAssists?.map((player, idx) => (
                    <PlayerHonorCard 
+                      key={`top-assist-${player.name}-${idx}`}
                       title="助攻王" 
-                      stat={`${honors.topAssist.assists} 助攻`}
-                      player={honors.topAssist}
+                      stat={`${player.assists} 助攻`}
+                      player={player}
                       icon={Zap}
                       colorClass="bg-blue-400"
                       onPlayerClick={setViewingPlayer}
                    />
-                 )}
-                 {honors.topLeagueAssist && (
+                 ))}
+                 {honors.topLeagueAssists?.map((player, idx) => (
                    <PlayerHonorCard 
+                      key={`top-league-assist-${player.name}-${idx}`}
                       title="联赛助攻王" 
-                      stat={`${honors.topLeagueAssist.leagueAssists} 助攻`}
-                      player={honors.topLeagueAssist}
+                      stat={`${player.leagueAssists} 助攻`}
+                      player={player}
                       icon={Star}
                       colorClass="bg-sky-400"
                       onPlayerClick={setViewingPlayer}
                    />
-                 )}
+                 ))}
               </HonorSection>
             )}
 
-            {(honors.topGK || honors.topLeagueGK) && (
+            {(honors.topGKs || honors.topLeagueGKs) && (
               <HonorSection title="守门员">
-                 {honors.topGK && (
+                 {honors.topGKs?.map((player, idx) => (
                    <PlayerHonorCard 
+                      key={`top-gk-${player.name}-${idx}`}
                       title="最佳守门员" 
-                      stat={`场均失球 ${(honors.topGK.conceded / honors.topGK.matchesAsGKCounted).toFixed(2)}`}
-                      player={honors.topGK}
+                      stat={`场均失球 ${(player.conceded / player.matchesAsGKCounted).toFixed(2)}`}
+                      player={player}
                       icon={Shield}
                       colorClass="bg-indigo-400"
                       onPlayerClick={setViewingPlayer}
                    />
-                 )}
-                 {honors.topLeagueGK && (
+                 ))}
+                 {honors.topLeagueGKs?.map((player, idx) => (
                    <PlayerHonorCard 
+                      key={`top-league-gk-${player.name}-${idx}`}
                       title="联赛最佳守门员" 
-                      stat={`场均失球 ${(honors.topLeagueGK.leagueConceded / honors.topLeagueGK.leagueMatchesAsGKCounted).toFixed(2)}`}
-                      player={honors.topLeagueGK}
+                      stat={`场均失球 ${(player.leagueConceded / player.leagueMatchesAsGKCounted).toFixed(2)}`}
+                      player={player}
                       icon={Award}
                       colorClass="bg-cyan-400"
                       onPlayerClick={setViewingPlayer}
                    />
-                 )}
+                 ))}
               </HonorSection>
             )}
 
-            {(honors.badLuckPenalty || honors.unluckyGuy) && (
+            {(honors.badLuckPenalties || honors.unluckyGuys) && (
               <HonorSection title="倒霉蛋">
-                 {honors.badLuckPenalty && (
+                 {honors.badLuckPenalties?.map((player, idx) => (
                    <PlayerHonorCard 
+                      key={`bad-luck-penalty-${player.name}-${idx}`}
                       title="失点记录" 
-                      stat={`${honors.badLuckPenalty.penaltiesMissed} 次`}
-                      player={honors.badLuckPenalty}
+                      stat={`${player.penaltiesMissed} 次`}
+                      player={player}
                       icon={HeartCrack}
                       colorClass="bg-orange-400"
                       onPlayerClick={setViewingPlayer}
                    />
-                 )}
-                 {honors.unluckyGuy && (
+                 ))}
+                 {honors.unluckyGuys?.map((player, idx) => (
                    <PlayerHonorCard 
+                      key={`unlucky-guy-${player.name}-${idx}`}
                       title="乌龙记录" 
-                      stat={`${honors.unluckyGuy.ownGoals} 次`}
-                      player={honors.unluckyGuy}
+                      stat={`${player.ownGoals} 次`}
+                      player={player}
                       icon={Shirt}
                       colorClass="bg-rose-400"
                       onPlayerClick={setViewingPlayer}
                    />
-                 )}
+                 ))}
               </HonorSection>
             )}
          </div>
