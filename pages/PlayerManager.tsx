@@ -805,36 +805,51 @@ const PlayerDetailView: React.FC<{
 };
 
 // --- Player Honor Card Component ---
-const PlayerHonorCard = ({ title, stat, player, icon: Icon, colorClass, onPlayerClick }: { title: string, stat: string | number, player?: PlayerStats, icon: any, colorClass: string, onPlayerClick: (p: PlayerStats) => void }) => {
+const PlayerHonorCard = ({ title, stat, players, icon: Icon, colorClass, onPlayerClick }: { title: string, stat: string | number, players?: PlayerStats[], icon: any, colorClass: string, onPlayerClick: (p: PlayerStats) => void }) => {
    return (
       <div 
-        className="bg-white rounded-[1.5rem] p-4 border border-slate-100 shadow-sm flex items-center relative overflow-hidden group hover:shadow-md hover:border-slate-200 transition-all cursor-pointer select-none"
-        onClick={() => player && onPlayerClick(player)}
+        className="bg-white rounded-[1.5rem] p-4 border border-slate-100 shadow-sm flex flex-col relative overflow-hidden group hover:shadow-md hover:border-slate-200 transition-all select-none"
       >
-         <div className={`w-14 h-14 rounded-full ${colorClass} bg-opacity-20 flex items-center justify-center shrink-0 border border-white shadow-inner overflow-hidden z-10`}>
-            {player?.avatar ? (
-              <img src={player.avatar} className="w-full h-full object-cover shadow-sm" alt={player.name}/>
-            ) : (
-              <span className={`text-xl font-black ${colorClass.replace('bg-', 'text-')}`}>
-                 {player?.name.charAt(0) || '?'}
-              </span>
-            )}
-         </div>
-         <div className="ml-4 flex flex-col z-10 text-left min-w-0">
+         <div className="flex items-center justify-between z-10 w-full mb-3">
             <span className={`text-xs font-bold ${colorClass.replace('bg-', 'text-')}`}>{title}</span>
-            <div className="flex items-center gap-1.5 mt-0.5 pr-2">
-               <h4 className="text-lg font-black text-slate-800 leading-tight truncate">
-                  {player?.name || '暂无'}
-               </h4>
-               {player?.isBirthdayToday && <Cake className="w-4 h-4 text-rose-500 animate-pulse shrink-0" />}
+            <span className="text-xs font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full border border-slate-100">
+               {stat}
+            </span>
+         </div>
+         
+         <div className="flex items-center gap-3 z-10">
+            <div className="flex -space-x-3 shrink-0">
+               {players?.map((player, idx) => (
+                   <div key={idx} onClick={() => onPlayerClick(player)} className={`w-12 h-12 rounded-full ${colorClass} bg-opacity-20 flex items-center justify-center border-2 border-white shadow-sm overflow-hidden cursor-pointer hover:z-20 hover:scale-110 transition-transform relative`} style={{ zIndex: players.length - idx }}>
+                      {player.avatar ? (
+                        <img src={player.avatar} className="w-full h-full object-cover" alt={player.name}/>
+                      ) : (
+                        <span className={`text-lg font-black ${colorClass.replace('bg-', 'text-')}`}>
+                           {player.name.charAt(0) || '?'}
+                        </span>
+                      )}
+                   </div>
+               ))}
+               {(!players || players.length === 0) && (
+                   <div className={`w-12 h-12 rounded-full ${colorClass} bg-opacity-20 flex items-center justify-center border-2 border-white shadow-sm overflow-hidden`}>
+                      <span className={`text-lg font-black ${colorClass.replace('bg-', 'text-')}`}>?</span>
+                   </div>
+               )}
             </div>
-            <div className="flex items-center gap-1.5 mt-1">
-               <span className="text-xs font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full border border-slate-100">
-                  {stat}
-               </span>
+            
+            <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+               {players?.map((player, idx) => (
+                   <span key={idx} onClick={() => onPlayerClick(player)} className="text-sm font-black text-slate-800 leading-tight cursor-pointer hover:opacity-70 transition-opacity flex items-center gap-0.5">
+                      {player.name}
+                      {player.isBirthdayToday && <Cake className="w-3 h-3 text-rose-500 animate-pulse shrink-0 inline-block" />}
+                      {idx < players.length - 1 && <span className="text-slate-400 font-normal">,</span>}
+                   </span>
+               ))}
+               {(!players || players.length === 0) && <span className="text-sm font-black text-slate-800">暂无</span>}
             </div>
          </div>
-         <div className="absolute -right-4 -bottom-4 opacity-[0.04] text-slate-900 transform rotate-12 group-hover:scale-110 group-hover:rotate-0 transition-transform duration-500">
+         
+         <div className="absolute -right-4 -bottom-4 opacity-[0.04] text-slate-900 transform rotate-12 group-hover:scale-110 group-hover:rotate-0 transition-transform duration-500 pointer-events-none">
             <Icon className="w-24 h-24" />
          </div>
       </div>
@@ -1136,109 +1151,101 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {(honors.topScorers || honors.topLeagueScorers) && (
               <HonorSection title="射手榜">
-                 {honors.topScorers?.map((player, idx) => (
+                 {honors.topScorers && (
                    <PlayerHonorCard 
-                      key={`top-scorer-${player.name}-${idx}`}
                       title="最佳射手" 
-                      stat={`${player.goals} 进球`}
-                      player={player}
+                      stat={`${honors.topScorers[0].goals} 进球`}
+                      players={honors.topScorers}
                       icon={Trophy}
                       colorClass="bg-amber-400"
                       onPlayerClick={setViewingPlayer}
                    />
-                 ))}
-                 {honors.topLeagueScorers?.map((player, idx) => (
+                 )}
+                 {honors.topLeagueScorers && (
                    <PlayerHonorCard 
-                      key={`top-league-scorer-${player.name}-${idx}`}
                       title="联赛最佳射手" 
-                      stat={`${player.leagueGoals} 进球`}
-                      player={player}
+                      stat={`${honors.topLeagueScorers[0].leagueGoals} 进球`}
+                      players={honors.topLeagueScorers}
                       icon={Crown}
                       colorClass="bg-emerald-400"
                       onPlayerClick={setViewingPlayer}
                    />
-                 ))}
+                 )}
               </HonorSection>
             )}
             
             {(honors.topAssists || honors.topLeagueAssists) && (
               <HonorSection title="组织榜">
-                 {honors.topAssists?.map((player, idx) => (
+                 {honors.topAssists && (
                    <PlayerHonorCard 
-                      key={`top-assist-${player.name}-${idx}`}
                       title="助攻王" 
-                      stat={`${player.assists} 助攻`}
-                      player={player}
+                      stat={`${honors.topAssists[0].assists} 助攻`}
+                      players={honors.topAssists}
                       icon={Zap}
                       colorClass="bg-blue-400"
                       onPlayerClick={setViewingPlayer}
                    />
-                 ))}
-                 {honors.topLeagueAssists?.map((player, idx) => (
+                 )}
+                 {honors.topLeagueAssists && (
                    <PlayerHonorCard 
-                      key={`top-league-assist-${player.name}-${idx}`}
                       title="联赛助攻王" 
-                      stat={`${player.leagueAssists} 助攻`}
-                      player={player}
+                      stat={`${honors.topLeagueAssists[0].leagueAssists} 助攻`}
+                      players={honors.topLeagueAssists}
                       icon={Star}
                       colorClass="bg-sky-400"
                       onPlayerClick={setViewingPlayer}
                    />
-                 ))}
+                 )}
               </HonorSection>
             )}
 
             {(honors.topGKs || honors.topLeagueGKs) && (
               <HonorSection title="守门员">
-                 {honors.topGKs?.map((player, idx) => (
+                 {honors.topGKs && (
                    <PlayerHonorCard 
-                      key={`top-gk-${player.name}-${idx}`}
                       title="最佳守门员" 
-                      stat={`场均失球 ${(player.conceded / player.matchesAsGKCounted).toFixed(2)}`}
-                      player={player}
+                      stat={`场均失球 ${(honors.topGKs[0].conceded / honors.topGKs[0].matchesAsGKCounted).toFixed(2)}`}
+                      players={honors.topGKs}
                       icon={Shield}
                       colorClass="bg-indigo-400"
                       onPlayerClick={setViewingPlayer}
                    />
-                 ))}
-                 {honors.topLeagueGKs?.map((player, idx) => (
+                 )}
+                 {honors.topLeagueGKs && (
                    <PlayerHonorCard 
-                      key={`top-league-gk-${player.name}-${idx}`}
                       title="联赛最佳守门员" 
-                      stat={`场均失球 ${(player.leagueConceded / player.leagueMatchesAsGKCounted).toFixed(2)}`}
-                      player={player}
+                      stat={`场均失球 ${(honors.topLeagueGKs[0].leagueConceded / honors.topLeagueGKs[0].leagueMatchesAsGKCounted).toFixed(2)}`}
+                      players={honors.topLeagueGKs}
                       icon={Award}
                       colorClass="bg-cyan-400"
                       onPlayerClick={setViewingPlayer}
                    />
-                 ))}
+                 )}
               </HonorSection>
             )}
 
             {(honors.badLuckPenalties || honors.unluckyGuys) && (
               <HonorSection title="倒霉蛋">
-                 {honors.badLuckPenalties?.map((player, idx) => (
+                 {honors.badLuckPenalties && (
                    <PlayerHonorCard 
-                      key={`bad-luck-penalty-${player.name}-${idx}`}
                       title="失点记录" 
-                      stat={`${player.penaltiesMissed} 次`}
-                      player={player}
+                      stat={`${honors.badLuckPenalties[0].penaltiesMissed} 次`}
+                      players={honors.badLuckPenalties}
                       icon={HeartCrack}
                       colorClass="bg-orange-400"
                       onPlayerClick={setViewingPlayer}
                    />
-                 ))}
-                 {honors.unluckyGuys?.map((player, idx) => (
+                 )}
+                 {honors.unluckyGuys && (
                    <PlayerHonorCard 
-                      key={`unlucky-guy-${player.name}-${idx}`}
                       title="乌龙记录" 
-                      stat={`${player.ownGoals} 次`}
-                      player={player}
+                      stat={`${honors.unluckyGuys[0].ownGoals} 次`}
+                      players={honors.unluckyGuys}
                       icon={Shirt}
                       colorClass="bg-rose-400"
                       onPlayerClick={setViewingPlayer}
                    />
-                 ))}
+                 )}
               </HonorSection>
             )}
          </div>
