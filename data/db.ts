@@ -7521,6 +7521,122 @@ export const defaultDb: FullDatabase = {
       "countForStats": true,
       "coach": "",
       "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1786343082482",
+      "date": "2026-08-07",
+      "season": "第20届平顶山保健杯",
+      "round": 18,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "汽配联",
+      "ourScore": 4,
+      "opponentScore": 7,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "唐涛",
+        "张衡",
+        "陈睿清",
+        "帅冰",
+        "姚国强",
+        "刘柯",
+        "邹宇",
+        "吴诗佳",
+        "刘晓秋",
+        "赵光雄"
+      ],
+      "starters": [
+        "唐涛",
+        "陈睿清",
+        "帅冰",
+        "姚国强",
+        "刘柯",
+        "吴诗佳",
+        "刘晓秋",
+        "赵光雄"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 7
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "姚国强",
+          "assist": "刘柯",
+          "isPenalty": false
+        },
+        {
+          "scorer": "赵光雄",
+          "isPenalty": false
+        },
+        {
+          "scorer": "帅冰",
+          "isPenalty": false
+        },
+        {
+          "scorer": "邹宇",
+          "assist": "刘柯",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "",
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1786344329374",
+      "date": "2026-08-07",
+      "season": "华侨城2026年春",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "高科体育中心足球场",
+      "opponent": "KEVIN",
+      "ourScore": 5,
+      "opponentScore": 6,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "张龑瀚",
+        "车驰",
+        "李单",
+        "胡勇",
+        "杨皓宇",
+        "严蔗瑜",
+        "赵建宇"
+      ],
+      "starters": [
+        "张龑瀚",
+        "车驰",
+        "李单",
+        "胡勇",
+        "杨皓宇",
+        "严蔗瑜"
+      ],
+      "goalkeepers": [],
+      "goalkeeperStats": [],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "",
+      "teamId": "team-default-001"
     }
   ],
   "opponents": [
@@ -7863,6 +7979,11 @@ export const defaultDb: FullDatabase = {
       "id": "msfeiipm",
       "name": "MBA",
       "teamId": "1764057295948"
+    },
+    {
+      "id": "msmurvs8",
+      "name": "KEVIN",
+      "teamId": "team-default-001"
     }
   ],
   "seasons": [
@@ -8572,5 +8693,5 @@ export const defaultDb: FullDatabase = {
       "teamId": "1764057295948"
     }
   ],
-  "theme": "sky"
+  "theme": "violet"
 };
