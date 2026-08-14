@@ -7701,6 +7701,57 @@ export const defaultDb: FullDatabase = {
       "countForStats": true,
       "coach": "",
       "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1786666786476",
+      "date": "2026-08-12",
+      "season": "华侨城2026年春",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "渝北竞极线足球运动中心",
+      "opponent": "老同学",
+      "ourScore": 8,
+      "opponentScore": 7,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "张龑瀚",
+        "朱峰",
+        "陈启晅",
+        "赵建宇",
+        "杨涛",
+        "秦坤",
+        "孙张力",
+        "杨皓宇"
+      ],
+      "starters": [
+        "张龑瀚",
+        "朱峰",
+        "陈启晅",
+        "赵建宇",
+        "杨涛"
+      ],
+      "goalkeepers": [
+        "张龑瀚"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "张龑瀚",
+          "conceded": 7
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [
+        "孙张力"
+      ],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "张龑瀚",
+      "teamId": "team-default-001"
     }
   ],
   "opponents": [
@@ -8053,6 +8104,11 @@ export const defaultDb: FullDatabase = {
       "id": "mspcz72v",
       "name": "重庆天地",
       "teamId": "1764057295948"
+    },
+    {
+      "id": "mss770d6",
+      "name": "老同学",
+      "teamId": "team-default-001"
     }
   ],
   "seasons": [
@@ -8178,6 +8234,12 @@ export const defaultDb: FullDatabase = {
       "name": "大足体育中心",
       "teamId": "team-default-001",
       "sortOrder": 10
+    },
+    {
+      "id": "ven-1786666588593",
+      "name": "渝北竞极线足球运动中心",
+      "teamId": "team-default-001",
+      "sortOrder": 11
     }
   ],
   "players": [
