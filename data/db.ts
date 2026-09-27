@@ -8694,6 +8694,164 @@ export const defaultDb: FullDatabase = {
       "countForStats": true,
       "coach": "车驰",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1790124721604",
+      "date": "2026-09-22",
+      "season": "国际社区2026南超秋季联赛",
+      "round": 3,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "洋人街国际社区足球公园",
+      "opponent": "腾龙启鼎律师FC",
+      "ourScore": 3,
+      "opponentScore": 3,
+      "location": "Home",
+      "result": "Draw",
+      "squad": [
+        "曹晓霖",
+        "车驰",
+        "陈启晅",
+        "郭佳东",
+        "李单",
+        "李扬",
+        "刘豪",
+        "钱星宇",
+        "秦坤",
+        "孙张力",
+        "唐涛",
+        "王薪焱",
+        "张善博",
+        "赵建宇",
+        "刘杰",
+        "高廉举"
+      ],
+      "starters": [
+        "曹晓霖",
+        "李单",
+        "李扬",
+        "刘豪",
+        "秦坤",
+        "唐涛",
+        "王薪焱",
+        "刘杰"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 3
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "刘豪",
+          "assist": "陈启晅",
+          "isPenalty": false
+        },
+        {
+          "scorer": "刘豪",
+          "assist": "陈启晅",
+          "isPenalty": false
+        },
+        {
+          "scorer": "李单",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "车驰",
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1790479009159",
+      "date": "2026-09-23",
+      "season": "国际社区2026南超秋季联赛",
+      "matchType": "队内赛",
+      "format": "八人制",
+      "venue": "天才足球场鳄鱼馆",
+      "opponent": "队内对抗",
+      "ourScore": 0,
+      "opponentScore": 0,
+      "location": "Home",
+      "result": "Draw",
+      "squad": [
+        "胡勇",
+        "朱峰",
+        "车驰",
+        "孙张力",
+        "陈春",
+        "陈启晅",
+        "李单",
+        "王薪焱",
+        "钱星宇",
+        "冉贤涛",
+        "杨航",
+        "李锦洪",
+        "张龑瀚",
+        "杨涛"
+      ],
+      "starters": [],
+      "goalkeepers": [],
+      "goalkeeperStats": [],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": false,
+      "coach": "",
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1790479121151",
+      "date": "2026-09-23",
+      "season": "雾都球友2026秋季联赛",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "驰聘足球中心",
+      "opponent": "友声和鸣",
+      "ourScore": 5,
+      "opponentScore": 6,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "唐涛",
+        "帅冰"
+      ],
+      "starters": [
+        "唐涛",
+        "帅冰"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 6
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "",
+      "teamId": "team-1788229994801"
     }
   ],
   "opponents": [
@@ -9160,6 +9318,11 @@ export const defaultDb: FullDatabase = {
     {
       "id": "mu598w9t",
       "name": "CNR",
+      "teamId": "team-1788229994801"
+    },
+    {
+      "id": "muj90pjz",
+      "name": "友声和鸣",
       "teamId": "team-1788229994801"
     }
   ],
