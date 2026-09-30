@@ -58,6 +58,17 @@
       "linkedPlayerNames": {
         "1764057295948": "刘柯"
       }
+    },
+    {
+      "id": "1790733654112",
+      "username": "fuzong",
+      "password": "fuzong",
+      "name": "老傅",
+      "role": "player",
+      "teamIds": [
+        "team-1788229994801"
+      ],
+      "linkedPlayerNames": {}
     }
   ],
   "matches": [
@@ -8849,6 +8860,94 @@
       "countForStats": true,
       "coach": "",
       "teamId": "team-1788229994801"
+    },
+    {
+      "id": "match-1790733379857",
+      "date": "2026-09-29",
+      "season": "国际社区2026南超秋季联赛",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "华侨城足球公园",
+      "opponent": "城城",
+      "ourScore": 0,
+      "opponentScore": 6,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "车驰",
+        "朱峰",
+        "陈启晅",
+        "孙张力",
+        "李锦洪",
+        "张龑瀚",
+        "李扬",
+        "高廉举",
+        "陈春",
+        "刘豪",
+        "曹晓霖",
+        "赵建宇",
+        "杨航",
+        "冉贤涛"
+      ],
+      "starters": [
+        "孙张力",
+        "曹晓霖",
+        "陈春",
+        "李锦洪",
+        "李扬",
+        "朱峰"
+      ],
+      "goalkeepers": [],
+      "goalkeeperStats": [],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "车驰",
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1790733440411",
+      "date": "2026-09-29",
+      "season": "雾都球友2026秋季联赛",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "驰聘足球中心",
+      "opponent": "八一村",
+      "ourScore": 3,
+      "opponentScore": 6,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "唐涛",
+        "黎长远"
+      ],
+      "starters": [
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 6
+        }
+      ],
+      "goalsDetails": [],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "",
+      "teamId": "team-1788229994801"
     }
   ],
   "opponents": [
@@ -9321,6 +9420,11 @@
       "id": "muj90pjz",
       "name": "友声和鸣",
       "teamId": "team-1788229994801"
+    },
+    {
+      "id": "mung9ovg",
+      "name": "城城",
+      "teamId": "team-default-001"
     }
   ],
   "seasons": [
@@ -10118,5 +10222,5 @@
       "teamId": "team-1788229994801"
     }
   ],
-  "theme": "rose"
+  "theme": "amber"
 }
