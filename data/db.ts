@@ -8951,6 +8951,147 @@ export const defaultDb: FullDatabase = {
       "countForStats": true,
       "coach": "",
       "teamId": "team-1788229994801"
+    },
+    {
+      "id": "match-1791508672042",
+      "date": "2026-10-06",
+      "season": "第20届平顶山保健杯",
+      "matchType": "友谊赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "蛋蛋联",
+      "ourScore": 6,
+      "opponentScore": 1,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "唐涛",
+        "帅冰",
+        "姚国强",
+        "刘柯",
+        "贺东",
+        "刘滔",
+        "余佳泽"
+      ],
+      "starters": [
+        "唐涛",
+        "帅冰",
+        "姚国强",
+        "刘柯",
+        "贺东",
+        "刘滔",
+        "余佳泽"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 1
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "帅冰",
+          "assist": "贺东",
+          "isPenalty": false
+        },
+        {
+          "scorer": "贺东",
+          "isPenalty": false
+        },
+        {
+          "scorer": "姚国强",
+          "isPenalty": false
+        },
+        {
+          "scorer": "姚国强",
+          "isPenalty": false
+        },
+        {
+          "scorer": "姚国强",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [
+        "帅冰"
+      ],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "",
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "match-1791770705136",
+      "date": "2026-10-10",
+      "season": "国际社区2026南超秋季联赛",
+      "round": 4,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "洋人街国际社区足球公园",
+      "opponent": "圆芯火锅馆",
+      "ourScore": 1,
+      "opponentScore": 3,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "曹晓霖",
+        "车驰",
+        "陈启晅",
+        "胡勇",
+        "李单",
+        "刘豪",
+        "钱星宇",
+        "孙张力",
+        "唐涛",
+        "王薪焱",
+        "朱峰",
+        "赵建宇",
+        "刘盛",
+        "刘杰",
+        "高廉举"
+      ],
+      "starters": [
+        "曹晓霖",
+        "车驰",
+        "唐涛",
+        "钱星宇",
+        "王薪焱",
+        "李单",
+        "刘豪",
+        "刘杰"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 3
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "胡勇",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [
+        "钱星宇"
+      ],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "notes": "",
+      "countForStats": true,
+      "coach": "车驰",
+      "teamId": "team-default-001"
     }
   ],
   "opponents": [
@@ -9428,6 +9569,61 @@ export const defaultDb: FullDatabase = {
       "id": "mung9ovg",
       "name": "城城",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "mv09x2xr",
+      "name": "蛋蛋联",
+      "teamId": "1764057295948"
+    },
+    {
+      "id": "mv0ad046",
+      "name": "谦和",
+      "teamId": "team-1788229994801"
+    },
+    {
+      "id": "mv0ad3e6",
+      "name": "融智227",
+      "teamId": "team-1788229994801"
+    },
+    {
+      "id": "mv0ad6dq",
+      "name": "得一品牌",
+      "teamId": "team-1788229994801"
+    },
+    {
+      "id": "mv0ad986",
+      "name": "CQ利友",
+      "teamId": "team-1788229994801"
+    },
+    {
+      "id": "mv0adllq",
+      "name": "海联老友",
+      "teamId": "team-1788229994801"
+    },
+    {
+      "id": "mv0adq5b",
+      "name": "沃特尔",
+      "teamId": "team-1788229994801"
+    },
+    {
+      "id": "mv0advon",
+      "name": "年白老友",
+      "teamId": "team-1788229994801"
+    },
+    {
+      "id": "mv0adycn",
+      "name": "恒重机械",
+      "teamId": "team-1788229994801"
+    },
+    {
+      "id": "mv0ae2fr",
+      "name": "九龙苍狼",
+      "teamId": "team-1788229994801"
+    },
+    {
+      "id": "mv0ae64v",
+      "name": "中豪律师事务所",
+      "teamId": "team-1788229994801"
     }
   ],
   "seasons": [
@@ -10225,5 +10421,5 @@ export const defaultDb: FullDatabase = {
       "teamId": "team-1788229994801"
     }
   ],
-  "theme": "amber"
+  "theme": "teal"
 };
