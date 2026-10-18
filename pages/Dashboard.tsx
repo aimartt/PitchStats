@@ -5,7 +5,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, 
   PieChart, Pie, Cell 
 } from 'recharts';
-import { Activity, Calendar, UserCog, Shield, Trophy, Medal } from 'lucide-react';
+import { Activity, Calendar, UserCog, Shield, Trophy, Medal, ChevronDown } from 'lucide-react';
 
 const RESULT_COLORS = {
   Win: '#10B981', // Emerald 500
@@ -234,17 +234,18 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
              </div>
            )}
            <div className="flex justify-end">
-              <div className="relative w-full md:w-48">
-                <Calendar className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <div className="relative w-full sm:w-48 md:w-[230px] min-w-[156px]">
+                <Calendar className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                 <select 
                   value={selectedSeason}
                   onChange={(e) => setSelectedSeason(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm appearance-none outline-none focus:ring-2 shadow-sm cursor-pointer"
+                  className="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-lg text-sm appearance-none outline-none focus:ring-2 shadow-sm cursor-pointer truncate"
                   style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
                 >
                    <option value="all">所有赛季统计</option>
                    {seasons.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
                 </select>
+                <ChevronDown className="w-4 h-4 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
               </div>
            </div>
            <div className="flex flex-col items-center justify-center h-64 bg-slate-50 rounded-xl border border-dashed border-slate-200 text-slate-400">
@@ -290,17 +291,18 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
          <div className="flex items-center gap-2">
             <h2 className="text-lg font-bold text-slate-800">球队数据看板</h2>
          </div>
-         <div className="relative w-full md:w-48">
-            <Calendar className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+         <div className="relative w-full sm:w-48 md:w-[230px] min-w-[156px]">
+            <Calendar className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
             <select 
               value={selectedSeason}
               onChange={(e) => setSelectedSeason(e.target.value)}
-              className="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-lg text-sm appearance-none outline-none focus:ring-2 shadow-sm cursor-pointer hover:border-slate-300 transition-colors"
+              className="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-lg text-sm appearance-none outline-none focus:ring-2 shadow-sm cursor-pointer hover:border-slate-300 transition-colors truncate"
               style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
             >
                <option value="all">所有赛季统计</option>
                {seasons.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
             </select>
+            <ChevronDown className="w-4 h-4 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
          </div>
       </div>
 

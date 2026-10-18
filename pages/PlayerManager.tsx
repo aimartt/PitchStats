@@ -33,6 +33,8 @@ interface PlayerStats {
   matchesCounted: number; 
   matchesAsGK: number;
   matchesAsGKCounted: number; 
+  mvps: number; // 单场MVP次数
+  penaltySaves: number; // 扑出点球数
   
   // League Stats
   leagueGoals: number;
@@ -49,6 +51,8 @@ interface PlayerStats {
   leagueMatchesCounted: number; 
   leagueMatchesAsGK: number;
   leagueMatchesAsGKCounted: number;
+  leagueMvps: number; // 联赛单场MVP次数
+  leaguePenaltySaves: number; // 联赛扑出点球数
 
   // Averages
   goalsAvg: string;
@@ -168,7 +172,9 @@ const PlayerDetailView: React.FC<{
        conceded: 0, leagueConceded: 0,
        matchesAsGK: 0, matchesAsGKCounted: 0,
        leagueMatchesAsGK: 0, leagueMatchesAsGKCounted: 0,
-       ownGoals: 0, leagueOwnGoals: 0
+       ownGoals: 0, leagueOwnGoals: 0,
+       mvps: 0, leagueMvps: 0,
+       penaltySaves: 0, leaguePenaltySaves: 0
     };
 
     matches.forEach(m => {
@@ -205,6 +211,17 @@ const PlayerDetailView: React.FC<{
        if (m.yellowCards?.includes(player.name)) { s.yellowCards++; if (isLeague) s.leagueYellowCards++; }
        if (m.redCards?.includes(player.name)) { s.redCards++; if (isLeague) s.leagueRedCards++; }
        
+       if (m.mvp === player.name) {
+          s.mvps++;
+          if (isLeague) s.leagueMvps++;
+       }
+       m.penaltySaves?.forEach(ps => {
+          if (ps.player === player.name) {
+             s.penaltySaves += ps.count;
+             if (isLeague) s.leaguePenaltySaves += ps.count;
+          }
+       });
+
        const specificGkStat = m.goalkeeperStats?.find(gk => gk.player === player.name);
        const isInLegacyGkList = m.goalkeepers?.includes(player.name);
        if (specificGkStat) {
@@ -262,7 +279,9 @@ const PlayerDetailView: React.FC<{
             conceded: 0, leagueConceded: 0,
             matchesAsGK: 0, matchesAsGKCounted: 0,
             leagueMatchesAsGK: 0, leagueMatchesAsGKCounted: 0,
-            ownGoals: 0, leagueOwnGoals: 0
+            ownGoals: 0, leagueOwnGoals: 0,
+            mvps: 0, leagueMvps: 0,
+            penaltySaves: 0, leaguePenaltySaves: 0
           };
        }
        const s = stats[m.season];
@@ -295,6 +314,17 @@ const PlayerDetailView: React.FC<{
        if (m.ownGoals?.includes(player.name)) { s.ownGoals++; if (isLeague) s.leagueOwnGoals++; }
        if (m.yellowCards?.includes(player.name)) { s.yellowCards++; if (isLeague) s.leagueYellowCards++; }
        if (m.redCards?.includes(player.name)) { s.redCards++; if (isLeague) s.leagueRedCards++; }
+       
+       if (m.mvp === player.name) {
+          s.mvps++;
+          if (isLeague) s.leagueMvps++;
+       }
+       m.penaltySaves?.forEach(ps => {
+          if (ps.player === player.name) {
+             s.penaltySaves += ps.count;
+             if (isLeague) s.leaguePenaltySaves += ps.count;
+          }
+       });
        
        const specificGkStat = m.goalkeeperStats?.find(gk => gk.player === player.name);
        const isInLegacyGkList = m.goalkeepers?.includes(player.name);
@@ -392,7 +422,7 @@ const PlayerDetailView: React.FC<{
       </div>
 
       {/* 生涯核心数据面板 - 始终计算全量数据 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 px-2">
          {/* 1. 出场专栏 */}
          <div className="bg-white p-5 rounded-3xl md:rounded-[2rem] border border-slate-100 shadow-sm flex flex-col relative overflow-hidden group">
             <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500 mb-4 shadow-inner">
@@ -443,9 +473,12 @@ const PlayerDetailView: React.FC<{
             <div className="text-2xl font-black text-slate-800 flex items-baseline gap-1">
                {lifetimeStats.conceded} <span className="text-sm text-slate-300 font-bold">/</span> <span className="text-slate-500">{lifetimeStats.leagueConceded}</span>
             </div>
-            <div className="flex items-center gap-2 mt-2">
+            <div className="flex flex-wrap items-center gap-1.5 mt-2">
                <div className="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-100/50">
                   生涯场均失球: {formatAvg(lifetimeStats.conceded, lifetimeStats.matchesAsGKCounted)}
+               </div>
+               <div className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-100/50">
+                  扑点: {lifetimeStats.penaltySaves}
                </div>
             </div>
             <div className="absolute -right-2 -bottom-2 opacity-[0.03] transform rotate-12 group-hover:rotate-0 transition-transform">
@@ -472,6 +505,25 @@ const PlayerDetailView: React.FC<{
             </div>
             <div className="absolute -right-2 -bottom-2 opacity-[0.03] transform rotate-12 group-hover:rotate-0 transition-transform">
                <HeartCrack className="w-20 h-20" />
+            </div>
+         </div>
+
+         {/* 5. 荣誉专栏 (单场MVP) */}
+         <div className="bg-white p-5 rounded-3xl md:rounded-[2rem] border border-slate-100 shadow-sm flex flex-col relative overflow-hidden group">
+            <div className="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-500 mb-4 shadow-inner">
+               <Crown className="w-6 h-6" />
+            </div>
+            <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">单场MVP (总/联赛)</div>
+            <div className="text-2xl font-black text-slate-800 flex items-baseline gap-1">
+               <span className="text-amber-500">{lifetimeStats.mvps}</span> <span className="text-sm text-slate-300 font-bold">/</span> <span className="text-amber-600">{lifetimeStats.leagueMvps}</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-1.5 mt-2">
+               <div className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100/50">
+                  单场最佳球员
+               </div>
+            </div>
+            <div className="absolute -right-2 -bottom-2 opacity-[0.03] transform rotate-12 group-hover:rotate-0 transition-transform">
+               <Crown className="w-20 h-20" />
             </div>
          </div>
       </div>
@@ -636,6 +688,8 @@ const PlayerDetailView: React.FC<{
                                             const hasYellow = match.yellowCards?.includes(player.name);
                                             const hasRed = match.redCards?.includes(player.name);
                                             const gkStat = match.goalkeeperStats?.find(g => g.player === player.name);
+                                            const isMvp = match.mvp === player.name;
+                                            const matchPenaltySaves = match.penaltySaves?.find(ps => ps.player === player.name)?.count || 0;
 
                                             return (
                                                <div 
@@ -667,6 +721,8 @@ const PlayerDetailView: React.FC<{
                                                   
                                                   <div className="flex flex-col items-end gap-1.5 shrink-0 pl-4 border-l border-slate-100 min-w-[70px]">
                                                      <div className="flex flex-wrap justify-end gap-1.5">
+                                                        {isMvp && <span className="text-[10px] font-black text-amber-500" title="单场MVP">🏆 MVP</span>}
+                                                        {matchPenaltySaves > 0 && <span className="text-[10px] font-black text-indigo-600" title="守门员扑点">🧤 扑点x{matchPenaltySaves}</span>}
                                                         {gkStat && <span className="text-[10px] font-black text-indigo-600" title="守门员失球">🧤 -{gkStat.conceded}</span>}
                                                         {matchGoals > 0 && <span className="text-[10px] font-black text-emerald-600" title="进球">⚽ x{matchGoals}{matchPenaltyGoals > 0 ? `(${matchPenaltyGoals}P)` : ''}</span>}
                                                         {matchAssists > 0 && <span className="text-[10px] font-black text-blue-600" title="助攻">👟 x{matchAssists}</span>}
@@ -768,6 +824,8 @@ const PlayerDetailView: React.FC<{
                                  const isStarter = match.starters?.includes(player.name);
                                  const mGoals = match.goalsDetails?.filter(g => g.scorer === player.name).length || 0;
                                  const mAssists = match.goalsDetails?.filter(g => g.assist === player.name).length || 0;
+                                 const isMvp = match.mvp === player.name;
+                                 const mPenaltySaves = match.penaltySaves?.find(ps => ps.player === player.name)?.count || 0;
 
                                  return (
                                     <div 
@@ -784,7 +842,9 @@ const PlayerDetailView: React.FC<{
                                        </div>
                                        <div className="flex items-center gap-3 pl-4 shrink-0 border-l border-slate-50">
                                           <div className="text-[10px] font-mono font-black text-slate-800">{match.ourScore}:{match.opponentScore}</div>
-                                          <div className="flex gap-1">
+                                          <div className="flex flex-wrap gap-1 justify-end">
+                                             {isMvp && <span className="text-[9px] font-black text-amber-500" title="单场MVP">🏆 MVP</span>}
+                                             {mPenaltySaves > 0 && <span className="text-[9px] font-black text-indigo-600" title="守门员扑点">🧤 扑点x{mPenaltySaves}</span>}
                                              {mGoals > 0 && <span className="text-[9px] font-black text-emerald-500">⚽{mGoals}</span>}
                                              {mAssists > 0 && <span className="text-[9px] font-black text-blue-500">👟{mAssists}</span>}
                                           </div>
@@ -857,12 +917,12 @@ const PlayerHonorCard = ({ title, stat, players, icon: Icon, colorClass, onPlaye
 };
 
 const HonorSection: React.FC<{ title: string; children?: React.ReactNode }> = ({ title, children }) => (
-   <div className="space-y-3 bg-slate-50/50 p-4 rounded-[2rem] border border-slate-100">
+   <div className="w-full space-y-3 bg-slate-50/50 p-4 rounded-[2rem] border border-slate-100 flex flex-col justify-between">
       <div className="flex items-center gap-2 pl-2">
          <div className="w-1.5 h-4 rounded-full" style={{ backgroundColor: 'var(--primary)' }}></div>
          <h3 className="text-sm font-black text-slate-500 uppercase tracking-widest">{title}</h3>
       </div>
-      <div className="space-y-3">
+      <div className="space-y-3 flex-1 flex flex-col justify-start">
          {children}
       </div>
    </div>
@@ -909,9 +969,11 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
         goals: 0, penaltyGoals: 0, assists: 0, penaltiesWon: 0, starts: 0, ownGoals: 0, yellowCards: 0, redCards: 0, penaltiesMissed: 0, conceded: 0, 
         matchesPlayed: 0, matchesCounted: 0, 
         matchesAsGK: 0, matchesAsGKCounted: 0,
+        mvps: 0, penaltySaves: 0,
         leagueGoals: 0, leaguePenaltyGoals: 0, leagueAssists: 0, leaguePenaltiesWon: 0, leagueStarts: 0, leagueOwnGoals: 0, leagueYellowCards: 0, leagueRedCards: 0, leaguePenaltiesMissed: 0, leagueConceded: 0, 
         leagueMatchesPlayed: 0, leagueMatchesCounted: 0, 
         leagueMatchesAsGK: 0, leagueMatchesAsGKCounted: 0,
+        leagueMvps: 0, leaguePenaltySaves: 0,
         goalsAvg: '-', leagueGoalsAvg: '-', assistsAvg: '-', leagueAssistsAvg: '-', concededAvg: '-', leagueConcededAvg: '-', disciplineScore: 0
       };
     });
@@ -948,6 +1010,19 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
       m.yellowCards?.forEach(p => { if (statsMap[p]) { statsMap[p].yellowCards++; if (isLeague) statsMap[p].leagueYellowCards++; } });
       m.redCards?.forEach(p => { if (statsMap[p]) { statsMap[p].redCards++; if (isLeague) statsMap[p].leagueRedCards++; } });
       m.ownGoals?.forEach(p => { if (statsMap[p]) { statsMap[p].ownGoals++; if (isLeague) statsMap[p].leagueOwnGoals++; } });
+      
+      if (m.mvp && statsMap[m.mvp]) {
+        statsMap[m.mvp].mvps++;
+        if (isLeague) statsMap[m.mvp].leagueMvps++;
+      }
+
+      m.penaltySaves?.forEach(ps => {
+        if (statsMap[ps.player]) {
+          statsMap[ps.player].penaltySaves += ps.count;
+          if (isLeague) statsMap[ps.player].leaguePenaltySaves += ps.count;
+        }
+      });
+
       players.forEach(p => {
          const specificGkStat = m.goalkeeperStats?.find(gk => gk.player === p.name);
          const isInLegacyGkList = m.goalkeepers?.includes(p.name);
@@ -997,6 +1072,9 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
         return sorted.filter(p => isTiedFn(p, sorted[0]));
      };
 
+     const topMvps = getTiedPlayers(playerStats, p => p.mvps > 0, (a, b) => b.mvps - a.mvps || a.matchesPlayed - b.matchesPlayed, (p, top) => p.mvps === top.mvps);
+     const topLeagueMvps = getTiedPlayers(playerStats, p => p.leagueMvps > 0, (a, b) => b.leagueMvps - a.leagueMvps || a.leagueMatchesPlayed - b.leagueMatchesPlayed, (p, top) => p.leagueMvps === top.leagueMvps);
+
      const topScorers = getTiedPlayers(playerStats, p => p.goals > 0, (a, b) => b.goals - a.goals || a.matchesPlayed - b.matchesPlayed, (p, top) => p.goals === top.goals);
      const topLeagueScorers = getTiedPlayers(playerStats, p => p.leagueGoals > 0, (a, b) => b.leagueGoals - a.leagueGoals || a.leagueMatchesPlayed - b.leagueMatchesPlayed, (p, top) => p.leagueGoals === top.leagueGoals);
      
@@ -1011,6 +1089,8 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
      const badLuckPenalties = getTiedPlayers(playerStats, p => p.penaltiesMissed > 0, (a, b) => b.penaltiesMissed - a.penaltiesMissed, (p, top) => p.penaltiesMissed === top.penaltiesMissed);
      
      return { 
+       topMvps: topMvps.length > 0 ? topMvps : null,
+       topLeagueMvps: topLeagueMvps.length > 0 ? topLeagueMvps : null,
        topScorers: topScorers.length > 0 ? topScorers : null, 
        topLeagueScorers: topLeagueScorers.length > 0 ? topLeagueScorers : null, 
        topAssists: topAssists.length > 0 ? topAssists : null, 
@@ -1021,6 +1101,23 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
        badLuckPenalties: badLuckPenalties.length > 0 ? badLuckPenalties : null
      };
   }, [playerStats]);
+
+  const activeHonorsCount = useMemo(() => {
+    if (!honors) return 0;
+    return [
+      honors.topMvps || honors.topLeagueMvps,
+      honors.topScorers || honors.topLeagueScorers,
+      honors.topAssists || honors.topLeagueAssists,
+      honors.topGKs || honors.topLeagueGKs,
+      honors.badLuckPenalties || honors.unluckyGuys,
+    ].filter(Boolean).length;
+  }, [honors]);
+
+  const honorsGridClass = useMemo(() => {
+    if (activeHonorsCount >= 5) return 'lg:grid-cols-5';
+    if (activeHonorsCount === 4) return 'lg:grid-cols-4';
+    return 'lg:grid-cols-3'; // 若列数不足3项，则至少保证33.3%的3列均分，不再继续自适应撑大
+  }, [activeHonorsCount]);
 
   const filteredStats = useMemo(() => {
     let sorted = [...playerStats];
@@ -1135,11 +1232,13 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                  添加球员
               </button>
            )}
-           <div className="relative"><Filter className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-              <select value={selectedSeason} onChange={(e) => setSelectedSeason(e.target.value)} className="pl-9 pr-8 py-2 border border-slate-300 rounded-lg text-sm appearance-none bg-white shadow-sm">
+           <div className="relative w-full sm:w-44 md:w-48 lg:w-[230px] min-w-[156px]">
+              <Filter className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+              <select value={selectedSeason} onChange={(e) => setSelectedSeason(e.target.value)} className="w-full pl-9 pr-8 py-2 border border-slate-300 rounded-lg text-sm appearance-none bg-white shadow-sm outline-none focus:ring-2 truncate cursor-pointer" style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}>
                   <option value="all">所有赛季</option>
                   {seasons.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
+              <ChevronDown className="w-4 h-4 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
            </div>
            <div className="relative"><Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input type="text" placeholder="搜索球员..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-9 pr-4 py-2 border border-slate-300 rounded-lg text-sm shadow-sm" />
@@ -1147,8 +1246,33 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
         </div>
       </div>
 
-      {honors && (
-         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {honors && activeHonorsCount > 0 && (
+         <div className={`grid grid-cols-1 sm:grid-cols-2 ${honorsGridClass} gap-4 md:gap-6`}>
+            {(honors.topMvps || honors.topLeagueMvps) && (
+              <HonorSection title="MVP榜">
+                 {honors.topMvps && (
+                   <PlayerHonorCard 
+                      title="单场MVP最多" 
+                      stat={`${honors.topMvps[0].mvps} 次`}
+                      players={honors.topMvps}
+                      icon={Trophy}
+                      colorClass="bg-amber-400"
+                      onPlayerClick={setViewingPlayer}
+                   />
+                 )}
+                 {honors.topLeagueMvps && (
+                   <PlayerHonorCard 
+                      title="联赛单场MVP" 
+                      stat={`${honors.topLeagueMvps[0].leagueMvps} 次`}
+                      players={honors.topLeagueMvps}
+                      icon={Crown}
+                      colorClass="bg-yellow-400"
+                      onPlayerClick={setViewingPlayer}
+                   />
+                 )}
+              </HonorSection>
+            )}
+
             {(honors.topScorers || honors.topLeagueScorers) && (
               <HonorSection title="射手榜">
                  {honors.topScorers && (

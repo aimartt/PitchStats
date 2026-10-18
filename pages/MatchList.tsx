@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { MatchRecord, AppRoute, UserRole, MatchListProps } from '../types';
-import { Plus, Calendar, MapPin, Search, Filter, Pencil, Trophy, Flag, Handshake, Shirt, ChevronRight, Crown, Users } from 'lucide-react';
+import { Plus, Calendar, MapPin, Search, Filter, Pencil, Trophy, Flag, Handshake, Shirt, ChevronRight, ChevronDown, Crown, Users, Shield } from 'lucide-react';
 
 const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserRole, seasons, onEditMatch, onViewMatch, currentTeamName, currentTeamLogo }) => {
   const [selectedSeason, setSelectedSeason] = useState<string>('all');
@@ -109,17 +109,18 @@ const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserR
               style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
             />
          </div>
-         <div className="w-full md:w-40 relative">
-            <Filter className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+         <div className="w-full sm:w-44 md:w-48 lg:w-[230px] min-w-[156px] relative">
+            <Filter className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
             <select 
               value={selectedSeason}
               onChange={(e) => setSelectedSeason(e.target.value)}
-              className="w-full pl-9 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm appearance-none outline-none focus:ring-2 cursor-pointer"
+              className="w-full pl-9 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm appearance-none outline-none focus:ring-2 cursor-pointer truncate"
               style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
             >
                <option value="all">所有赛季</option>
                {seasons.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
+            <ChevronDown className="w-4 h-4 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
          </div>
          <div className="w-full md:w-40 relative">
             <Filter className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -249,8 +250,20 @@ const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserR
                         )}
 
                         {/* Cards & Events */}
-                        {((match.redCards?.length || 0) + (match.yellowCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.penaltiesMissed?.length || 0) + (match.ownGoals?.length || 0)) > 0 && (
+                        {(((match.redCards?.length || 0) + (match.yellowCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.penaltiesMissed?.length || 0) + (match.ownGoals?.length || 0) + (match.penaltySaves?.length || 0)) > 0 || !!match.mvp) && (
                            <div className="flex flex-wrap gap-1.5 md:gap-2 text-[10px] md:text-xs">
+                              {match.mvp && (
+                                 <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-bold" title="单场MVP">
+                                    <Trophy className="w-3 h-3 text-amber-500 fill-amber-400 mr-1" />
+                                    MVP: {match.mvp}
+                                 </span>
+                              )}
+                              {match.penaltySaves?.map((ps, i) => (
+                                 <span key={`ps-${i}`} className="inline-flex items-center px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-100 font-bold" title="扑点">
+                                    <Shield className="w-3 h-3 text-indigo-500 mr-1" />
+                                    {ps.player}(扑点{ps.count})
+                                 </span>
+                              ))}
                               {match.redCards?.map((p, i) => (
                                  <span key={`rc-${i}`} className="inline-flex items-center px-1.5 py-0.5 rounded bg-red-50 text-red-700 border border-red-100 font-bold" title="红牌">
                                     <div className="w-1.5 h-2.5 md:w-2 md:h-3 bg-red-500 mr-1 rounded-[1px] border border-black/10"></div>

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { DataItem, MatchRecord, GoalDetail, PlayerProfile, OpponentTeam, DataInputProps, GoalkeeperStat } from '../types';
-import { Plus, CheckCircle, AlertCircle, Save, ChevronDown, Users, Hash, MapPin, Flag, X, ArrowLeft, Shirt, Check, Search, Info, Shield, Crosshair, UserCog } from 'lucide-react';
+import { DataItem, MatchRecord, GoalDetail, PlayerProfile, OpponentTeam, DataInputProps, GoalkeeperStat, PenaltySaveStat } from '../types';
+import { Plus, CheckCircle, AlertCircle, Save, ChevronDown, Users, Hash, MapPin, Flag, X, ArrowLeft, Shirt, Check, Search, Info, Shield, Crosshair, UserCog, Trophy } from 'lucide-react';
 
 const MATCH_TYPES = ['联赛', '友谊赛', '杯赛', '队内赛'];
 const MATCH_FORMATS = ['八人制', '五人制', '十一人制'];
@@ -124,6 +124,8 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
   const [penaltiesWon, setPenaltiesWon] = useState<string[]>([]);
   const [penaltiesMissed, setPenaltiesMissed] = useState<string[]>([]);
   const [ownGoals, setOwnGoals] = useState<string[]>([]);
+  const [mvp, setMvp] = useState<string>('');
+  const [penaltySaves, setPenaltySaves] = useState<PenaltySaveStat[]>([]);
 
   useEffect(() => {
     if (initialData) {
@@ -166,6 +168,8 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
       setPenaltiesWon(initialData.penaltiesWon || []);
       setPenaltiesMissed(initialData.penaltiesMissed || []);
       setOwnGoals(initialData.ownGoals || []);
+      setMvp(initialData.mvp || '');
+      setPenaltySaves(initialData.penaltySaves || []);
     } else {
       // Only set default season/venue if they are currently empty
       setFormData(prev => {
@@ -184,6 +188,8 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
       setStarters(starters.filter(p => p !== playerName));
       // Also remove from GK if present
       setGkStats(gkStats.filter(g => g.player !== playerName));
+      if (mvp === playerName) setMvp('');
+      setPenaltySaves(penaltySaves.filter(ps => ps.player !== playerName));
     } else {
       setSelectedSquad([...selectedSquad, playerName]);
     }
@@ -234,11 +240,32 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
 
   const removeGoalkeeper = (player: string) => {
      setGkStats(gkStats.filter(g => g.player !== player));
+     setPenaltySaves(penaltySaves.filter(ps => ps.player !== player));
   };
 
   const updateGkConceded = (player: string, val: string) => {
-     const num = parseInt(val) || 0;
+     const num = Math.max(0, parseInt(val) || 0);
      setGkStats(gkStats.map(g => g.player === player ? { ...g, conceded: num } : g));
+  };
+
+  // Goalkeeper Penalty Saves Handlers
+  const updateGkPenaltySaves = (player: string, val: string) => {
+     const count = Math.max(0, parseInt(val) || 0);
+     if (count > 0) {
+        const existing = penaltySaves.find(ps => ps.player === player);
+        if (existing) {
+           setPenaltySaves(penaltySaves.map(ps => ps.player === player ? { ...ps, count } : ps));
+        } else {
+           setPenaltySaves([...penaltySaves, { player, count }]);
+        }
+     } else {
+        setPenaltySaves(penaltySaves.filter(ps => ps.player !== player));
+     }
+  };
+
+  const getPenaltySaveCount = (player: string): number => {
+     const found = penaltySaves.find(ps => ps.player === player);
+     return found ? found.count : 0;
   };
 
   useEffect(() => {
@@ -325,6 +352,8 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
       penaltiesWon: penaltiesWon,
       penaltiesMissed: penaltiesMissed,
       ownGoals: ownGoals,
+      mvp: mvp || undefined,
+      penaltySaves: penaltySaves.filter(p => p.count > 0),
       notes: formData.notes,
       countForStats: formData.countForStats,
       coach: formData.coach
@@ -606,6 +635,15 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
                          <span className="text-[8px] bg-slate-200 text-slate-500 px-1 rounded absolute top-1 left-1">已离队</span>
                        )}
 
+                       {isSelected && mvp === player.name && (
+                         <div 
+                           className="absolute -top-1.5 -left-1.5 w-5 h-5 rounded-full bg-amber-400 border-2 border-white shadow-sm flex items-center justify-center text-slate-900 z-10"
+                           title="本场单场MVP"
+                         >
+                           <Trophy className="w-3 h-3 fill-current text-slate-900" />
+                         </div>
+                       )}
+
                        {isSelected && (
                          <div 
                            onClick={(e) => toggleStarter(e, player.name)}
@@ -625,48 +663,104 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
                 </div>
              )}
              
-             {/* Goalkeeper Selection & Stats */}
+             {/* MVP Selection */}
+             {selectedSquad.length > 0 && (
+                <div className="mt-6 p-4 bg-amber-50/60 rounded-xl border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                   <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600 shrink-0 shadow-sm border border-amber-200">
+                         <Trophy className="w-4 h-4 fill-amber-400" />
+                      </div>
+                      <div>
+                         <label className="text-xs font-bold text-amber-900 uppercase tracking-wider block flex items-center gap-1.5">
+                            单场 MVP
+                            {mvp && <span className="bg-amber-500 text-white text-[10px] px-1.5 py-0.2 rounded font-black">已评选</span>}
+                         </label>
+                         <span className="text-[11px] text-amber-700/80">从本场参赛阵容中选出最佳球员</span>
+                      </div>
+                   </div>
+                   <div className="flex items-center gap-2 w-full sm:w-auto">
+                      <div className="w-full sm:w-60">
+                         <SearchablePlayerSelect 
+                            options={selectedSquad}
+                            value={mvp}
+                            onChange={(val) => setMvp(val)}
+                            placeholder="从参赛阵容选择MVP..."
+                            icon={Trophy}
+                         />
+                      </div>
+                      {mvp && (
+                         <button 
+                            type="button"
+                            onClick={() => setMvp('')} 
+                            className="text-amber-500 hover:text-amber-800 p-2 rounded-lg hover:bg-amber-100 transition-colors shrink-0"
+                            title="取消MVP评选"
+                         >
+                            <X className="w-4 h-4" />
+                         </button>
+                      )}
+                   </div>
+                </div>
+             )}
+
+             {/* Goalkeeper Selection & Stats (Conceded & Penalty Saves) */}
              {selectedSquad.length > 0 && (
                 <div className="mt-8 p-4 bg-slate-50 rounded-xl border border-slate-200">
-                    <div className="flex justify-between items-center mb-3">
+                    <div className="flex flex-wrap justify-between items-center mb-3 gap-2">
                       <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center">
-                          <Shield className="w-4 h-4 mr-1.5" />
-                          本场守门员 & 失球统计
+                          <Shield className="w-4 h-4 mr-1.5 text-indigo-600" />
+                          本场守门员 · 失球 & 扑点统计
                       </label>
                       <span className={`text-xs font-bold ${currentGkConcededTotal === targetConceded ? 'text-emerald-600' : 'text-amber-500'}`}>
-                         已分配: {currentGkConcededTotal} / 总失球: {targetConceded}
+                         已分配失球: {currentGkConcededTotal} / 总失球: {targetConceded}
                       </span>
                     </div>
 
                     <div className="space-y-2 mb-3">
-                         {gkStats.map((gk, idx) => (
-                             <div key={idx} className="flex items-center justify-between bg-white border border-slate-300 rounded-lg px-3 py-2 shadow-sm">
-                                <div className="flex items-center gap-3">
-                                   <div className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-600">
-                                      {playerList.find(p => p.name === gk.player)?.number || '#'}
+                         {gkStats.map((gk, idx) => {
+                             const pSaves = getPenaltySaveCount(gk.player);
+                             return (
+                                <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between bg-white border border-slate-300 rounded-lg p-3 shadow-sm gap-2">
+                                   <div className="flex items-center gap-3">
+                                      <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-600 shrink-0">
+                                         {playerList.find(p => p.name === gk.player)?.number || '#'}
+                                      </div>
+                                      <span className="text-sm font-bold text-slate-800">{gk.player}</span>
                                    </div>
-                                   <span className="text-sm font-bold text-slate-800">{gk.player}</span>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                   <div className="flex items-center gap-2 text-sm">
-                                      <span className="text-slate-400 text-xs">失球:</span>
-                                      <input 
-                                         type="number" 
-                                         min="0"
-                                         value={gk.conceded}
-                                         onChange={(e) => updateGkConceded(gk.player, e.target.value)}
-                                         className="w-12 text-center border border-slate-200 rounded p-1 text-slate-800 font-bold outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-200"
-                                      />
+                                   <div className="flex items-center gap-4 self-end sm:self-center">
+                                      <div className="flex items-center gap-1.5 text-sm">
+                                         <span className="text-slate-400 text-xs">失球:</span>
+                                         <input 
+                                            type="number" 
+                                            min="0"
+                                            value={gk.conceded}
+                                            onChange={(e) => updateGkConceded(gk.player, e.target.value)}
+                                            className="w-12 text-center border border-slate-200 rounded p-1 text-slate-800 font-bold outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-200"
+                                         />
+                                      </div>
+                                      <div className="flex items-center gap-1.5 text-sm">
+                                         <span className="text-indigo-600 text-xs font-bold">扑点:</span>
+                                         <input 
+                                            type="number" 
+                                            min="0"
+                                            value={pSaves === 0 ? '' : pSaves}
+                                            placeholder="0"
+                                            onChange={(e) => updateGkPenaltySaves(gk.player, e.target.value)}
+                                            className="w-12 text-center border border-indigo-200 bg-indigo-50/40 rounded p-1 text-indigo-900 font-bold outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200"
+                                            title="本场扑出点球数"
+                                         />
+                                         <span className="text-slate-400 text-xs">个</span>
+                                      </div>
+                                      <button 
+                                         onClick={() => removeGoalkeeper(gk.player)}
+                                         className="text-slate-400 hover:text-red-500 p-1 transition-colors ml-1"
+                                         title="移除守门员"
+                                      >
+                                         <X className="w-4 h-4" />
+                                      </button>
                                    </div>
-                                   <button 
-                                      onClick={() => removeGoalkeeper(gk.player)}
-                                      className="text-slate-400 hover:text-red-500 ml-2"
-                                   >
-                                      <X className="w-4 h-4" />
-                                   </button>
                                 </div>
-                             </div>
-                         ))}
+                             );
+                         })}
                     </div>
                     
                     <div className="mt-3 max-w-xs">
@@ -859,6 +953,8 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
                     placeholder="+ 添加乌龙"
                  />
               </div>
+
+
             </div>
 
             <div className="mt-8">

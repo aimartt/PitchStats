@@ -23,7 +23,7 @@ const MatchDetail: React.FC<MatchDetailProps> = ({ match, onBack, currentTeamNam
 
   const isInternalMatch = match.matchType === '队内赛';
 
-  const hasDisciplineEvents = ((match.yellowCards?.length || 0) + (match.redCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.penaltiesMissed?.length || 0) + (match.ownGoals?.length || 0)) > 0;
+  const hasDisciplineEvents = ((match.yellowCards?.length || 0) + (match.redCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.penaltiesMissed?.length || 0) + (match.ownGoals?.length || 0) + (match.penaltySaves?.length || 0)) > 0;
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 animate-fade-in pb-20">
@@ -132,6 +132,16 @@ const MatchDetail: React.FC<MatchDetailProps> = ({ match, onBack, currentTeamNam
                    </div>
                  </>
               )}
+
+              {match.mvp && (
+                 <>
+                   <div className="hidden md:block w-1 h-1 bg-slate-300 rounded-full"></div>
+                   <div className="flex items-center text-xs md:text-sm text-amber-800 font-bold bg-amber-50 px-2.5 py-0.5 md:px-3 md:py-1 rounded-full border border-amber-200">
+                      <Trophy className="w-3.5 h-3.5 mr-1.5 text-amber-500 fill-amber-400" />
+                      单场 MVP: {match.mvp}
+                   </div>
+                 </>
+              )}
            </div>
         </div>
       </div>
@@ -186,13 +196,19 @@ const MatchDetail: React.FC<MatchDetailProps> = ({ match, onBack, currentTeamNam
                         const isGK = match.goalkeeperStats 
                                      ? match.goalkeeperStats.some(g => g.player === player)
                                      : match.goalkeepers?.includes(player);
+                        const isMvp = match.mvp === player;
                         
                         // Find stats if GK
                         const gkStat = match.goalkeeperStats?.find(g => g.player === player);
 
                         return (
-                           <span key={idx} className={`px-2 py-1 md:px-3 md:py-1.5 rounded-lg text-xs md:text-sm font-medium border flex items-center gap-1 ${isStarter ? 'bg-indigo-50 border-indigo-100 text-indigo-700' : 'bg-slate-50 border-slate-100 text-slate-600'}`}>
+                           <span key={idx} className={`px-2 py-1 md:px-3 md:py-1.5 rounded-lg text-xs md:text-sm font-medium border flex items-center gap-1 ${isMvp ? 'bg-amber-50 border-amber-300 text-amber-900 shadow-sm' : isStarter ? 'bg-indigo-50 border-indigo-100 text-indigo-700' : 'bg-slate-50 border-slate-100 text-slate-600'}`}>
                               {player}
+                              {isMvp && (
+                                 <span className="text-[10px] bg-amber-400 text-slate-900 px-1 md:px-1.5 rounded ml-0.5 font-black flex items-center gap-0.5" title="本场MVP">
+                                    ★ MVP
+                                 </span>
+                              )}
                               {isGK && (
                                  <span className="text-[10px] bg-slate-800 text-white px-1 md:px-1.5 rounded ml-0.5 flex items-center gap-0.5" title={gkStat ? `失球: ${gkStat.conceded}` : '守门员'}>
                                     GK
@@ -216,6 +232,12 @@ const MatchDetail: React.FC<MatchDetailProps> = ({ match, onBack, currentTeamNam
                       关键事件
                    </h3>
                    <div className="flex flex-wrap gap-2">
+                       {match.penaltySaves?.map((ps, i) => (
+                           <div key={`ps-${i}`} className="flex items-center bg-indigo-50 text-indigo-800 px-2 py-1 rounded-md text-xs font-bold border border-indigo-200">
+                               <Shield className="w-3 h-3 text-indigo-600 mr-1.5" />
+                               {ps.player} (扑点 x{ps.count})
+                           </div>
+                       ))}
                        {match.yellowCards?.map((p, i) => (
                            <div key={`yc-${i}`} className="flex items-center bg-yellow-50 text-yellow-800 px-2 py-1 rounded-md text-xs font-bold border border-yellow-200">
                                <div className="w-1.5 h-2.5 bg-yellow-400 mr-1.5 rounded-[1px] border border-black/10"></div>

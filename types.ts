@@ -49,6 +49,12 @@ export interface GoalkeeperStat {
   conceded: number;
 }
 
+// New Interface for penalty saves
+export interface PenaltySaveStat {
+  player: string;
+  count: number;
+}
+
 export interface MatchRecord extends DataItem {
   id?: string; // Unique ID for editing
   teamId?: string; // Data Isolation
@@ -80,6 +86,8 @@ export interface MatchRecord extends DataItem {
   penaltiesWon?: string[]; // List of player names (who won the penalty)
   penaltiesMissed?: string[]; // New: List of player names (who missed the penalty)
   ownGoals?: string[];    // List of player names (who scored own goal)
+  mvp?: string;           // New: 单场 MVP 球员姓名
+  penaltySaves?: PenaltySaveStat[]; // New: 扑点球员及扑出点球数
   
   notes?: string;
   
