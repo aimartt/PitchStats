@@ -205,6 +205,11 @@ const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserR
                                `${match.ourScore} : ${match.opponentScore}`
                             )}
                          </div>
+                         {match.hasPenaltyShootout && match.penaltyShootoutOurScore !== undefined && match.penaltyShootoutOpponentScore !== undefined && (
+                            <span className="text-[9px] md:text-[10px] font-bold font-mono tracking-tight px-1.5 py-0.5 bg-black/25 rounded mt-1 whitespace-nowrap">
+                               点球 {match.penaltyShootoutOurScore}:{match.penaltyShootoutOpponentScore}
+                            </span>
+                         )}
                          {match.matchType !== '队内赛' && (
                            <span className="text-[8px] md:text-[10px] font-bold uppercase mt-0.5 md:mt-1 opacity-90 tracking-widest border-t border-white/20 pt-0.5 w-full text-center">
                               {getResultLabel(match.result)}
@@ -225,7 +230,8 @@ const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserR
 
                   {/* Combined Stats: Goals, Assists, Cards, Events */}
                   {( (match.goalsDetails && match.goalsDetails.length > 0) || 
-                     (((match.redCards?.length || 0) + (match.yellowCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.penaltiesMissed?.length || 0) + (match.ownGoals?.length || 0)) > 0)
+                     (((match.redCards?.length || 0) + (match.yellowCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.penaltiesMissed?.length || 0) + (match.ownGoals?.length || 0)) > 0) ||
+                     !!match.hasPenaltyShootout
                    ) && (
                      <div className="mt-3 pt-2 border-t border-dashed border-slate-200/60 space-y-1.5">
                         {/* Goals */}
@@ -250,8 +256,13 @@ const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserR
                         )}
 
                         {/* Cards & Events */}
-                        {(((match.redCards?.length || 0) + (match.yellowCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.penaltiesMissed?.length || 0) + (match.ownGoals?.length || 0) + (match.penaltySaves?.length || 0)) > 0 || !!match.mvp) && (
+                        {(((match.redCards?.length || 0) + (match.yellowCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.penaltiesMissed?.length || 0) + (match.ownGoals?.length || 0) + (match.penaltySaves?.length || 0)) > 0 || !!match.mvp || !!match.hasPenaltyShootout) && (
                            <div className="flex flex-wrap gap-1.5 md:gap-2 text-[10px] md:text-xs">
+                              {match.hasPenaltyShootout && match.penaltyShootoutOurScore !== undefined && match.penaltyShootoutOpponentScore !== undefined && (
+                                 <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200 font-bold" title="点球大战">
+                                    点球 {match.penaltyShootoutOurScore}:{match.penaltyShootoutOpponentScore}
+                                 </span>
+                              )}
                               {match.mvp && (
                                  <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-bold" title="单场MVP">
                                     <Trophy className="w-3 h-3 text-amber-500 fill-amber-400 mr-1" />

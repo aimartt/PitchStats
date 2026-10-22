@@ -665,6 +665,11 @@ const OpponentManager: React.FC<OpponentManagerProps> = ({ opponents, matches, o
                                           <div className="text-base md:text-xl font-black font-mono leading-none tracking-tight">
                                               {match.ourScore} : {match.opponentScore}
                                           </div>
+                                          {match.hasPenaltyShootout && match.penaltyShootoutOurScore !== undefined && match.penaltyShootoutOpponentScore !== undefined && (
+                                              <span className="text-[8px] font-bold font-mono tracking-tight px-1 py-0.5 bg-black/25 rounded mt-0.5 whitespace-nowrap">
+                                                  点球 {match.penaltyShootoutOurScore}:{match.penaltyShootoutOpponentScore}
+                                              </span>
+                                          )}
                                           <span className="text-[8px] font-bold uppercase mt-0.5 opacity-90 tracking-widest border-t border-white/20 pt-0.5 w-full text-center">
                                               {getResultLabel(match.result)}
                                           </span>

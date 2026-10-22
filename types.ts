@@ -27,6 +27,12 @@ export interface TeamAsset {
 
 export type PlayerStatus = '正常' | '伤停' | '已离队';
 
+export interface InjuryRecord {
+  id?: string;
+  info: string;    // 伤病信息
+  period: string;  // 伤病时间段
+}
+
 export interface PlayerProfile {
   name: string;
   number?: string;
@@ -35,6 +41,9 @@ export interface PlayerProfile {
   teamId?: string; // Data Isolation
   birthday?: string; // New: Birthday for age calculation (YYYY-MM-DD)
   status?: PlayerStatus; // New: Player status
+  injuryInfo?: string;   // 伤病信息
+  injuryPeriod?: string; // 伤病时间段
+  injuries?: InjuryRecord[]; // 伤病记录列表
 }
 
 export interface GoalDetail {
@@ -88,6 +97,11 @@ export interface MatchRecord extends DataItem {
   ownGoals?: string[];    // List of player names (who scored own goal)
   mvp?: string;           // New: 单场 MVP 球员姓名
   penaltySaves?: PenaltySaveStat[]; // New: 扑点球员及扑出点球数
+  
+  // 点球大战 (仅作为结果记录，不计入胜平负及球队进失球统计)
+  hasPenaltyShootout?: boolean;
+  penaltyShootoutOurScore?: number;
+  penaltyShootoutOpponentScore?: number;
   
   notes?: string;
   

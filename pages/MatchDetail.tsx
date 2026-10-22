@@ -23,7 +23,7 @@ const MatchDetail: React.FC<MatchDetailProps> = ({ match, onBack, currentTeamNam
 
   const isInternalMatch = match.matchType === '队内赛';
 
-  const hasDisciplineEvents = ((match.yellowCards?.length || 0) + (match.redCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.penaltiesMissed?.length || 0) + (match.ownGoals?.length || 0) + (match.penaltySaves?.length || 0)) > 0;
+  const hasDisciplineEvents = ((match.yellowCards?.length || 0) + (match.redCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.penaltiesMissed?.length || 0) + (match.ownGoals?.length || 0) + (match.penaltySaves?.length || 0)) > 0 || !!(match.hasPenaltyShootout && match.penaltyShootoutOurScore !== undefined && match.penaltyShootoutOpponentScore !== undefined);
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 animate-fade-in pb-20">
@@ -85,6 +85,14 @@ const MatchDetail: React.FC<MatchDetailProps> = ({ match, onBack, currentTeamNam
                      <div className="text-4xl md:text-6xl font-black text-slate-900 font-mono tracking-tighter leading-none mb-2 drop-shadow-sm">
                         {match.ourScore}:{match.opponentScore}
                      </div>
+                     {match.hasPenaltyShootout && match.penaltyShootoutOurScore !== undefined && match.penaltyShootoutOpponentScore !== undefined && (
+                        <div className="mb-2">
+                           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 md:px-3 md:py-1 rounded-md md:rounded-lg bg-purple-50 text-purple-800 border border-purple-200 text-xs md:text-sm font-bold font-mono shadow-xs">
+                              <span className="font-sans font-bold text-purple-600 text-[10px] md:text-xs">点球</span>
+                              <span className="text-xs md:text-sm font-black">{match.penaltyShootoutOurScore} : {match.penaltyShootoutOpponentScore}</span>
+                           </span>
+                        </div>
+                     )}
                      <div className={`px-3 py-0.5 md:px-4 md:py-1 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest shadow-sm ${getResultColor(match.result)}`}>
                         {getResultLabel(match.result)}
                      </div>
@@ -232,6 +240,12 @@ const MatchDetail: React.FC<MatchDetailProps> = ({ match, onBack, currentTeamNam
                       关键事件
                    </h3>
                    <div className="flex flex-wrap gap-2">
+                       {match.hasPenaltyShootout && match.penaltyShootoutOurScore !== undefined && match.penaltyShootoutOpponentScore !== undefined && (
+                           <div className="flex items-center bg-purple-50 text-purple-800 px-2.5 py-1 rounded-md text-xs font-bold border border-purple-200">
+                               <span className="w-2 h-2 rounded-full bg-purple-500 mr-1.5"></span>
+                               点球大战 ({match.penaltyShootoutOurScore}:{match.penaltyShootoutOpponentScore})
+                           </div>
+                       )}
                        {match.penaltySaves?.map((ps, i) => (
                            <div key={`ps-${i}`} className="flex items-center bg-indigo-50 text-indigo-800 px-2 py-1 rounded-md text-xs font-bold border border-indigo-200">
                                <Shield className="w-3 h-3 text-indigo-600 mr-1.5" />

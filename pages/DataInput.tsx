@@ -127,6 +127,11 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
   const [mvp, setMvp] = useState<string>('');
   const [penaltySaves, setPenaltySaves] = useState<PenaltySaveStat[]>([]);
 
+  // Penalty Shootout State
+  const [hasPenaltyShootout, setHasPenaltyShootout] = useState<boolean>(false);
+  const [penaltyShootoutOurScore, setPenaltyShootoutOurScore] = useState<string>('');
+  const [penaltyShootoutOpponentScore, setPenaltyShootoutOpponentScore] = useState<string>('');
+
   useEffect(() => {
     if (initialData) {
       setFormData({
@@ -170,7 +175,13 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
       setOwnGoals(initialData.ownGoals || []);
       setMvp(initialData.mvp || '');
       setPenaltySaves(initialData.penaltySaves || []);
+      setHasPenaltyShootout(!!initialData.hasPenaltyShootout);
+      setPenaltyShootoutOurScore(initialData.penaltyShootoutOurScore !== undefined && initialData.penaltyShootoutOurScore !== null ? initialData.penaltyShootoutOurScore.toString() : '');
+      setPenaltyShootoutOpponentScore(initialData.penaltyShootoutOpponentScore !== undefined && initialData.penaltyShootoutOpponentScore !== null ? initialData.penaltyShootoutOpponentScore.toString() : '');
     } else {
+      setHasPenaltyShootout(false);
+      setPenaltyShootoutOurScore('');
+      setPenaltyShootoutOpponentScore('');
       // Only set default season/venue if they are currently empty
       setFormData(prev => {
         const updates: any = {};
@@ -321,6 +332,11 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
       return;
     }
 
+    if (hasPenaltyShootout && (penaltyShootoutOurScore === '' || penaltyShootoutOpponentScore === '')) {
+      setError("若开启了点球大战，请填写完整的点球比分。");
+      return;
+    }
+
     // Process Scores
     const our = formData.ourScore ? parseInt(formData.ourScore) : 0;
     const opp = formData.opponentScore ? parseInt(formData.opponentScore) : 0;
@@ -354,6 +370,9 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
       ownGoals: ownGoals,
       mvp: mvp || undefined,
       penaltySaves: penaltySaves.filter(p => p.count > 0),
+      hasPenaltyShootout: hasPenaltyShootout,
+      penaltyShootoutOurScore: hasPenaltyShootout && penaltyShootoutOurScore !== '' ? parseInt(penaltyShootoutOurScore) : undefined,
+      penaltyShootoutOpponentScore: hasPenaltyShootout && penaltyShootoutOpponentScore !== '' ? parseInt(penaltyShootoutOpponentScore) : undefined,
       notes: formData.notes,
       countForStats: formData.countForStats,
       coach: formData.coach
@@ -543,6 +562,65 @@ const DataInput: React.FC<DataInputProps> = ({ onDataLoaded, opponentList, seaso
                       className="w-24 h-20 text-center text-5xl font-black text-slate-800 bg-slate-50 border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-red-100 focus:border-red-500 outline-none transition-all mx-auto block"
                     />
                   </div>
+                </div>
+
+                {/* 点球大战 (点球决胜) */}
+                <div className="mt-6 pt-5 border-t border-dashed border-slate-200">
+                  <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
+                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                      <input 
+                        type="checkbox"
+                        checked={hasPenaltyShootout}
+                        onChange={(e) => {
+                          setHasPenaltyShootout(e.target.checked);
+                          if (!e.target.checked) {
+                            setPenaltyShootoutOurScore('');
+                            setPenaltyShootoutOpponentScore('');
+                          }
+                        }}
+                        className="w-4 h-4 rounded text-purple-600 focus:ring-purple-500 border-slate-300 cursor-pointer"
+                      />
+                      <span className="text-sm font-bold text-slate-700 flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+                        点球大战 (点球决胜)
+                      </span>
+                    </label>
+                    <span className="text-xs text-slate-400">
+                      * 仅作结果记录，常规比分、胜平负及球队进失球统计不受影响
+                    </span>
+                  </div>
+
+                  {hasPenaltyShootout && (
+                    <div className="bg-purple-50/50 p-4 rounded-xl border border-purple-100 flex flex-col sm:flex-row items-center justify-center gap-4">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-slate-600 min-w-[70px] text-right">我方点球</span>
+                        <input 
+                          type="number"
+                          min="0"
+                          placeholder="0"
+                          value={penaltyShootoutOurScore}
+                          onChange={(e) => setPenaltyShootoutOurScore(e.target.value)}
+                          className="w-20 h-12 text-center text-2xl font-black text-purple-900 bg-white border border-purple-200 rounded-lg focus:ring-2 focus:ring-purple-400 outline-none shadow-xs"
+                        />
+                      </div>
+
+                      <div className="text-xs font-black text-purple-400 font-mono px-2 tracking-widest">
+                        PK 比分
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <input 
+                          type="number"
+                          min="0"
+                          placeholder="0"
+                          value={penaltyShootoutOpponentScore}
+                          onChange={(e) => setPenaltyShootoutOpponentScore(e.target.value)}
+                          className="w-20 h-12 text-center text-2xl font-black text-purple-900 bg-white border border-purple-200 rounded-lg focus:ring-2 focus:ring-purple-400 outline-none shadow-xs"
+                        />
+                        <span className="text-xs font-bold text-slate-600 min-w-[70px]">对手点球</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
           </div>
 

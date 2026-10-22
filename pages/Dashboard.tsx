@@ -50,6 +50,9 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
       newItem.coach = item.coach; 
       // Keep matchType with correct casing for display if needed, though lowercased key exists
       newItem.originalMatchType = item.matchType;
+      newItem.hasPenaltyShootout = item.hasPenaltyShootout;
+      newItem.penaltyShootoutOurScore = item.penaltyShootoutOurScore;
+      newItem.penaltyShootoutOpponentScore = item.penaltyShootoutOpponentScore;
       return newItem;
     });
 
@@ -122,7 +125,10 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
         type: matchType,
         进球: gf,
         失球: ga,
-        result
+        result,
+        hasPenaltyShootout: match.hasPenaltyShootout,
+        penaltyShootoutOurScore: match.penaltyShootoutOurScore,
+        penaltyShootoutOpponentScore: match.penaltyShootoutOpponentScore
       });
 
       // Coach Stats Calculation
@@ -629,7 +635,12 @@ const Dashboard: React.FC<DashboardProps> = ({ data, seasons }) => {
                       </span>
                     </td>
                     <td className="px-3 md:px-6 py-3 text-center font-mono font-bold text-slate-700 whitespace-nowrap">
-                      {match.进球} : {match.失球}
+                      <div>{match.进球} : {match.失球}</div>
+                      {match.hasPenaltyShootout && match.penaltyShootoutOurScore !== undefined && match.penaltyShootoutOpponentScore !== undefined && (
+                        <div className="text-[10px] text-purple-600 font-sans font-bold">
+                          点球 {match.penaltyShootoutOurScore}:{match.penaltyShootoutOpponentScore}
+                        </div>
+                      )}
                     </td>
                   </tr>
                 );

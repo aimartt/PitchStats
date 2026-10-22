@@ -4,9 +4,9 @@ import {
   Shirt, Plus, Trash2, Search, Pencil, X, Check, Trophy, Zap, 
   Camera, ArrowUp, ArrowDown, Shield, Filter, HeartCrack, Cake, 
   Eye, ArrowLeft, Calendar, Info, Star, Activity, Target, Award, 
-  ChevronRight, Crown, ChevronDown, Gift, UserX
+  ChevronRight, Crown, ChevronDown, Gift, UserX, Lock
 } from 'lucide-react';
-import { PlayerManagerProps, PlayerProfile, MatchRecord, PlayerStatus } from '../types';
+import { PlayerManagerProps, PlayerProfile, MatchRecord, PlayerStatus, InjuryRecord } from '../types';
 
 // Helper interface for calculated stats
 interface PlayerStats {
@@ -17,6 +17,9 @@ interface PlayerStats {
   age?: number;
   status?: PlayerStatus;
   isBirthdayToday?: boolean; // 新增：是否今天生日
+  injuryInfo?: string; // 伤病信息
+  injuryPeriod?: string; // 伤病时间段
+  injuries?: InjuryRecord[]; // 伤病记录列表
   
   // Total Stats
   goals: number;
@@ -152,9 +155,23 @@ const PlayerDetailView: React.FC<{
   matches: MatchRecord[]; 
   seasons: string[]; 
   onBack: () => void;
-  onViewMatch?: (match: MatchRecord) => void; 
-}> = ({ player, matches, seasons, onBack, onViewMatch }) => {
+  onViewMatch?: (match: MatchRecord) => void;
+  currentUserRole?: string;
+  onEditPlayerClick?: (player: PlayerStats) => void;
+}> = ({ player, matches, seasons, onBack, onViewMatch, currentUserRole, onEditPlayerClick }) => {
   const [expandedSeason, setExpandedSeason] = useState<string | null>(null);
+  const isAdmin = currentUserRole === 'admin';
+
+  const injuryList: InjuryRecord[] = useMemo(() => {
+    if (player.injuries && player.injuries.length > 0) {
+      const valid = player.injuries.filter(i => (i.info && i.info.trim()) || (i.period && i.period.trim()));
+      if (valid.length > 0) return valid;
+    }
+    if ((player.injuryInfo && player.injuryInfo.trim()) || (player.injuryPeriod && player.injuryPeriod.trim())) {
+      return [{ id: '1', info: player.injuryInfo?.trim() || '未具体说明', period: player.injuryPeriod?.trim() || '未记录时间' }];
+    }
+    return [];
+  }, [player.injuries, player.injuryInfo, player.injuryPeriod]);
 
   // 核心改动：计算“生涯总计”数据，不随外部筛选变化
   const lifetimeStats = useMemo(() => {
@@ -716,6 +733,11 @@ const PlayerDetailView: React.FC<{
                                                         <span className={`text-xs font-mono font-black ${isWin ? 'text-emerald-500' : isLoss ? 'text-rose-500' : 'text-amber-500'}`}>
                                                            {match.ourScore}:{match.opponentScore}
                                                         </span>
+                                                        {match.hasPenaltyShootout && match.penaltyShootoutOurScore !== undefined && match.penaltyShootoutOpponentScore !== undefined && (
+                                                           <span className="text-[10px] font-mono font-bold text-purple-700 bg-purple-50 border border-purple-200 px-1.5 py-0.5 rounded">
+                                                              点球 {match.penaltyShootoutOurScore}:{match.penaltyShootoutOpponentScore}
+                                                           </span>
+                                                        )}
                                                      </div>
                                                   </div>
                                                   
@@ -841,7 +863,14 @@ const PlayerDetailView: React.FC<{
                                           <div className="text-xs font-black text-slate-700 truncate">vs {match.opponent}</div>
                                        </div>
                                        <div className="flex items-center gap-3 pl-4 shrink-0 border-l border-slate-50">
-                                          <div className="text-[10px] font-mono font-black text-slate-800">{match.ourScore}:{match.opponentScore}</div>
+                                          <div className="flex flex-col items-end">
+                                             <div className="text-[10px] font-mono font-black text-slate-800">{match.ourScore}:{match.opponentScore}</div>
+                                             {match.hasPenaltyShootout && match.penaltyShootoutOurScore !== undefined && match.penaltyShootoutOpponentScore !== undefined && (
+                                                <div className="text-[8px] font-mono font-bold text-purple-700 bg-purple-50 border border-purple-100 px-1 py-0.2 rounded mt-0.5 whitespace-nowrap">
+                                                   点球 {match.penaltyShootoutOurScore}:{match.penaltyShootoutOpponentScore}
+                                                </div>
+                                             )}
+                                          </div>
                                           <div className="flex flex-wrap gap-1 justify-end">
                                              {isMvp && <span className="text-[9px] font-black text-amber-500" title="单场MVP">🏆 MVP</span>}
                                              {mPenaltySaves > 0 && <span className="text-[9px] font-black text-indigo-600" title="守门员扑点">🧤 扑点x{mPenaltySaves}</span>}
@@ -860,6 +889,57 @@ const PlayerDetailView: React.FC<{
             })}
          </div>
       </div>
+
+      {/* 伤病记录展示 (仅在有伤病信息时展示) */}
+      {injuryList.length > 0 && (
+         <div className="bg-white rounded-2xl md:rounded-[2.5rem] shadow-xl border border-slate-200 overflow-hidden">
+            <div className="px-6 py-5 md:px-10 md:py-6 border-b border-slate-100 bg-rose-50/40 flex items-center justify-between">
+               <div className="flex items-center gap-3 md:gap-4">
+                  <div className="p-2.5 md:p-3 bg-rose-100 text-rose-600 rounded-xl md:rounded-2xl shadow-xs">
+                     <Activity className="w-5 h-5 md:w-6 md:h-6" />
+                  </div>
+                  <div>
+                     <div className="flex items-center gap-2">
+                        <h3 className="text-lg md:text-2xl font-black text-slate-800 tracking-tight">伤病记录</h3>
+                        <span className="text-[10px] md:text-xs font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700">
+                           共 {injuryList.length} 条记录
+                        </span>
+                     </div>
+                     <p className="text-[10px] md:text-xs text-slate-400 mt-0.5">历史伤病档案与伤停恢复周期</p>
+                  </div>
+               </div>
+            </div>
+
+            <div className="p-6 md:p-8">
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {injuryList.map((injury, idx) => (
+                     <div key={injury.id || idx} className="p-4 md:p-5 rounded-2xl bg-slate-50 border border-slate-200 hover:border-rose-200 transition-colors flex flex-col justify-between gap-3">
+                        <div className="flex items-start justify-between gap-2">
+                           <div className="flex items-start gap-2.5">
+                              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 mt-1 shrink-0 shadow-xs"></span>
+                              <div>
+                                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">伤病信息</div>
+                                 <div className="text-sm md:text-base font-black text-slate-800 mt-0.5 leading-snug">{injury.info || '未具体说明'}</div>
+                              </div>
+                           </div>
+                           <span className="text-[10px] font-mono font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-100 shrink-0">
+                              记录 #{idx + 1}
+                           </span>
+                        </div>
+
+                        <div className="pt-3 border-t border-slate-200/60 flex items-center justify-between text-xs text-slate-500">
+                           <span className="text-slate-400 font-medium text-[11px]">伤病时间段</span>
+                           <div className="flex items-center gap-1.5 font-bold font-mono text-slate-700 bg-white px-2.5 py-1 rounded-lg border border-slate-200 shadow-xs">
+                              <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                              <span>{injury.period || '未指定时间段'}</span>
+                           </div>
+                        </div>
+                     </div>
+                  ))}
+               </div>
+            </div>
+         </div>
+      )}
     </div>
   );
 };
@@ -942,10 +1022,12 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
   const [formBirthday, setFormBirthday] = useState('');
   const [formAvatar, setFormAvatar] = useState('');
   const [formStatus, setFormStatus] = useState<PlayerStatus>('正常');
+  const [formInjuries, setFormInjuries] = useState<InjuryRecord[]>([]);
   const [formError, setFormError] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isReadOnly = currentUserRole === 'player';
+  const isAdmin = currentUserRole === 'admin';
 
   useEffect(() => {
      if (!selectedSeason && seasons.length > 0) setSelectedSeason(seasons[0]);
@@ -966,6 +1048,9 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
         name: p.name, number: p.number, avatar: p.avatar, birthday: p.birthday, age: calculateAge(p.birthday),
         status: p.status || '正常',
         isBirthdayToday: checkIsBirthdayToday(p.birthday),
+        injuryInfo: p.injuryInfo,
+        injuryPeriod: p.injuryPeriod,
+        injuries: p.injuries,
         goals: 0, penaltyGoals: 0, assists: 0, penaltiesWon: 0, starts: 0, ownGoals: 0, yellowCards: 0, redCards: 0, penaltiesMissed: 0, conceded: 0, 
         matchesPlayed: 0, matchesCounted: 0, 
         matchesAsGK: 0, matchesAsGKCounted: 0,
@@ -1171,6 +1256,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
     setFormBirthday('');
     setFormAvatar('');
     setFormStatus('正常');
+    setFormInjuries([{ id: 'inj-1', info: '', period: '' }]);
     setFormError(null);
     setIsModalOpen(true);
   };
@@ -1182,18 +1268,54 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
     setFormBirthday(p.birthday || '');
     setFormAvatar(p.avatar || '');
     setFormStatus(p.status || '正常');
+    if (p.injuries && p.injuries.length > 0) {
+      setFormInjuries(p.injuries.map((inj, idx) => ({
+        id: inj.id || `inj-${idx}`,
+        info: inj.info || '',
+        period: inj.period || ''
+      })));
+    } else if (p.injuryInfo || p.injuryPeriod) {
+      setFormInjuries([{ id: 'inj-1', info: p.injuryInfo || '', period: p.injuryPeriod || '' }]);
+    } else {
+      setFormInjuries([{ id: 'inj-1', info: '', period: '' }]);
+    }
     setFormError(null);
     setIsModalOpen(true);
   };
 
   const savePlayer = () => {
     if (!formName.trim()) { setFormError('姓名不能为空'); return; }
+
+    let finalInjuries: InjuryRecord[] | undefined = undefined;
+    let finalInjuryInfo: string | undefined = undefined;
+    let finalInjuryPeriod: string | undefined = undefined;
+
+    if (isAdmin) {
+      const validInjuries = formInjuries
+        .map(i => ({ id: i.id || `inj-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`, info: i.info.trim(), period: i.period.trim() }))
+        .filter(i => i.info || i.period);
+
+      if (validInjuries.length > 0) {
+        finalInjuries = validInjuries;
+        finalInjuryInfo = validInjuries[0].info;
+        finalInjuryPeriod = validInjuries[0].period;
+      }
+    } else {
+      // 非管理员不能修改伤病记录，严格继承已有数据
+      finalInjuries = editingPlayer?.injuries;
+      finalInjuryInfo = editingPlayer?.injuryInfo;
+      finalInjuryPeriod = editingPlayer?.injuryPeriod;
+    }
+
     const newProfile: PlayerProfile = {
       name: formName.trim(),
       number: formNumber.trim(),
       birthday: formBirthday,
       avatar: formAvatar,
-      status: formStatus
+      status: formStatus,
+      injuryInfo: finalInjuryInfo,
+      injuryPeriod: finalInjuryPeriod,
+      injuries: finalInjuries
     };
 
     if (editingPlayer) {
@@ -1205,8 +1327,40 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
     setIsModalOpen(false);
   };
 
+  // 保持详情页展示与球员数据更新同步
+  useEffect(() => {
+    if (viewingPlayer) {
+      const updated = playerStats.find(p => p.name === viewingPlayer.name);
+      if (updated) {
+        setViewingPlayer(updated);
+      }
+    }
+  }, [playerStats]);
+
   if (viewingPlayer) {
-    return <PlayerDetailView player={viewingPlayer} matches={matches} seasons={seasons} onBack={() => setViewingPlayer(null)} onViewMatch={onViewMatch} />;
+    return (
+      <PlayerDetailView 
+        player={viewingPlayer} 
+        matches={matches} 
+        seasons={seasons} 
+        onBack={() => setViewingPlayer(null)} 
+        onViewMatch={onViewMatch}
+        currentUserRole={currentUserRole}
+        onEditPlayerClick={(pStats) => {
+          const profile = players.find(p => p.name === pStats.name) || {
+            name: pStats.name,
+            number: pStats.number,
+            avatar: pStats.avatar,
+            birthday: pStats.birthday,
+            status: pStats.status,
+            injuryInfo: pStats.injuryInfo,
+            injuryPeriod: pStats.injuryPeriod,
+            injuries: pStats.injuries
+          };
+          openEditModal(profile);
+        }}
+      />
+    );
   }
 
   return (
@@ -1507,7 +1661,19 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                           <button onClick={() => setViewingPlayer(player)} className="p-1.5 text-slate-400 hover:text-blue-600 bg-slate-50 rounded border border-slate-200"><Eye className="w-3.5 h-3.5" /></button>
                           {!isReadOnly && (
                              <>
-                                <button onClick={() => openEditModal({ name: player.name, number: player.number, avatar: player.avatar, birthday: player.birthday, status: player.status })} className="p-1.5 text-slate-400 hover:text-emerald-600 bg-slate-50 rounded border border-slate-200"><Pencil className="w-3.5 h-3.5" /></button>
+                                <button onClick={() => {
+                                   const profile = players.find(p => p.name === player.name) || {
+                                      name: player.name,
+                                      number: player.number,
+                                      avatar: player.avatar,
+                                      birthday: player.birthday,
+                                      status: player.status,
+                                      injuryInfo: player.injuryInfo,
+                                      injuryPeriod: player.injuryPeriod,
+                                      injuries: player.injuries
+                                   };
+                                   openEditModal(profile);
+                                }} className="p-1.5 text-slate-400 hover:text-emerald-600 bg-slate-50 rounded border border-slate-200" title="编辑球员档案"><Pencil className="w-3.5 h-3.5" /></button>
                                 <button onClick={() => onRemovePlayer(player.name)} className="p-1.5 text-slate-400 hover:text-red-500 bg-slate-50 rounded border border-slate-200"><Trash2 className="w-3.5 h-3.5" /></button>
                              </>
                           )}
@@ -1524,8 +1690,8 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
       {/* Add / Edit Player Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black bg-opacity-60 p-4 backdrop-blur-sm">
-           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-slide-up flex flex-col">
-              <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-slide-up flex flex-col max-h-[90vh]">
+              <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center shrink-0">
                  <h3 className="font-black text-slate-800 flex items-center gap-2">
                     <Shirt className="w-5 h-5" style={{ color: 'var(--primary)' }} />
                     {editingPlayer ? '编辑球员档案' : '录入新球员'}
@@ -1535,7 +1701,7 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                  </button>
               </div>
 
-              <div className="p-8 space-y-6">
+              <div className="p-6 md:p-8 space-y-6 overflow-y-auto">
                  <div className="flex flex-col items-center">
                     <div 
                       onClick={() => fileInputRef.current?.click()}
@@ -1603,6 +1769,94 @@ const PlayerManager: React.FC<PlayerManagerProps> = ({ players, matches, seasons
                          className="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 outline-none font-bold text-slate-800 text-sm"
                          style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
                        />
+                    </div>
+
+                    {/* 伤病记录 (两个字段：伤病信息和伤病时间段，仅管理员权限可编辑) */}
+                    <div className="pt-3 border-t border-slate-200">
+                       <div className="flex items-center justify-between mb-2">
+                          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5 ml-1">
+                             <Activity className="w-3.5 h-3.5 text-rose-500" />
+                             伤病记录
+                          </label>
+                          {!isAdmin ? (
+                             <span className="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200 flex items-center gap-1">
+                                <Lock className="w-3 h-3 text-amber-500" /> 仅管理员可编辑
+                             </span>
+                          ) : (
+                             <span className="text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">
+                                管理员可编辑
+                             </span>
+                          )}
+                       </div>
+
+                       <div className="space-y-3">
+                          {formInjuries.map((inj, index) => (
+                             <div key={inj.id || index} className="p-3 bg-slate-50 rounded-2xl border border-slate-200 relative group/inj space-y-2.5">
+                                <div className="flex items-center justify-between text-[10px] font-bold text-slate-400">
+                                   <span className="flex items-center gap-1 text-slate-600 font-bold">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                      伤病记录 #{index + 1}
+                                   </span>
+                                   {isAdmin && formInjuries.length > 1 && (
+                                      <button
+                                         type="button"
+                                         onClick={() => {
+                                            setFormInjuries(formInjuries.filter((_, i) => i !== index));
+                                         }}
+                                         className="p-1 text-slate-400 hover:text-rose-500 transition-colors"
+                                         title="删除此记录"
+                                      >
+                                         <Trash2 className="w-3.5 h-3.5" />
+                                      </button>
+                                   )}
+                                </div>
+
+                                <div>
+                                   <label className="block text-[10px] font-bold text-slate-500 mb-1 ml-0.5">伤病信息</label>
+                                   <input 
+                                      type="text"
+                                      disabled={!isAdmin}
+                                      value={inj.info}
+                                      onChange={(e) => {
+                                         const val = e.target.value;
+                                         setFormInjuries(prev => prev.map((item, i) => i === index ? { ...item, info: val } : item));
+                                      }}
+                                      placeholder={isAdmin ? "例如：右膝半月板磨损 / 踝关节扭伤" : "未记录伤病信息"}
+                                      className={`w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none font-bold text-slate-800 text-sm ${!isAdmin ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'focus:ring-2'}`}
+                                      style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
+                                   />
+                                </div>
+
+                                <div>
+                                   <label className="block text-[10px] font-bold text-slate-500 mb-1 ml-0.5">伤病时间段</label>
+                                   <input 
+                                      type="text"
+                                      disabled={!isAdmin}
+                                      value={inj.period}
+                                      onChange={(e) => {
+                                         const val = e.target.value;
+                                         setFormInjuries(prev => prev.map((item, i) => i === index ? { ...item, period: val } : item));
+                                      }}
+                                      placeholder={isAdmin ? "例如：2024.03 - 2024.06 或 2024年3月 ~ 至今" : "未记录时间段"}
+                                      className={`w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none font-bold text-slate-800 text-sm ${!isAdmin ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'focus:ring-2'}`}
+                                      style={{ '--tw-ring-color': 'var(--primary)' } as React.CSSProperties}
+                                   />
+                                </div>
+                             </div>
+                          ))}
+
+                          {isAdmin && (
+                             <button
+                                type="button"
+                                onClick={() => {
+                                   setFormInjuries(prev => [...prev, { id: `inj-${Date.now()}`, info: '', period: '' }]);
+                                }}
+                                className="w-full py-2 border border-dashed border-slate-300 hover:border-rose-400 hover:bg-rose-50/30 text-rose-600 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5"
+                             >
+                                <Plus className="w-3.5 h-3.5" /> 添加一条伤病记录
+                             </button>
+                          )}
+                       </div>
                     </div>
                  </div>
 
