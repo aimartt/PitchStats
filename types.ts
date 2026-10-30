@@ -270,6 +270,7 @@ export interface MatchListProps {
   onViewMatch?: (match: MatchRecord) => void; 
   currentTeamName?: string;
   currentTeamLogo?: string; // Added Logo
+  opponentList?: OpponentTeam[];
 }
 
 export interface MatchDetailProps {

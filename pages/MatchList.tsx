@@ -1,11 +1,35 @@
-import React, { useState } from 'react';
-import { MatchRecord, AppRoute, UserRole, MatchListProps } from '../types';
+import React, { useState, useMemo } from 'react';
+import { MatchRecord, AppRoute, UserRole, MatchListProps, OpponentTeam } from '../types';
 import { Plus, Calendar, MapPin, Search, Filter, Pencil, Trophy, Flag, Handshake, Shirt, ChevronRight, ChevronDown, Crown, Users, Shield } from 'lucide-react';
 
-const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserRole, seasons, onEditMatch, onViewMatch, currentTeamName, currentTeamLogo }) => {
+const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserRole, seasons, onEditMatch, onViewMatch, currentTeamName, currentTeamLogo, opponentList = [] }) => {
   const [selectedSeason, setSelectedSeason] = useState<string>('all');
   const [selectedMatchType, setSelectedMatchType] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
+
+  // Map opponent names to their OpponentTeam records for fast logo lookup
+  const opponentMap = useMemo(() => {
+    const map = new Map<string, OpponentTeam>();
+    if (Array.isArray(opponentList)) {
+      opponentList.forEach(opp => {
+        if (opp?.name) {
+          map.set(opp.name.trim(), opp);
+        }
+      });
+    }
+    return map;
+  }, [opponentList]);
+
+  const getOpponentLogo = (opponentName?: string) => {
+    if (!opponentName) return undefined;
+    const trimmed = opponentName.trim();
+    if (opponentMap.has(trimmed)) {
+      return opponentMap.get(trimmed)?.logo;
+    }
+    const lower = trimmed.toLowerCase();
+    const found = opponentList?.find(o => o?.name?.trim().toLowerCase() === lower);
+    return found?.logo;
+  };
 
   // Sort matches by date descending (newest first)
   const safeMatches = Array.isArray(matches) ? matches : [];
@@ -142,12 +166,14 @@ const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserR
       {/* List */}
       <div className="space-y-4">
         {filteredMatches.length > 0 ? (
-          filteredMatches.map((match, idx) => (
-            <div 
-               key={match.id || idx} 
-               onClick={() => onViewMatch && onViewMatch(match)}
-               className={`rounded-xl shadow-sm border overflow-hidden hover:shadow-lg transition-all flex flex-col group relative cursor-pointer ${getMatchBackgroundStyle(match.matchType)}`}
-            >
+          filteredMatches.map((match, idx) => {
+            const oppLogo = (match as any).opponentLogo || getOpponentLogo(match.opponent);
+            return (
+              <div 
+                 key={match.id || idx} 
+                 onClick={() => onViewMatch && onViewMatch(match)}
+                 className={`rounded-xl shadow-sm border overflow-hidden hover:shadow-lg transition-all flex flex-col group relative cursor-pointer ${getMatchBackgroundStyle(match.matchType)}`}
+              >
                
                {/* Watermark */}
                {getWatermarkIcon(match.matchType)}
@@ -220,18 +246,22 @@ const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserR
                       {/* Away Team */}
                       <div className="flex-1 text-left flex items-center justify-start gap-2 md:gap-3">
                          <div className="w-8 h-8 md:w-12 md:h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center font-bold text-xs md:text-base text-slate-500 shrink-0 overflow-hidden shadow-sm">
-                            {match.opponent ? match.opponent.charAt(0) : '?'}
+                            {oppLogo ? (
+                               <img src={oppLogo} alt={match.opponent || '对手'} className="w-full h-full object-cover" />
+                            ) : (
+                               match.opponent ? match.opponent.charAt(0) : '?'
+                            )}
                          </div>
                          <span className="font-bold text-slate-900 text-sm md:text-lg truncate max-w-[80px] sm:max-w-none">
-                            {match.opponent || '未知对手'}
+                            {match.opponent || (match.matchType === '队内赛' ? '队内对抗' : '未知对手')}
                          </span>
                       </div>
                   </div>
 
                   {/* Combined Stats: Goals, Assists, Cards, Events */}
                   {( (match.goalsDetails && match.goalsDetails.length > 0) || 
-                     (((match.redCards?.length || 0) + (match.yellowCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.penaltiesMissed?.length || 0) + (match.ownGoals?.length || 0)) > 0) ||
-                     !!match.hasPenaltyShootout
+                     (((match.redCards?.length || 0) + (match.yellowCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.penaltiesMissed?.length || 0) + (match.ownGoals?.length || 0) + (match.penaltySaves?.length || 0)) > 0) ||
+                     !!match.mvp
                    ) && (
                      <div className="mt-3 pt-2 border-t border-dashed border-slate-200/60 space-y-1.5">
                         {/* Goals */}
@@ -256,13 +286,8 @@ const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserR
                         )}
 
                         {/* Cards & Events */}
-                        {(((match.redCards?.length || 0) + (match.yellowCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.penaltiesMissed?.length || 0) + (match.ownGoals?.length || 0) + (match.penaltySaves?.length || 0)) > 0 || !!match.mvp || !!match.hasPenaltyShootout) && (
+                        {(((match.redCards?.length || 0) + (match.yellowCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.penaltiesMissed?.length || 0) + (match.ownGoals?.length || 0) + (match.penaltySaves?.length || 0)) > 0 || !!match.mvp) && (
                            <div className="flex flex-wrap gap-1.5 md:gap-2 text-[10px] md:text-xs">
-                              {match.hasPenaltyShootout && match.penaltyShootoutOurScore !== undefined && match.penaltyShootoutOpponentScore !== undefined && (
-                                 <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200 font-bold" title="点球大战">
-                                    点球 {match.penaltyShootoutOurScore}:{match.penaltyShootoutOpponentScore}
-                                 </span>
-                              )}
                               {match.mvp && (
                                  <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-bold" title="单场MVP">
                                     <Trophy className="w-3 h-3 text-amber-500 fill-amber-400 mr-1" />
@@ -344,8 +369,9 @@ const MatchList: React.FC<MatchListProps> = ({ matches, onNavigate, currentUserR
                   </div>
                </div>
             </div>
-          ))
-        ) : (
+          );
+        })
+      ) : (
           <div className="text-center py-20 bg-slate-50 rounded-xl border border-dashed border-slate-200">
              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mx-auto mb-4">
                 <Search className="w-6 h-6 text-slate-300" />

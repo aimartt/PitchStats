@@ -1,13 +1,13 @@
 
 import React, { useMemo } from 'react';
 import { MatchRecord, PlayerProfile, OpponentTeam, MatchDetailProps } from '../types';
-import { ArrowLeft, MapPin, Calendar, Trophy, Flag, Users, Info, Shirt, UserCog } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Trophy, Flag, Users, Info, Shirt, UserCog, Shield } from 'lucide-react';
 
-const MatchDetail: React.FC<MatchDetailProps> = ({ match, onBack, currentTeamName, currentTeamLogo, opponentList, playerList }) => {
+const MatchDetail: React.FC<MatchDetailProps> = ({ match, onBack, currentTeamName, currentTeamLogo, opponentList = [], playerList = [] }) => {
   
   const currentOpponent = useMemo(() => 
-    opponentList.find(o => o.name === match.opponent), 
-  [match.opponent, opponentList]);
+    opponentList?.find(o => o.name === match?.opponent), 
+  [match?.opponent, opponentList]);
 
   const getResultColor = (result?: string) => {
     if (result === 'Win') return 'bg-emerald-500 text-white';
@@ -22,8 +22,9 @@ const MatchDetail: React.FC<MatchDetailProps> = ({ match, onBack, currentTeamNam
   };
 
   const isInternalMatch = match.matchType === '队内赛';
+  const hasPenalty = Boolean(match.hasPenaltyShootout && match.penaltyShootoutOurScore !== undefined && match.penaltyShootoutOpponentScore !== undefined);
 
-  const hasDisciplineEvents = ((match.yellowCards?.length || 0) + (match.redCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.penaltiesMissed?.length || 0) + (match.ownGoals?.length || 0) + (match.penaltySaves?.length || 0)) > 0 || !!(match.hasPenaltyShootout && match.penaltyShootoutOurScore !== undefined && match.penaltyShootoutOpponentScore !== undefined);
+  const hasDisciplineEvents = ((match.yellowCards?.length || 0) + (match.redCards?.length || 0) + (match.penaltiesWon?.length || 0) + (match.penaltiesMissed?.length || 0) + (match.ownGoals?.length || 0) + (match.penaltySaves?.length || 0)) > 0;
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 animate-fade-in pb-20">
@@ -75,7 +76,7 @@ const MatchDetail: React.FC<MatchDetailProps> = ({ match, onBack, currentTeamNam
               </div>
 
               {/* Score */}
-              <div className="flex flex-col items-center px-2">
+              <div className={`flex flex-col items-center px-2 transition-all ${hasPenalty ? 'pt-3.5 md:pt-5' : ''}`}>
                  {isInternalMatch ? (
                    <div className="bg-slate-100 text-slate-500 px-3 py-2 md:px-6 md:py-3 rounded-lg md:rounded-xl font-bold text-xs md:text-lg border border-slate-200 border-dashed whitespace-nowrap">
                       队内赛
@@ -85,7 +86,7 @@ const MatchDetail: React.FC<MatchDetailProps> = ({ match, onBack, currentTeamNam
                      <div className="text-4xl md:text-6xl font-black text-slate-900 font-mono tracking-tighter leading-none mb-2 drop-shadow-sm">
                         {match.ourScore}:{match.opponentScore}
                      </div>
-                     {match.hasPenaltyShootout && match.penaltyShootoutOurScore !== undefined && match.penaltyShootoutOpponentScore !== undefined && (
+                     {hasPenalty && (
                         <div className="mb-2">
                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 md:px-3 md:py-1 rounded-md md:rounded-lg bg-purple-50 text-purple-800 border border-purple-200 text-xs md:text-sm font-bold font-mono shadow-xs">
                               <span className="font-sans font-bold text-purple-600 text-[10px] md:text-xs">点球</span>
@@ -104,14 +105,12 @@ const MatchDetail: React.FC<MatchDetailProps> = ({ match, onBack, currentTeamNam
               <div className="flex-1 flex flex-col items-center">
                  <div className="w-14 h-14 md:w-24 md:h-24 rounded-full bg-white border-4 border-slate-100 shadow-xl flex items-center justify-center mb-2 md:mb-4 text-xl md:text-3xl font-bold text-slate-700 overflow-hidden">
                     {currentOpponent?.logo ? (
-                       <img src={currentOpponent.logo} className="w-full h-full object-cover" />
-                    ) : (
-                       match.opponent.charAt(0)
+                       <img src={currentOpponent.logo} className="w-full h-full object-cover" />) : (
+                       match.opponent ? match.opponent.charAt(0) : '?'
                     )}
                  </div>
                  <h3 className="text-sm md:text-xl font-black text-slate-800 leading-tight">
-                    {match.opponent}
-                 </h3>
+                    {match.opponent || (isInternalMatch ? "队内对抗" : "未知对手")}</h3>
                  <span className="text-[10px] md:text-xs font-bold text-slate-400 mt-1 uppercase tracking-wider">Away</span>
               </div>
 
@@ -240,12 +239,6 @@ const MatchDetail: React.FC<MatchDetailProps> = ({ match, onBack, currentTeamNam
                       关键事件
                    </h3>
                    <div className="flex flex-wrap gap-2">
-                       {match.hasPenaltyShootout && match.penaltyShootoutOurScore !== undefined && match.penaltyShootoutOpponentScore !== undefined && (
-                           <div className="flex items-center bg-purple-50 text-purple-800 px-2.5 py-1 rounded-md text-xs font-bold border border-purple-200">
-                               <span className="w-2 h-2 rounded-full bg-purple-500 mr-1.5"></span>
-                               点球大战 ({match.penaltyShootoutOurScore}:{match.penaltyShootoutOpponentScore})
-                           </div>
-                       )}
                        {match.penaltySaves?.map((ps, i) => (
                            <div key={`ps-${i}`} className="flex items-center bg-indigo-50 text-indigo-800 px-2 py-1 rounded-md text-xs font-bold border border-indigo-200">
                                <Shield className="w-3 h-3 text-indigo-600 mr-1.5" />

@@ -102,11 +102,29 @@ const AppContent: React.FC = () => {
 
   // Edit / View State
   const [editingMatch, setEditingMatch] = useState<MatchRecord | undefined>(undefined);
-  const [viewingMatch, setViewingMatch] = useState<MatchRecord | undefined>(undefined);
+  const [viewingMatch, setViewingMatch] = useState<MatchRecord | undefined>(() => {
+    const savedId = sessionStorage.getItem('viewing_match_id');
+    if (savedId) {
+      const storedData = localStorage.getItem(STORAGE_KEYS.DATA);
+      const matches: MatchRecord[] = storedData ? JSON.parse(storedData) : defaultDb.matches;
+      return matches.find(m => m.id === savedId);
+    }
+    return undefined;
+  });
   const [matchDetailOrigin, setMatchDetailOrigin] = useState<AppRoute>(AppRoute.MATCH_LIST);
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Sync viewing match when rawData changes
+  useEffect(() => {
+    if (viewingMatch) {
+      const updated = rawData.find(m => m.id === viewingMatch.id);
+      if (updated) {
+        setViewingMatch(updated);
+      }
+    }
+  }, [rawData]);
 
   useEffect(() => {
     // Apply theme to document root
@@ -269,24 +287,27 @@ const AppContent: React.FC = () => {
 
   const handleEditMatch = (match: MatchRecord) => {
     setEditingMatch(match);
-    navigate(AppRoute.DATA_ENTRY);
+    navigate(`/${AppRoute.DATA_ENTRY}`);
   };
 
   const handleViewMatch = (match: MatchRecord, origin: AppRoute = AppRoute.MATCH_LIST) => {
     setViewingMatch(match);
+    if (match.id) {
+      sessionStorage.setItem('viewing_match_id', match.id);
+    }
     setMatchDetailOrigin(origin);
-    navigate(AppRoute.MATCH_DETAIL);
+    navigate(`/${AppRoute.MATCH_DETAIL}`);
   };
 
   const handleNavigate = (route: AppRoute) => {
     if (!authState.isAuthenticated && route !== AppRoute.LOGIN) {
-       navigate(AppRoute.LOGIN);
+       navigate(`/${AppRoute.LOGIN}`);
        return;
     }
     if (authState.isAuthenticated && !currentTeam && route !== AppRoute.TEAM_SELECT && route !== AppRoute.LOGIN) {
        const userTeams = teams.filter(t => authState.user?.teamIds.includes(t.id));
        if (userTeams.length > 0) setCurrentTeam(userTeams[0]);
-       else { navigate(AppRoute.LOGIN); return; }
+       else { navigate(`/${AppRoute.LOGIN}`); return; }
     }
     const role = authState.user?.role || 'player';
     if ([AppRoute.USERS_MANAGEMENT, AppRoute.TEAMS_MANAGEMENT, AppRoute.SETTINGS].includes(route)) {
@@ -296,7 +317,7 @@ const AppContent: React.FC = () => {
       if (role === 'player') { alert("仅队长和管理员可访问"); return; }
     }
     if (route !== AppRoute.DATA_ENTRY) setEditingMatch(undefined);
-    navigate(route);
+    navigate(`/${route}`);
   };
 
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-400">Loading...</div>;
@@ -321,8 +342,8 @@ const AppContent: React.FC = () => {
               <main className="flex-1 overflow-auto p-4 md:p-8 scroll-smooth">
                 <Routes>
                   <Route path={AppRoute.DASHBOARD} element={<Dashboard data={filteredMatches} seasons={filteredSeasons} />} />
-                  <Route path={AppRoute.MATCH_LIST} element={<MatchList matches={filteredMatches} onNavigate={handleNavigate} currentUserRole={authState.user?.role} seasons={filteredSeasons.map(s => s.name)} onEditMatch={handleEditMatch} onViewMatch={(m) => handleViewMatch(m, AppRoute.MATCH_LIST)} currentTeamName={currentTeam?.name} currentTeamLogo={currentTeam?.logo} />} />
-                  <Route path={AppRoute.MATCH_DETAIL} element={ viewingMatch ? <MatchDetail match={viewingMatch} onBack={() => navigate(matchDetailOrigin)} currentTeamName={currentTeam?.name} currentTeamLogo={currentTeam?.logo} opponentList={filteredOpponents} playerList={filteredPlayers} /> : <Navigate to={AppRoute.MATCH_LIST} /> } />
+                  <Route path={AppRoute.MATCH_LIST} element={<MatchList matches={filteredMatches} onNavigate={handleNavigate} currentUserRole={authState.user?.role} seasons={filteredSeasons.map(s => s.name)} onEditMatch={handleEditMatch} onViewMatch={(m) => handleViewMatch(m, AppRoute.MATCH_LIST)} currentTeamName={currentTeam?.name} currentTeamLogo={currentTeam?.logo} opponentList={filteredOpponents} />} />
+                  <Route path={AppRoute.MATCH_DETAIL} element={ viewingMatch ? <MatchDetail match={viewingMatch} onBack={() => navigate(`/${matchDetailOrigin}`)} currentTeamName={currentTeam?.name} currentTeamLogo={currentTeam?.logo} opponentList={filteredOpponents} playerList={filteredPlayers} /> : <Navigate to={`/${AppRoute.MATCH_LIST}`} /> } />
                   <Route path={AppRoute.DATA_ENTRY} element={<DataInput onDataLoaded={handleDataLoaded} opponentList={filteredOpponents} seasonList={filteredSeasons.map(s => s.name)} venueList={filteredVenues.map(v => v.name)} playerList={filteredPlayers} onBack={() => handleNavigate(AppRoute.MATCH_LIST)} initialData={editingMatch} currentTeamName={currentTeam?.name} /> } />
                   <Route path={AppRoute.AI_INSIGHTS} element={<AIAnalysis data={filteredMatches} />} />
                   <Route path={AppRoute.OPPONENTS} element={<OpponentManager opponents={filteredOpponents} matches={filteredMatches} onAddOpponent={handleAddOpponent} onRemoveOpponent={handleRemoveOpponent} onEditOpponent={handleEditOpponent} onViewMatch={(m) => handleViewMatch(m, AppRoute.OPPONENTS)} currentTeamName={currentTeam?.name} currentTeamLogo={currentTeam?.logo} currentUserRole={authState.user?.role} />} />
