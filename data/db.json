@@ -9827,6 +9827,164 @@
       "countForStats": true,
       "coach": "付道政",
       "teamId": "team-1788229994801"
+    },
+    {
+      "id": "match-1794187404878",
+      "date": "2026-11-02",
+      "season": "2026平顶山“中年杯”秋季联赛",
+      "round": 3,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "银行联",
+      "ourScore": 6,
+      "opponentScore": 2,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "唐涛",
+        "吴士佳",
+        "贺东",
+        "杨晶",
+        "潘志强",
+        "李争",
+        "张利益",
+        "张祥林",
+        "谭聪",
+        "陈珂",
+        "冯涛"
+      ],
+      "starters": [
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 2
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "谭聪",
+          "assist": "张利益",
+          "isPenalty": false
+        },
+        {
+          "scorer": "陈珂",
+          "isPenalty": false
+        },
+        {
+          "scorer": "陈珂",
+          "assist": "李争",
+          "isPenalty": false
+        },
+        {
+          "scorer": "陈珂",
+          "assist": "李争",
+          "isPenalty": false
+        },
+        {
+          "scorer": "李争",
+          "isPenalty": false
+        },
+        {
+          "scorer": "李争",
+          "assist": "贺东",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [
+        "张祥林"
+      ],
+      "penaltySaves": [],
+      "hasPenaltyShootout": false,
+      "notes": "",
+      "countForStats": true,
+      "coach": "",
+      "teamId": "team-1792636483911"
+    },
+    {
+      "id": "match-1794188205884",
+      "date": "2026-11-06",
+      "season": "雾都球友2026秋季联赛",
+      "round": 4,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "驰聘足球中心",
+      "opponent": "九龙苍狼",
+      "ourScore": 3,
+      "opponentScore": 3,
+      "location": "Home",
+      "result": "Draw",
+      "squad": [
+        "唐涛",
+        "帅冰",
+        "李旋",
+        "樊少华",
+        "石浩",
+        "唐锐",
+        "刘昌仁",
+        "罗君",
+        "李鹏",
+        "蔡应沛",
+        "邓菁华",
+        "张帅逾",
+        "孙文禹",
+        "陈杰"
+      ],
+      "starters": [
+        "唐涛",
+        "邓菁华",
+        "帅冰",
+        "李旋",
+        "李鹏",
+        "蔡应沛",
+        "张帅逾",
+        "孙文禹"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 3
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "石浩",
+          "assist": "罗君",
+          "isPenalty": false
+        },
+        {
+          "scorer": "石浩",
+          "isPenalty": false
+        },
+        {
+          "scorer": "蔡应沛",
+          "assist": "李鹏",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "penaltySaves": [],
+      "hasPenaltyShootout": false,
+      "notes": "",
+      "countForStats": true,
+      "coach": "邓菁华",
+      "teamId": "team-1788229994801"
     }
   ],
   "opponents": [
@@ -11634,7 +11792,7 @@
       "name": "张祥林",
       "number": "78",
       "birthday": "",
-      "avatar": "",
+      "avatar": "data:image/jpeg;base64,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",
       "status": "正常",
       "teamId": "team-1792636483911"
     },
@@ -11653,7 +11811,15 @@
       "avatar": "",
       "status": "正常",
       "teamId": "team-1792636483911"
+    },
+    {
+      "name": "冯涛",
+      "number": "5",
+      "birthday": "",
+      "avatar": "",
+      "status": "正常",
+      "teamId": "team-1792636483911"
     }
   ],
-  "theme": "indigo"
+  "theme": "orange"
 }
