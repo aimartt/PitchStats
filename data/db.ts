@@ -10155,7 +10155,6 @@ export const defaultDb: FullDatabase = {
         "钱星宇",
         "秦坤",
         "刘盛",
-        "刘杰",
         "陈都"
       ],
       "starters": [
@@ -10185,7 +10184,8 @@ export const defaultDb: FullDatabase = {
         }
       ],
       "yellowCards": [
-        "陈都"
+        "陈都",
+        "钱星宇"
       ],
       "redCards": [],
       "penaltiesWon": [],
@@ -10197,6 +10197,178 @@ export const defaultDb: FullDatabase = {
       "countForStats": true,
       "coach": "车驰",
       "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1795056802585",
+      "date": "2026-11-18",
+      "season": "国际社区2026南超秋季联赛",
+      "round": 10,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "洋人街国际社区足球公园",
+      "opponent": "有球必硬",
+      "ourScore": 4,
+      "opponentScore": 5,
+      "location": "Home",
+      "result": "Loss",
+      "squad": [
+        "曹晓霖",
+        "车驰",
+        "陈春",
+        "陈启晅",
+        "胡勇",
+        "李单",
+        "刘豪",
+        "钱星宇",
+        "秦坤",
+        "唐涛",
+        "朱峰",
+        "刘杰",
+        "陈都"
+      ],
+      "starters": [
+        "曹晓霖",
+        "车驰",
+        "陈春",
+        "陈启晅",
+        "胡勇",
+        "李单",
+        "秦坤",
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 5
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "陈启晅",
+          "isPenalty": false
+        },
+        {
+          "scorer": "胡勇",
+          "isPenalty": false
+        },
+        {
+          "scorer": "陈启晅",
+          "assist": "秦坤",
+          "isPenalty": false
+        },
+        {
+          "scorer": "陈启晅",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [
+        "陈春"
+      ],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "penaltySaves": [
+        {
+          "player": "唐涛",
+          "count": 1
+        }
+      ],
+      "hasPenaltyShootout": false,
+      "notes": "",
+      "countForStats": true,
+      "coach": "刘豪",
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1795058145996",
+      "date": "2026-11-16",
+      "season": "2026平顶山“中年杯”秋季联赛",
+      "round": 5,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "山城竞技",
+      "ourScore": 7,
+      "opponentScore": 2,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "唐涛",
+        "贺东",
+        "任杰",
+        "杨晶",
+        "潘志强",
+        "陈珂",
+        "李争",
+        "张利益",
+        "张祥林",
+        "谭聪",
+        "刘杰"
+      ],
+      "starters": [
+        "唐涛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 2
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "谭聪",
+          "assist": "刘杰",
+          "isPenalty": false
+        },
+        {
+          "scorer": "谭聪",
+          "assist": "张祥林",
+          "isPenalty": false
+        },
+        {
+          "scorer": "李争",
+          "assist": "刘杰",
+          "isPenalty": false
+        },
+        {
+          "scorer": "谭聪",
+          "assist": "任杰",
+          "isPenalty": false
+        },
+        {
+          "scorer": "谭聪",
+          "assist": "李争",
+          "isPenalty": false
+        },
+        {
+          "scorer": "李争",
+          "assist": "刘杰",
+          "isPenalty": false
+        },
+        {
+          "scorer": "贺东",
+          "assist": "任杰",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "penaltySaves": [],
+      "hasPenaltyShootout": false,
+      "notes": "",
+      "countForStats": true,
+      "coach": "",
+      "teamId": "team-1792636483911"
     }
   ],
   "opponents": [
@@ -12033,5 +12205,5 @@ export const defaultDb: FullDatabase = {
       "teamId": "team-1792636483911"
     }
   ],
-  "theme": "indigo"
+  "theme": "pink"
 };
