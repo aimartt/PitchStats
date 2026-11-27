@@ -10366,6 +10366,248 @@
       "countForStats": true,
       "coach": "",
       "teamId": "team-1792636483911"
+    },
+    {
+      "id": "match-1795509501269",
+      "date": "2026-11-23",
+      "season": "2026平顶山“中年杯”秋季联赛",
+      "round": 6,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "平顶山足球乐园",
+      "opponent": "沙龙",
+      "ourScore": 8,
+      "opponentScore": 2,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "贺东",
+        "廖磊",
+        "潘志强",
+        "李争",
+        "张利益",
+        "张祥林",
+        "谭聪",
+        "刘杰",
+        "杨晶"
+      ],
+      "starters": [],
+      "goalkeepers": [],
+      "goalkeeperStats": [],
+      "goalsDetails": [
+        {
+          "scorer": "谭聪",
+          "assist": "李争",
+          "isPenalty": false
+        },
+        {
+          "scorer": "李争",
+          "assist": "谭聪",
+          "isPenalty": false
+        },
+        {
+          "scorer": "谭聪",
+          "assist": "潘志强",
+          "isPenalty": false
+        },
+        {
+          "scorer": "廖磊",
+          "assist": "贺东",
+          "isPenalty": false
+        },
+        {
+          "scorer": "李争",
+          "assist": "谭聪",
+          "isPenalty": false
+        },
+        {
+          "scorer": "李争",
+          "isPenalty": false
+        },
+        {
+          "scorer": "贺东",
+          "isPenalty": false
+        },
+        {
+          "scorer": "李争",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [
+        "李争"
+      ],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "penaltySaves": [],
+      "hasPenaltyShootout": false,
+      "notes": "",
+      "countForStats": true,
+      "coach": "",
+      "teamId": "team-1792636483911"
+    },
+    {
+      "id": "match-1795570881761",
+      "date": "2026-11-24",
+      "season": "国际社区2026南超秋季联赛",
+      "round": 11,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "洋人街国际社区足球公园",
+      "opponent": "TNT&MU",
+      "ourScore": 4,
+      "opponentScore": 2,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "曹晓霖",
+        "车驰",
+        "陈春",
+        "胡勇",
+        "李单",
+        "李扬",
+        "刘豪",
+        "秦坤",
+        "唐涛",
+        "刘盛",
+        "刘杰",
+        "杨航"
+      ],
+      "starters": [
+        "车驰",
+        "陈春",
+        "李单",
+        "李扬",
+        "刘豪",
+        "秦坤",
+        "唐涛",
+        "刘盛"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 2
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "李单",
+          "assist": "刘盛",
+          "isPenalty": false
+        },
+        {
+          "scorer": "刘盛",
+          "assist": "刘豪",
+          "isPenalty": false
+        },
+        {
+          "scorer": "刘豪",
+          "assist": "李单",
+          "isPenalty": false
+        },
+        {
+          "scorer": "刘豪",
+          "assist": "刘盛",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [
+        "李扬"
+      ],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "mvp": "刘豪",
+      "penaltySaves": [],
+      "hasPenaltyShootout": false,
+      "notes": "",
+      "countForStats": true,
+      "coach": "胡勇",
+      "teamId": "team-default-001"
+    },
+    {
+      "id": "match-1795766864689",
+      "date": "2026-11-26",
+      "season": "雾都球友2026秋季联赛",
+      "round": 6,
+      "matchType": "联赛",
+      "format": "八人制",
+      "venue": "驰聘足球中心",
+      "opponent": "得一品牌",
+      "ourScore": 4,
+      "opponentScore": 2,
+      "location": "Home",
+      "result": "Win",
+      "squad": [
+        "唐涛",
+        "秦鹏",
+        "付道政",
+        "李旋",
+        "石浩",
+        "李熠",
+        "陈杰",
+        "罗君",
+        "孙文禹",
+        "邓菁华",
+        "秦绍洪"
+      ],
+      "starters": [
+        "唐涛",
+        "秦鹏",
+        "李旋",
+        "石浩",
+        "李熠",
+        "陈杰",
+        "邓菁华",
+        "孙文禹"
+      ],
+      "goalkeepers": [
+        "唐涛"
+      ],
+      "goalkeeperStats": [
+        {
+          "player": "唐涛",
+          "conceded": 2
+        }
+      ],
+      "goalsDetails": [
+        {
+          "scorer": "石浩",
+          "assist": "秦鹏",
+          "isPenalty": false
+        },
+        {
+          "scorer": "罗君",
+          "assist": "孙文禹",
+          "isPenalty": false
+        },
+        {
+          "scorer": "邓菁华",
+          "assist": "李旋",
+          "isPenalty": false
+        },
+        {
+          "scorer": "罗君",
+          "assist": "陈杰",
+          "isPenalty": false
+        }
+      ],
+      "yellowCards": [],
+      "redCards": [],
+      "penaltiesWon": [],
+      "penaltiesMissed": [],
+      "ownGoals": [],
+      "penaltySaves": [],
+      "hasPenaltyShootout": false,
+      "notes": "",
+      "countForStats": true,
+      "coach": "付道政",
+      "teamId": "team-1788229994801"
     }
   ],
   "opponents": [
@@ -10956,6 +11198,11 @@
       "name": "J老将",
       "teamId": "team-1792636483911",
       "logo": "data:image/jpeg;base64,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"
+    },
+    {
+      "id": "mwvgd8to",
+      "name": "TNT&MU",
+      "teamId": "team-default-001"
     }
   ],
   "seasons": [
@@ -12202,5 +12449,5 @@
       "teamId": "team-1792636483911"
     }
   ],
-  "theme": "pink"
+  "theme": "green"
 }
